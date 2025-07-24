@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 const Links = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/login', label: 'Sign in' },
+  // { href: '/login', label: 'Sign in' },
 ];
 
 export default function Nav() {

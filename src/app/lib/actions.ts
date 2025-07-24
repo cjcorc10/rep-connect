@@ -33,10 +33,5 @@ export const getReps = async (
   const { zipcode } = validatedData.data;
   console.log('Fetching representatives for zipcode:', zipcode);
 
-  /* 
-        TODO: Implement the logic to fetch representatives based on the zipcode.
-        This will involve making a request to a database or an API to get the
-        representatives for the given zipcode.
-    */
   redirect(`/reps/${zipcode}`);
 };
