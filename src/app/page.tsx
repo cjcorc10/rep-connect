@@ -8,7 +8,7 @@ export default function Home() {
         <br /> contact your representatives{' '}
         <span className="font-bold text-gray-900">Today.</span>
       </h1>
-      <SearchForm />
+      <SearchForm type={'zip'} />
     </div>
   );
 }
