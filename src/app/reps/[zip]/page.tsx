@@ -7,14 +7,20 @@ import {
 import HouseContainer from './houseContainer';
 
 type PageProps = {
-  params: { address: string };
+  params: { zip: string };
+  searchParams: { address?: string };
 };
 
-export default async function Page({ params }: PageProps) {
+export default async function Page({
+  params,
+  searchParams,
+}: PageProps) {
   // user input address
-  const { address } = await params;
+  const { zip } = await params;
+  const { address } = await searchParams;
+  console.log('address:', address);
   // coordinates for address
-  const { northeast, southwest } = await getCoordinates(address);
+  const { northeast, southwest } = await getCoordinates(zip);
   // district(s) in address
   const { state, districts } = await getDistricts({
     northeast,
@@ -33,7 +39,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold">
-        Representatives for {address}
+        Representatives for {zip}
       </h1>
       {/* Displaying representatives for the district(s) 
         - senators
@@ -54,7 +60,7 @@ export default async function Page({ params }: PageProps) {
             <h3 className="text-lg mb-2">
               Please provide your street name to narrow down results
             </h3>
-            <SearchForm type={'street'} />
+            {/* <SearchForm type={'street'} /> */}
           </div>
         </>
       )}

@@ -27,8 +27,8 @@ export default function SearchForm({ type }: SearchProps) {
         <input type="hidden" name="type" value={type} />
         <input
           type="text"
-          id="address"
-          name="address"
+          id="zip"
+          name="zip"
           className="outline-none text-gray-800 text-3xl"
           placeholder={
             type === 'zip'

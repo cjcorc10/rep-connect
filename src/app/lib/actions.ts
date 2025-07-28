@@ -5,20 +5,10 @@ import { z } from 'zod';
 import { Coordinates, Rep } from './definitions';
 import { fipsToState } from './fipsToStates';
 
-// schema validates that string was received then refines it based on type
-const FormSchema = z
-  .object({
-    address: z.string(),
-    type: z.enum(['zip', 'street']),
-  })
-  .refine(
-    (data) =>
-      data.type === 'zip' ? z.string().length(5) : z.string().min(1),
-    {
-      message: 'Invalid address format',
-      path: ['address'],
-    }
-  );
+// schemea for validating zip code in form data
+const FormSchema = z.object({
+  zip: z.string().min(5),
+});
 
 // error returned if validation fails
 export type State = {
@@ -32,21 +22,20 @@ export const validateAddress = async (
   formData: FormData
 ) => {
   const validatedData = FormSchema.safeParse({
-    address: formData.get('address'),
-    type: formData.get('type'),
+    zip: formData.get('zip'),
   });
 
   if (!validatedData.success) {
     return {
       error: validatedData.error.message,
-      message: 'Please enter a valid address.',
+      message: 'Please enter a valid zip code.',
     };
   }
 
-  const { address } = validatedData.data;
-  console.log('Fetching representatives for address:', address);
+  const { zip } = validatedData.data;
+  console.log('Fetching representatives for zip code:', zip);
 
-  redirect(`/reps/${address}`);
+  redirect(`/reps/${zip}`);
 };
 
 // function gets bounds of zipcode
