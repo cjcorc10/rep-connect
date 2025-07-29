@@ -3,29 +3,37 @@ import {
   getCoordinates,
   getDistricts,
   getRep,
+  getSenatorImage,
+  getSenators,
 } from '@/app/lib/actions';
 import HouseContainer from './houseContainer';
+import StreetForm from '@/app/components/streetForm';
 
 type PageProps = {
   params: { zip: string };
-  searchParams: { address?: string };
+  searchParams: { street?: string };
 };
 
 export default async function Page({
   params,
   searchParams,
 }: PageProps) {
-  // user input address
+  // get parameters
   const { zip } = await params;
-  const { address } = await searchParams;
-  console.log('address:', address);
+  const { street } = await searchParams;
+  const address = street ? `${street}, ${zip}` : zip;
+
   // coordinates for address
-  const { northeast, southwest } = await getCoordinates(zip);
-  // district(s) in address
+  const { northeast, southwest } = await getCoordinates(address);
   const { state, districts } = await getDistricts({
     northeast,
     southwest,
   });
+
+  const senators = await getSenators(state);
+  const senatorImages = await Promise.all(
+    senators.map((senator) => getSenatorImage(senator.id))
+  );
 
   // representatives for each district
   const repsByDistrict = await Promise.all(
@@ -49,18 +57,18 @@ export default async function Page({
       {/* <SenateContainer senators={senators} /> */}
 
       <h2>House of Representatives:</h2>
-      <h3>
-        Unable to determine district based on address provided, your
-        representative is one of the following:
-      </h3>
       <HouseContainer repsByDistrict={repsByDistrict} />
       {districts.length > 1 && (
         <>
           <div className="flex flex-col items-center justify-center mt-4">
+            <h3>
+              Unable to determine district based on address provided,
+              your representative is one of the following:
+            </h3>
             <h3 className="text-lg mb-2">
               Please provide your street name to narrow down results
             </h3>
-            {/* <SearchForm type={'street'} /> */}
+            <StreetForm />
           </div>
         </>
       )}

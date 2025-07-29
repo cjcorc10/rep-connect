@@ -1,8 +1,11 @@
 'use server';
 
+import fs from 'fs';
+import path from 'path';
+import yaml from 'js-yaml';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { Coordinates, Rep } from './definitions';
+import { Coordinates, Rep, Representative } from './definitions';
 import { fipsToState } from './fipsToStates';
 
 // schemea for validating zip code in form data
@@ -11,18 +14,19 @@ const FormSchema = z.object({
 });
 
 // error returned if validation fails
-export type State = {
+export type ErrorState = {
   error?: string;
   message?: string;
 };
 
 // server action to fetch representatives based on zipcode
 export const validateAddress = async (
-  previousState: State,
+  previousState: ErrorState,
   formData: FormData
 ) => {
   const validatedData = FormSchema.safeParse({
     zip: formData.get('zip'),
+    street: formData.get('street'),
   });
 
   if (!validatedData.success) {
@@ -36,6 +40,35 @@ export const validateAddress = async (
   console.log('Fetching representatives for zip code:', zip);
 
   redirect(`/reps/${zip}`);
+};
+
+const StreetFormSchema = z.object({
+  zip: z.string().min(5),
+  street: z.string().min(1),
+});
+
+export const validateStreetAddress = async (
+  previousState: ErrorState,
+  formData: FormData
+) => {
+  const validatedData = StreetFormSchema.safeParse({
+    street: formData.get('street'),
+    zip: formData.get('zip'),
+  });
+
+  if (!validatedData.success) {
+    return {
+      error: validatedData.error.message,
+      message: 'Please enter a valid street address.',
+    };
+  }
+
+  const { street, zip } = validatedData.data;
+  console.log('Fetching representatives for street:', street);
+
+  // Here you would typically handle the street address logic
+  // For now, we just log it and redirect to a placeholder
+  redirect(`/reps/${zip}?street=${encodeURIComponent(street)}`);
 };
 
 // function gets bounds of zipcode
@@ -106,6 +139,7 @@ export const getRep = async (district: string, state: string) => {
     throw new Error('Failed to retrieve candidates in district');
   }
   const data = await response.json();
+  console.log(data.members[0]);
   const rep = extractRepData(data.members[0]);
   return rep;
 };
@@ -117,6 +151,49 @@ const extractRepData = (rep: any): Rep => {
     district: rep.district,
     party: rep.partyName,
     state: rep.state,
-    // image: rep.depiction.imageUrl,
+    image: rep.depiction.imageUrl,
   };
+};
+
+export const getSenators = async (state: string) => {
+  const filepath = path.join(
+    process.cwd(),
+    'src',
+    'app',
+    'data',
+    'legislators-current.yaml'
+  );
+  const fileContent = fs.readFileSync(filepath, 'utf8');
+  const legislators = yaml.load(fileContent) as Representative[];
+
+  return legislators
+    .filter((legislator) =>
+      legislator.terms.some(
+        (term) =>
+          term.type === 'sen' &&
+          term.state === state &&
+          (!term.end || new Date(term.end) > new Date())
+      )
+    )
+    .map((senator) => {
+      const currentTerm = senator.terms[senator.terms.length - 1];
+      return {
+        id: senator.id.bioguide,
+        name: senator.name.official_full,
+        party: currentTerm.party,
+        state: currentTerm.state,
+        phone: currentTerm.phone,
+        url: currentTerm.url,
+      };
+    });
+};
+
+export const getSenatorImage = async (bioguideId: string) => {
+  const url = `${process.env.CONGRESS_API_URL}member/${bioguideId}?api_key=${process.env.CONGRESS_API_KEY}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to retrieve senator image');
+  }
+  const data = await response.json();
+  return data.member.depiction.imageUrl;
 };

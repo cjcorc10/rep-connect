@@ -10,7 +10,7 @@ export default function HouseContainer({
   repsByDistrict,
 }: ContainerProps) {
   return (
-    <div>
+    <div className="flex justify-center flex-wrap">
       {repsByDistrict.map((rep) => (
         <div key={rep.id} className="mb-4">
           <h3 className="text-xl font-semibold">

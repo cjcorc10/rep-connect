@@ -2,17 +2,14 @@
 import React, { useActionState } from 'react';
 import Button from './button';
 import { Search } from 'lucide-react';
-import { validateAddress, State } from '../lib/actions';
+import { ErrorState, validateAddress } from '../lib/actions';
 
-const initialState: State = {
+const initialState: ErrorState = {
   message: undefined,
   error: undefined,
 };
 
-type SearchProps = {
-  type: 'zip' | 'street';
-};
-export default function SearchForm({ type }: SearchProps) {
+export default function SearchForm() {
   const [state, formAction] = useActionState(
     validateAddress,
     initialState
@@ -24,17 +21,12 @@ export default function SearchForm({ type }: SearchProps) {
         action={formAction}
         className="flex bg-white rounded-2xl shadow-md px-4 py-2"
       >
-        <input type="hidden" name="type" value={type} />
         <input
           type="text"
           id="zip"
           name="zip"
           className="outline-none text-gray-800 text-3xl"
-          placeholder={
-            type === 'zip'
-              ? 'enter your zipcode'
-              : 'enter your street name'
-          }
+          placeholder="enter your zipcode"
           required
         />
         <Button>
