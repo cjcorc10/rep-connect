@@ -1,8 +1,8 @@
-'use client';
-import React, { useActionState } from 'react';
-import Button from './button';
-import { Search } from 'lucide-react';
-import { ErrorState, validateAddress } from '../lib/actions';
+"use client";
+import React, { useActionState } from "react";
+import Button from "./button";
+import { Search } from "lucide-react";
+import { ErrorState, validateAddress } from "../lib/actions";
 
 const initialState: ErrorState = {
   message: undefined,
@@ -10,10 +10,7 @@ const initialState: ErrorState = {
 };
 
 export default function SearchForm() {
-  const [state, formAction] = useActionState(
-    validateAddress,
-    initialState
-  );
+  const [state, formAction] = useActionState(validateAddress, initialState);
 
   return (
     <>
@@ -35,7 +32,7 @@ export default function SearchForm() {
         </Button>
       </form>
       {state.message && (
-        <div className="mt-4 text-red-600">{state.message}</div>
+        <div className="mt-4 font-bold text-red-600">{state.message}</div>
       )}
     </>
   );

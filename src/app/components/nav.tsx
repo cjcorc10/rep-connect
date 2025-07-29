@@ -1,12 +1,12 @@
-'use client';
-import clsx from 'clsx';
-import Link from 'next/link';
+"use client";
+import clsx from "clsx";
+import Link from "next/link";
 
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 const Links = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
   // { href: '/login', label: 'Sign in' },
 ];
 
@@ -20,10 +20,10 @@ export default function Nav() {
             <Link
               href={link.href}
               className={clsx(
-                'text-gray-900 hover:text-gray-700 text-lg',
-                path === link.href && 'font-bold',
-                link.href === '/login' &&
-                  'border border-gray-300 rounded-lg px-3 py-1 hover:bg-gray-100'
+                "text-white text-lg",
+                path === link.href && "font-bold",
+                link.href === "/login" &&
+                  "border border-gray-300 rounded-lg px-3 py-1 hover:bg-gray-100"
               )}
             >
               {link.label}

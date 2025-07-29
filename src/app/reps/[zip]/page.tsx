@@ -28,15 +28,9 @@ export default async function Page({ params, searchParams }: PageProps) {
     southwest,
   });
 
-  // representatives for each district
-
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold">Representatives for {zip}</h1>
-      {/* Displaying representatives for the district(s) 
-        - senators
-        - house members
-        */}
       <SenateContainer state={state} />
       <HouseContainer districts={districts} state={state} />
       {districts.length > 1 && (
