@@ -8,3 +8,8 @@
     margin: 0;
   }
 }
+
+@theme {
+  --color-accent: #3b82f6; /* blue-500 */
+  --color-accent-dark: #2563eb; /* blue-600 */
+}

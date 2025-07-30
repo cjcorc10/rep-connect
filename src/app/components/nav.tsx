@@ -1,13 +1,13 @@
-"use client";
-import clsx from "clsx";
-import Link from "next/link";
-import { motion } from "framer-motion";
+'use client';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
-import { usePathname } from "next/navigation";
+import { usePathname } from 'next/navigation';
 
 const Links = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
   // { href: '/login', label: 'Sign in' },
 ];
 
@@ -20,10 +20,10 @@ export default function Nav() {
           <li
             key={link.href}
             className={clsx(
-              "text-lg hover:text-white relative flex items-center transition",
+              'text-lg hover:text-black relative flex items-center transition font-bold',
               {
-                "text-white": path == link.href,
-                "text-white/80": path != link.href,
+                'text-black': path == link.href,
+                'text-gray-800/70': path != link.href,
               }
             )}
           >
@@ -31,7 +31,7 @@ export default function Nav() {
             {path == link.href && (
               <motion.div
                 layoutId="active-link-id"
-                className="w-full h-1 bg-blue-500 absolute bottom-[-3] rounded-full"
+                className="w-full h-1 bg-accent absolute bottom-[-3] rounded-full"
               ></motion.div>
             )}
           </li>
