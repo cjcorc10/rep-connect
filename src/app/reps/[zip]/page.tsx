@@ -1,14 +1,7 @@
-import SearchForm from '@/app/components/searchForm';
-import {
-  getCoordinates,
-  getDistricts,
-  getRep,
-  getSenatorImage,
-  getSenators,
-} from '@/app/lib/actions';
+import { getCoordinates, getDistricts } from '@/app/lib/util';
 import HouseContainer from './houseContainer';
-import StreetForm from '@/app/components/streetForm';
 import SenateContainer from './senateContainer';
+import { Suspense } from 'react';
 
 type PageProps = {
   params: { zip: string };
@@ -23,7 +16,6 @@ export default async function Page({
   const { zip } = await params;
   const { street } = await searchParams;
   const address = street ? `${street}, ${zip}` : zip;
-  console.log('Address for representatives:', address);
 
   // coordinates for address
   const { northeast, southwest } = await getCoordinates(address);
@@ -33,26 +25,21 @@ export default async function Page({
   });
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold">
-        Representatives for {zip}
-      </h1>
-      <SenateContainer state={state} />
-      <HouseContainer districts={districts} state={state} />
-      {districts.length > 1 && (
-        <>
-          <div className="flex flex-col items-center justify-center mt-4">
-            <h3>
-              Unable to determine district based on address provided,
-              your representative is one of the following:
-            </h3>
-            <h3 className="text-lg mb-2">
-              Please provide your street name to narrow down results
-            </h3>
-            <StreetForm />
-          </div>
-        </>
-      )}
+    <div className="p-4 flex flex-col items-center ">
+      <div className="flex flex-col mb-4 min-w-7xl">
+        <h1 className="text-5xl font-bold text-gray-700 text-center m-4">
+          Representatives for {zip}
+        </h1>
+        <h3 className="text-xl font-bold text-gray-700 mb-4 ">
+          Federal representatives:
+        </h3>
+        <Suspense fallback={<p>Loading senators...</p>}>
+          <SenateContainer state={state} />
+        </Suspense>
+        <Suspense fallback={<p>Loading house representatives...</p>}>
+          <HouseContainer districts={districts} state={state} />
+        </Suspense>
+      </div>
     </div>
   );
 }

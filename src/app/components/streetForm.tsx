@@ -2,11 +2,7 @@
 import { Search } from 'lucide-react';
 import Button from './button';
 import { useParams } from 'next/navigation';
-import {
-  ErrorState,
-  validateAddress,
-  validateStreetAddress,
-} from '../lib/actions';
+import { ErrorState, validateStreetAddress } from '../lib/actions';
 import { useActionState } from 'react';
 
 const initialState: ErrorState = {

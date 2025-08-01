@@ -11,23 +11,30 @@ export type StateDistricts = {
 export type Rep = {
   id: string;
   name: string;
-  district: string;
   party: string;
   state: string;
+  district?: string;
+  address?: string;
+  url?: string;
   image?: string;
+  phone?: string;
+  additionalContactInfo?: string;
 };
 
 export type Representative = {
   id: { bioguide: string };
   name: { official_full: string };
-  terms: Array<{
+  terms: {
     type: 'sen' | 'rep';
     state: string;
     start: string;
+    district?: string;
     end?: string;
     class?: number;
     party: string;
     phone?: string;
     url?: string;
-  }>;
+    contact_form?: string;
+    address?: string;
+  }[];
 };

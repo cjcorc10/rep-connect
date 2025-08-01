@@ -1,6 +1,12 @@
-import RepCard from "@/app/components/repCard";
-import { getRep } from "@/app/lib/actions";
-import { Rep } from "@/app/lib/definitions";
+import RepCard from '@/app/components/repCard';
+import clsx from 'clsx';
+import StreetForm from '@/app/components/streetForm';
+import {
+  getRep,
+  getRepImage,
+  getRepsByDistrictAndState,
+} from '@/app/lib/util';
+import { use } from 'react';
 
 // fix any type
 type ContainerProps = {
@@ -8,28 +14,41 @@ type ContainerProps = {
   districts: string[];
 };
 
-export default async function HouseContainer({
+export default function HouseContainer({
   state,
   districts,
 }: ContainerProps) {
   // fetch house reps by district
-  const repsByDistrict = await Promise.all(
-    districts.map(async (district: string) => {
-      const rep = await getRep(district, state);
-      return rep;
-    })
+  const repsByDistrict = use(
+    getRepsByDistrictAndState(districts, state)
+  );
+  repsByDistrict.forEach(
+    (rep) => (rep.image = use(getRepImage(rep.id)))
   );
 
   return (
-    <div className="flex justify-center flex-wrap">
-      <h2>House of Representatives:</h2>
-
-      {repsByDistrict.map((rep) => (
-        <div key={rep.id} className="mb-4">
-          <h3 className="text-xl font-semibold">District: {rep.district}</h3>
-          <RepCard rep={rep} />
-        </div>
-      ))}
-    </div>
+    <section>
+      <div className={clsx('flex flex-col gap-y-4')}>
+        {repsByDistrict.map((rep) => (
+          <div key={rep.id} className="mb-4">
+            <RepCard rep={rep} />
+          </div>
+        ))}
+      </div>
+      {districts.length > 1 && (
+        <>
+          <div className="flex flex-col items-center justify-center mt-4">
+            <h3>
+              Unable to determine district based on address provided,
+              your representative is one of the following:
+            </h3>
+            <h3 className="text-lg mb-2">
+              Please provide your street name to narrow down results
+            </h3>
+            <StreetForm />
+          </div>
+        </>
+      )}
+    </section>
   );
 }

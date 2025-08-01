@@ -1,17 +1,28 @@
-import { getSenatorImage, getSenators } from "@/app/lib/actions";
+import RepCard from '@/app/components/repCard';
+import { getRepImage, getSenators } from '@/app/lib/util';
+import { use } from 'react';
 
 type SenateContainerProps = {
   state: string;
 };
 
-export default async function SenateContainer({ state }: SenateContainerProps) {
-  const senators = await getSenators(state);
-  const senatorImages = await Promise.all(
-    senators.map((senator) => getSenatorImage(senator.id))
+export default function SenateContainer({
+  state,
+}: SenateContainerProps) {
+  const senators = use(getSenators(state));
+  senators.forEach(
+    (senator) => (senator.image = use(getRepImage(senator.id)))
   );
+
   return (
-    <div>
-      <h2>Senate:</h2>
-    </div>
+    <section>
+      <div className="flex flex-col gap-y-4">
+        {senators.map((senator) => (
+          <div key={senator.id} className="mb-4">
+            <RepCard rep={senator} />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
