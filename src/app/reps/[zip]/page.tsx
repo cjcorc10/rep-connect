@@ -26,9 +26,9 @@ export default async function Page({
 
   return (
     <div className="p-4 flex flex-col items-center ">
-      <div className="flex flex-col mb-4 min-w-7xl">
+      <div className="flex flex-col ">
         <h1 className="text-5xl font-bold text-gray-700 text-center m-4">
-          Representatives for {zip}
+          Representatives for {address}
         </h1>
         <h3 className="text-xl font-bold text-gray-700 mb-4 ">
           Federal representatives:

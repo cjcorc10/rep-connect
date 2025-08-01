@@ -8,18 +8,21 @@ type RepCardProp = {
 
 export default function RepCard({ rep }: RepCardProp) {
   return (
-    <div className="p-4 rounded-lg flex">
+    <div className="rounded-lg flex bg-white border-gray-300 shadow-md ">
+      <div className='flex justify-center border w-[125px] items-center'>
+
       <Image
-        className="rounded-md mb-2 w-[100px] h-[150px] object-cover border border-black/10  "
+        className="w-[100px] h-[100px] object-cover border border-gray-200 rounded-full object-cover object-top"
         src={rep.image || ''}
         width={100}
-        height={150}
+        height={100}
         alt={rep.name}
-      />
-      <div className="ml-4">
-        <h3 className="text-xl font-bold">{rep.name}</h3>
-        <p
-          className={clsx('text-sm font-bold', {
+        />
+        </div>
+      <div className="mx-4 my-2">
+        <h3 className="text-xl font-bold mb-2">{rep.name} 
+        <span
+          className={clsx('ml-2 text-sm font-bold', {
             'text-blue-500': rep.party === 'Democratic',
             'text-red-500': rep.party === 'Republican',
             'text-green-500': rep.party === 'Independent',
@@ -27,20 +30,23 @@ export default function RepCard({ rep }: RepCardProp) {
           })}
         >
           {'(' + rep.party[0] + ' - ' + rep.state + ')'}
-        </p>
+        </span>
+        </h3>
         {rep.district && <p>District: {rep.district}</p>}
         <p>Address: {rep.address}</p>
         <p>Phone: {rep.phone}</p>
-        {rep.additionalContactInfo && (
+        {rep.additionalContactInfo ? (
           <p>
             Contact Form:{' '}
             <a
-              className="text-blue-500"
+              className="text-blue-500 underline"
               href={rep.additionalContactInfo}
             >
               {rep.additionalContactInfo}
             </a>
           </p>
+        ) : (
+          <p>URL: <a className='text-blue-500 underline' href={rep.url}>{rep.url}</a></p>
         )}
       </div>
     </div>
