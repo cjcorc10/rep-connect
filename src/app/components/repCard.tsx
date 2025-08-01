@@ -8,8 +8,8 @@ type RepCardProp = {
 
 export default function RepCard({ rep }: RepCardProp) {
   return (
-    <div className="rounded-lg flex bg-white border-gray-300 shadow-md ">
-      <div className='flex justify-center border w-[125px] items-center'>
+    <div className="rounded-lg flex w-[525px] h-[200px] bg-white border-gray-300 shadow-md p-4">
+      <div className='flex justify-center w-[150px] items-center'>
 
       <Image
         className="w-[100px] h-[100px] object-cover border border-gray-200 rounded-full object-cover object-top"
@@ -19,7 +19,7 @@ export default function RepCard({ rep }: RepCardProp) {
         alt={rep.name}
         />
         </div>
-      <div className="mx-4 my-2">
+      <div className="flex flex-col justify-center">
         <h3 className="text-xl font-bold mb-2">{rep.name} 
         <span
           className={clsx('ml-2 text-sm font-bold', {
