@@ -6,7 +6,7 @@ export default function MainContainer({
   children,
 }: MainContainerProps) {
   return (
-    <main className="flex flex-col p-4 flex-1 border border-gray-200 m-2 rounded-2xl bg-gray-50">
+    <main className="flex flex-col flex-1 md:m-2 rounded-2xl bg-gray-50 shadow-md border border-gray-100 ">
       {children}
     </main>
   );

@@ -1,6 +1,7 @@
 'use client';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 import { usePathname } from 'next/navigation';
 
@@ -13,21 +14,26 @@ const Links = [
 export default function Nav() {
   const path = usePathname();
   return (
-    <nav>
-      <ul className="flex space-x-8">
+    <nav className="h-full">
+      <ul className="flex  space-x-8 h-full ">
         {Links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className={clsx(
-                'text-gray-900 hover:text-gray-700 text-lg',
-                path === link.href && 'font-bold',
-                link.href === '/login' &&
-                  'border border-gray-300 rounded-lg px-3 py-1 hover:bg-gray-100'
-              )}
-            >
-              {link.label}
-            </Link>
+          <li
+            key={link.href}
+            className={clsx(
+              'text-lg hover:text-black relative flex items-center transition font-bold',
+              {
+                'text-black': path == link.href,
+                'text-gray-800/70': path != link.href,
+              }
+            )}
+          >
+            <Link href={link.href}>{link.label}</Link>
+            {path == link.href && (
+              <motion.div
+                layoutId="active-link-id"
+                className="w-full h-1 bg-accent absolute bottom-[-3] rounded-full"
+              ></motion.div>
+            )}
           </li>
         ))}
       </ul>

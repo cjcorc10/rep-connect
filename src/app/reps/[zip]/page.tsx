@@ -1,13 +1,7 @@
-import SearchForm from '@/app/components/searchForm';
-import {
-  getCoordinates,
-  getDistricts,
-  getRep,
-  getSenatorImage,
-  getSenators,
-} from '@/app/lib/actions';
+import { getCoordinates, getDistricts } from '@/app/lib/util';
 import HouseContainer from './houseContainer';
-import StreetForm from '@/app/components/streetForm';
+import SenateContainer from './senateContainer';
+import { Suspense } from 'react';
 
 type PageProps = {
   params: { zip: string };
@@ -30,48 +24,22 @@ export default async function Page({
     southwest,
   });
 
-  const senators = await getSenators(state);
-  const senatorImages = await Promise.all(
-    senators.map((senator) => getSenatorImage(senator.id))
-  );
-
-  // representatives for each district
-  const repsByDistrict = await Promise.all(
-    districts.map(async (district: string) => {
-      const rep = await getRep(district, state);
-      return rep;
-    })
-  );
-  console.log('Reps by district:', repsByDistrict);
-
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold">
-        Representatives for {zip}
-      </h1>
-      {/* Displaying representatives for the district(s) 
-        - senators
-        - house members
-        */}
-      <h2>Senate:</h2>
-      {/* <SenateContainer senators={senators} /> */}
-
-      <h2>House of Representatives:</h2>
-      <HouseContainer repsByDistrict={repsByDistrict} />
-      {districts.length > 1 && (
-        <>
-          <div className="flex flex-col items-center justify-center mt-4">
-            <h3>
-              Unable to determine district based on address provided,
-              your representative is one of the following:
-            </h3>
-            <h3 className="text-lg mb-2">
-              Please provide your street name to narrow down results
-            </h3>
-            <StreetForm />
-          </div>
-        </>
-      )}
+    <div className="p-4 flex flex-col items-center ">
+      <div className="flex flex-col ">
+        <h1 className="text-5xl font-bold text-gray-700 text-center m-4">
+          Representatives for {address}
+        </h1>
+        <h3 className="text-xl font-bold text-gray-700 mb-4 ">
+          Federal representatives:
+        </h3>
+        <Suspense fallback={<p>Loading senators...</p>}>
+          <SenateContainer state={state} />
+        </Suspense>
+        <Suspense fallback={<p>Loading house representatives...</p>}>
+          <HouseContainer districts={districts} state={state} />
+        </Suspense>
+      </div>
     </div>
   );
 }

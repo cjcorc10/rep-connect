@@ -1,24 +1,52 @@
 import RepCard from '@/app/components/repCard';
-import { Rep } from '@/app/lib/definitions';
+import clsx from 'clsx';
+import StreetForm from '@/app/components/streetForm';
+import {
+  getRep,
+  getRepImage,
+  getRepsByDistrictAndState,
+} from '@/app/lib/util';
+import { use } from 'react';
 
 // fix any type
 type ContainerProps = {
-  repsByDistrict: Rep[];
+  state: string;
+  districts: string[];
 };
 
 export default function HouseContainer({
-  repsByDistrict,
+  state,
+  districts,
 }: ContainerProps) {
+  // fetch house reps by district
+  const repsByDistrict = use(
+    getRepsByDistrictAndState(districts, state)
+  );
+  repsByDistrict.forEach(
+    (rep) => (rep.image = use(getRepImage(rep.id)))
+  );
+
   return (
-    <div className="flex justify-center flex-wrap">
-      {repsByDistrict.map((rep) => (
-        <div key={rep.id} className="mb-4">
-          <h3 className="text-xl font-semibold">
-            District: {rep.district}
-          </h3>
-          <RepCard rep={rep} />
-        </div>
-      ))}
-    </div>
+    <section>
+      <h3>House Representative</h3>
+      {districts.length > 1 && (
+        <>
+          <div className="flex flex-col items-center justify-center my-8">
+            <h3 className="text-lg font-bold text-red-500">
+              Unable to determine district based on address provided.
+              Please provide your street name to narrow down results
+            </h3>
+            <StreetForm />
+          </div>
+        </>
+      )}
+      <div className="flex gap-8 justify-center items-center flex-wrap">
+        {repsByDistrict.map((rep) => (
+          <div key={rep.id}>
+            <RepCard rep={rep} />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
