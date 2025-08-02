@@ -28,27 +28,25 @@ export default function HouseContainer({
 
   return (
     <section>
-      <div className={clsx('flex flex-col gap-y-4')}>
-        {repsByDistrict.map((rep) => (
-          <div key={rep.id} className="mb-4">
-            <RepCard rep={rep} />
-          </div>
-        ))}
-      </div>
+      <h3>House Representative</h3>
       {districts.length > 1 && (
         <>
-          <div className="flex flex-col items-center justify-center mt-4">
-            <h3>
-              Unable to determine district based on address provided,
-              your representative is one of the following:
-            </h3>
-            <h3 className="text-lg mb-2">
+          <div className="flex flex-col items-center justify-center my-8">
+            <h3 className="text-lg font-bold text-red-500">
+              Unable to determine district based on address provided.
               Please provide your street name to narrow down results
             </h3>
             <StreetForm />
           </div>
         </>
       )}
+      <div className="flex gap-8 justify-center items-center flex-wrap">
+        {repsByDistrict.map((rep) => (
+          <div key={rep.id}>
+            <RepCard rep={rep} />
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

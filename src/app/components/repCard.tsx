@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { Rep } from '../lib/definitions';
 import clsx from 'clsx';
+import ContactTag from './contactTag';
+import { Globe, Phone } from 'lucide-react';
 
 type RepCardProp = {
   rep: Rep;
@@ -8,46 +10,57 @@ type RepCardProp = {
 
 export default function RepCard({ rep }: RepCardProp) {
   return (
-    <div className="rounded-lg flex w-[525px] h-[200px] bg-white border-gray-300 shadow-md p-4">
-      <div className='flex justify-center w-[150px] items-center'>
-
-      <Image
-        className="w-[100px] h-[100px] object-cover border border-gray-200 rounded-full object-cover object-top"
-        src={rep.image || ''}
-        width={100}
-        height={100}
-        alt={rep.name}
+    <div className="rounded-lg flex flex-col h-[325px] shadow-lg basis-[300px] max-w-[500px] bg-white hover:scale-105 transition active:scale-[1.02]">
+      <div className="flex justify-center items-center min-w-[180px] overflow-hidden rounded-t-lg">
+        <Image
+          src="/images/joshua-hoehne-X4YSBIsSl9s-unsplash.jpg"
+          className="w-full h-[120px] object-fill relative blur rounded-lg"
+          width={180}
+          height={250}
+          alt="american flag background"
         />
-        </div>
-      <div className="flex flex-col justify-center">
-        <h3 className="text-xl font-bold mb-2">{rep.name} 
-        <span
-          className={clsx('ml-2 text-sm font-bold', {
-            'text-blue-500': rep.party === 'Democratic',
-            'text-red-500': rep.party === 'Republican',
-            'text-green-500': rep.party === 'Independent',
-            'text-gray-500': !rep.party,
-          })}
-        >
-          {'(' + rep.party[0] + ' - ' + rep.state + ')'}
-        </span>
-        </h3>
-        {rep.district && <p>District: {rep.district}</p>}
-        <p>Address: {rep.address}</p>
-        <p>Phone: {rep.phone}</p>
-        {rep.additionalContactInfo ? (
-          <p>
-            Contact Form:{' '}
-            <a
-              className="text-blue-500 underline"
-              href={rep.additionalContactInfo}
+        <Image
+          className="w-[145px] h-[145px] border-3 border-accent shadow-md rounded-full object-cover absolute object-top"
+          src={rep.image || ''}
+          width={145}
+          height={145}
+          alt={rep.name}
+        />
+      </div>
+      <div className="flex flex-col flex-1 py-6 px-8 justify-between">
+        <div className=" flex flex-col">
+          <h3 className="text-2xl font-bold flex items-center justify-center text-accent">
+            {rep.name}
+            <span
+              className={clsx('ml-2 text-sm font-bold', {
+                'text-blue-500': rep.party === 'Democratic',
+                'text-red-500': rep.party === 'Republican',
+                'text-green-500': rep.party === 'Independent',
+                'text-gray-500': !rep.party,
+              })}
             >
-              {rep.additionalContactInfo}
-            </a>
+              {'(' + rep.party[0] + ' - ' + rep.state + ')'}
+            </span>
+          </h3>
+          {rep.district && <p>District: {rep.district}</p>}
+          <p>Address: {rep.address}</p>
+          <ContactTag
+            url={rep.additionalContactInfo || rep.url || ''}
+          />
+          {/* <p>Phone: {rep.phone}</p> */}
+        </div>
+        <div className="flex gap-x-4 justify-center mt-4">
+          <a
+            href={`tel:${rep.phone}`}
+            className="text-xl font-bold  bg-accent flex-1 rounded-md text-center py-2 text-white p-4 shadow-md hover:bg-blue-700 md:hidden"
+          >
+            <Phone className="inline mr-2 text-white" />
+            Call
+          </a>
+          <p className="text-2xl hidden md:block font-bold text-accent bg-gray-100 rounded-md px-4 py-2 shadow-md">
+            phone: {rep.phone}
           </p>
-        ) : (
-          <p>URL: <a className='text-blue-500 underline' href={rep.url}>{rep.url}</a></p>
-        )}
+        </div>
       </div>
     </div>
   );
