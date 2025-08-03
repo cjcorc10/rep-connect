@@ -6,9 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "transform:legislators": "ts-node src/app/lib/scripts/transformLegislators.ts",
+    "seed": "ts-node src/app/lib/scripts/seedLegislators.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.53.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.11",
     "js-yaml": "^4.1.0",
@@ -29,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.4.3",
     "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

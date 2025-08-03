@@ -1,11 +1,6 @@
-import RepCard from '@/app/components/repCard';
-import clsx from 'clsx';
+import RepCard from '@/app/reps/[zip]/repCard';
 import StreetForm from '@/app/components/streetForm';
-import {
-  getRep,
-  getRepImage,
-  getRepsByDistrictAndState,
-} from '@/app/lib/util';
+import { getHouseReps } from '@/app/lib/db';
 import { use } from 'react';
 
 // fix any type
@@ -18,13 +13,9 @@ export default function HouseContainer({
   state,
   districts,
 }: ContainerProps) {
-  // fetch house reps by district
-  const repsByDistrict = use(
-    getRepsByDistrictAndState(districts, state)
-  );
-  repsByDistrict.forEach(
-    (rep) => (rep.image = use(getRepImage(rep.id)))
-  );
+  const repsByDistrict = use(getHouseReps(districts, state));
+
+  console.log('repsByDistrict', repsByDistrict);
 
   return (
     <section>
@@ -42,7 +33,7 @@ export default function HouseContainer({
       )}
       <div className="flex gap-8 justify-center items-center flex-wrap">
         {repsByDistrict.map((rep) => (
-          <div key={rep.id}>
+          <div key={rep.bioguide}>
             <RepCard rep={rep} />
           </div>
         ))}

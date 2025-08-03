@@ -1,5 +1,5 @@
-import RepCard from '@/app/components/repCard';
-import { getRepImage, getSenators } from '@/app/lib/util';
+import RepCard from '@/app/reps/[zip]/repCard';
+import { getSenators } from '@/app/lib/db';
 import { use } from 'react';
 
 type SenateContainerProps = {
@@ -10,16 +10,13 @@ export default function SenateContainer({
   state,
 }: SenateContainerProps) {
   const senators = use(getSenators(state));
-  senators.forEach(
-    (senator) => (senator.image = use(getRepImage(senator.id)))
-  );
 
   return (
     <section>
       <h2>{state} Senators</h2>
       <div className="flex flex-wrap gap-8 justify-center">
         {senators.map((senator) => (
-          <div key={senator.id} className="mb-4">
+          <div key={senator.bioguide} className="mb-4">
             <RepCard rep={senator} />
           </div>
         ))}

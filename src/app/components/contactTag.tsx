@@ -1,5 +1,3 @@
-import { p } from 'framer-motion/client';
-
 type ContactTagProps = {
   url: string;
 };
