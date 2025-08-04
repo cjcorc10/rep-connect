@@ -1,10 +1,4 @@
-import { Coordinates, Rep, Representative } from './definitions';
-import { fipsToState } from './fipsToStates';
-
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
-import { map } from 'zod';
+import { Coordinates, fipsToState } from './definitions';
 
 // function gets bounds of zipcode
 export const getCoordinates = async (
@@ -22,6 +16,9 @@ export const getCoordinates = async (
   return { northeast, southwest };
 };
 
+type DistrictFeature = {
+  attributes: Record<string, string>;
+};
 // function gets districts based on coordinates
 export const getDistricts = async (coordinates: Coordinates) => {
   const url = constructDistrictUrl(coordinates);
@@ -36,10 +33,14 @@ export const getDistricts = async (coordinates: Coordinates) => {
 
   // extract the district number from string
   const districts = features.map(
-    (feature) => feature.attributes.NAME.split(' ')[2]
+    (feature: DistrictFeature) =>
+      feature.attributes.NAME.split(' ')[2]
   );
 
-  return { state: fipsToState[stateCode], districts };
+  // convert state code to state abbreviation
+  const state = fipsToState[stateCode];
+
+  return { state, districts };
 };
 
 // constructs the url for fetching the districts based on coordinates
@@ -64,104 +65,4 @@ const constructDistrictUrl = (coordinates: Coordinates) => {
     f: 'json',
   });
   return `${baseURL}?${queryParams.toString()}`;
-};
-
-export const getRep = async (district: string, state: string) => {
-  const url = `${process.env.CONGRESS_API_URL}member/congress/119/${state}/${district}?api_key=${process.env.CONGRESS_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Failed to retrieve candidates in district');
-  }
-  const data = await response.json();
-  console.log('data: ', data.members);
-  const rep = extractRepData(data.members[0]);
-  return rep;
-};
-
-const extractRepData = (rep: any): Rep => {
-  return {
-    id: rep.bioguideId,
-    name: rep.name,
-    district: rep.district,
-    party: rep.partyName,
-    state: rep.state,
-    image: rep.depiction.imageUrl,
-  };
-};
-
-// reads yaml file containing current legislators
-const readLegislatorsFile = () => {
-  const filepath = path.join(
-    process.cwd(),
-    'src',
-    'app',
-    'data',
-    'legislators-current.yaml'
-  );
-  const fileContent = fs.readFileSync(filepath, 'utf8');
-  return yaml.load(fileContent) as Representative[];
-};
-
-// maps the legislator data to the Rep type
-const mapMember = (rep: Representative) => {
-  const currentTerm = rep.terms[rep.terms.length - 1];
-
-  return {
-    id: rep.id.bioguide,
-    name: rep.name.official_full,
-    party: currentTerm.party,
-    state: currentTerm.state,
-    phone: currentTerm.phone,
-    url: currentTerm.url,
-    additionalContactInfo: currentTerm.contact_form,
-    address: currentTerm.address,
-    start: currentTerm.start,
-    end: currentTerm.end,
-  } as Rep;
-};
-
-// senator wrapper for extracting senator data
-export const getSenators = async (state: string) => {
-  const legislators = readLegislatorsFile();
-  return legislators
-    .filter((legislator) =>
-      legislator.terms.some(
-        (term) =>
-          term.type === 'sen' &&
-          term.state === state &&
-          (!term.end || new Date(term.end) > new Date())
-      )
-    )
-    .map(mapMember);
-};
-
-// house wrapper for extracting district representatives given a single state and multiple districts
-export const getRepsByDistrictAndState = async (
-  districts: string[],
-  state: string
-): Promise<Rep[]> => {
-  const legislators = readLegislatorsFile();
-  const reps = districts.map((district) =>
-    legislators.find((legislator) =>
-      legislator.terms.some(
-        (term) =>
-          term.type === 'rep' &&
-          term.state === state &&
-          term.district?.toString() === district.toString() &&
-          (!term.end || new Date(term.end) > new Date())
-      )
-    )
-  );
-
-  return reps ? reps.map((rep) => mapMember(rep)) : [];
-};
-
-export const getRepImage = async (bioguideId: string) => {
-  const url = `${process.env.CONGRESS_API_URL}member/${bioguideId}?api_key=${process.env.CONGRESS_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Failed to retrieve representative image');
-  }
-  const data = await response.json();
-  return data.member.depiction.imageUrl;
 };
