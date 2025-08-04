@@ -15,8 +15,6 @@ export default function HouseContainer({
 }: ContainerProps) {
   const repsByDistrict = use(getHouseReps(districts, state));
 
-  console.log('repsByDistrict', repsByDistrict);
-
   return (
     <section>
       <h3>House Representative</h3>
