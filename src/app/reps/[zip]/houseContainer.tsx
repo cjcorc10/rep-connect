@@ -2,6 +2,7 @@ import RepCard from '@/app/reps/[zip]/repCard';
 import StreetForm from '@/app/components/streetForm';
 import { getHouseReps } from '@/app/lib/db';
 import { use } from 'react';
+import { Rep } from '@/app/lib/definitions';
 
 // fix any type
 type ContainerProps = {
@@ -13,7 +14,7 @@ export default function HouseContainer({
   state,
   districts,
 }: ContainerProps) {
-  const repsByDistrict = use(getHouseReps(districts, state));
+  const repsByDistrict = use(getHouseReps(districts, state)) as Rep[];
 
   return (
     <section>

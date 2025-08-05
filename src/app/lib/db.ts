@@ -14,16 +14,21 @@ export const getSenators = async (state: string) => {
 };
 
 export const getHouseReps = async (
-  district: string[],
+  districts: string[],
   state: string
 ) => {
   const { data, error } = await supabase
     .from('legislators')
     .select('*')
-    .in('district', district)
+    .in('district', districts)
     .eq('state', state);
 
-  if (error) {
+  if (data && data.length === 0) {
+    console.error(
+      'No representatives found for the given district and state'
+    );
+    return null;
+  } else if (error) {
     throw new Error('Failed to retrieve representatives');
   }
   return data;

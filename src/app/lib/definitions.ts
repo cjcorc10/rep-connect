@@ -30,6 +30,7 @@ export type Rep = {
   address: string;
   contact_form: string | null;
   image_url: string;
+  last_fetched: string | null;
 };
 
 // export type Legislator = {
