@@ -19,7 +19,7 @@ export default function SearchForm() {
     <>
       <form
         action={formAction}
-        className="flex bg-white rounded-2xl shadow-md px-4 py-2"
+        className="flex bg-gray-100 rounded-2xl shadow-md px-4 py-2 z-10 relative"
       >
         <input
           type="text"

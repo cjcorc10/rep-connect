@@ -2,7 +2,7 @@ import { supabase } from './supabase/supabaseClient';
 
 export const getSenators = async (state: string) => {
   const { data, error } = await supabase
-    .from('legislators')
+    .from('legislators-current')
     .select('*')
     .eq('state', state)
     .eq('type', 'sen');
@@ -18,7 +18,7 @@ export const getHouseReps = async (
   state: string
 ) => {
   const { data, error } = await supabase
-    .from('legislators')
+    .from('legislators-current')
     .select('*')
     .in('district', districts)
     .eq('state', state);
@@ -36,9 +36,9 @@ export const getHouseReps = async (
 
 export const fetchRep = async (id: string) => {
   const { data, error } = await supabase
-    .from('legislators')
+    .from('legislators-current')
     .select('*')
-    .eq('bioguide', id)
+    .eq('bioguide_id', id)
     .single();
 
   if (error) {

@@ -14,7 +14,9 @@ export default function HouseContainer({
   state,
   districts,
 }: ContainerProps) {
-  const repsByDistrict = use(getHouseReps(districts, state)) as Rep[];
+  const repsByDistrict: Rep[] = use(
+    getHouseReps(districts, state)
+  ) as Rep[];
 
   return (
     <section>
@@ -32,7 +34,7 @@ export default function HouseContainer({
       )}
       <div className="flex gap-8 justify-center items-center flex-wrap">
         {repsByDistrict.map((rep) => (
-          <div key={rep.bioguide}>
+          <div key={rep.bioguide_id}>
             <RepCard rep={rep} />
           </div>
         ))}

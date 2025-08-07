@@ -15,7 +15,7 @@ export default function RepCard({ rep }: RepCardProp) {
 
   return (
     <div
-      onClick={() => router.push(`/rep/${rep.bioguide}`)}
+      onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
       className="rounded-lg flex flex-col h-[325px] shadow-lg basis-[300px] max-w-[500px] bg-white hover:scale-105 transition active:scale-[1.02]"
     >
       <div className="flex justify-center items-center min-w-[180px] overflow-hidden rounded-t-lg">
@@ -31,13 +31,13 @@ export default function RepCard({ rep }: RepCardProp) {
           src={rep.image_url || ''}
           width={145}
           height={145}
-          alt={rep.name}
+          alt={rep.full_name}
         />
       </div>
       <div className="flex flex-col flex-1 py-6 px-8 justify-between">
         <div className=" flex flex-col">
           <h3 className="text-2xl font-bold flex items-center justify-center text-accent">
-            {rep.name}
+            {rep.full_name}
             <span
               className={clsx('ml-2 text-sm font-bold', {
                 'text-blue-500': rep.party === 'Democratic',
@@ -51,7 +51,7 @@ export default function RepCard({ rep }: RepCardProp) {
           </h3>
           {rep.district && <p>District: {rep.district}</p>}
           <p>Address: {rep.address}</p>
-          <ContactTag url={rep.contact_form || rep.url || ''} />
+          <ContactTag url={rep.contact_form || rep.url} />
         </div>
         <div className="flex gap-x-4 justify-center mt-4">
           <a
@@ -62,7 +62,7 @@ export default function RepCard({ rep }: RepCardProp) {
             Call
           </a>
           <p className="text-2xl hidden md:block font-bold text-accent bg-gray-100 rounded-md px-4 py-2 shadow-md">
-            phone: {rep.phone}
+            {rep.phone}
           </p>
         </div>
       </div>

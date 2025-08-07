@@ -9,28 +9,43 @@ export type StateDistricts = {
 };
 
 export type Rep = {
-  bioguide: string;
-  thomas: string | null;
-  lis: string | null;
-  govtrack: string;
-  opensecrets: string;
-  votesmart: string | null;
-  fec: string[];
-  cspan: string | null;
-  name: string;
+  bioguide_id: string;
+  last_name: string;
+  first_name: string;
+  middle_name?: string;
+  suffix?: string;
+  nickname?: string;
+  full_name: string;
   birthday: string;
+  gender: string;
   type: string;
-  start: string;
-  end: string;
   state: string;
   district: string;
+  senate_class?: string;
   party: string;
   url: string;
-  phone: string;
   address: string;
-  contact_form: string | null;
+  phone: string;
+  contact_form?: string;
+  rss_url?: string;
+  twitter?: string;
+  twitter_id?: number;
+  facebook?: string;
+  youtube?: string;
+  youtube_id?: string;
+  mastadon?: string;
+  thomas_id?: string;
+  opensecrets_id: string;
+  lis_id?: string;
+  fec_ids?: string[];
+  cspan_id?: number;
+  govtrack_id?: number;
+  votesmart_id?: number;
+  ballotpedia_id?: string;
+  washington_post_id?: string;
+  icpsr_id?: number;
+  wikipedia_id?: string;
   image_url: string;
-  last_fetched: string | null;
 };
 
 // export type Legislator = {
