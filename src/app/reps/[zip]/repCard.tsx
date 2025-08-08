@@ -27,7 +27,7 @@ export default function RepCard({ rep }: RepCardProp) {
           alt="american flag background"
         />
         <Image
-          className="w-[145px] h-[145px] border-3 border-accent shadow-md rounded-full object-cover absolute object-top"
+          className="w-[145px] h-[145px] border-3 border-blue-500 shadow-md rounded-full object-cover absolute object-top"
           src={rep.image_url || ''}
           width={145}
           height={145}
@@ -36,7 +36,7 @@ export default function RepCard({ rep }: RepCardProp) {
       </div>
       <div className="flex flex-col flex-1 py-6 px-8 justify-between">
         <div className=" flex flex-col">
-          <h3 className="text-2xl font-bold flex items-center justify-center text-accent">
+          <h3 className="text-2xl font-bold flex items-center justify-center text-blue-500">
             {rep.full_name}
             <span
               className={clsx('ml-2 text-sm font-bold', {
@@ -56,12 +56,12 @@ export default function RepCard({ rep }: RepCardProp) {
         <div className="flex gap-x-4 justify-center mt-4">
           <a
             href={`tel:${rep.phone}`}
-            className="text-xl font-bold  bg-accent flex-1 rounded-md text-center py-2 text-white p-4 shadow-md hover:bg-blue-700 md:hidden"
+            className="text-xl font-bold  bg-blue-500 flex-1 rounded-md text-center py-2 text-white p-4 shadow-md hover:bg-blue-700 md:hidden"
           >
             <Phone className="inline mr-2 text-white" />
             Call
           </a>
-          <p className="text-2xl hidden md:block font-bold text-accent bg-gray-100 rounded-md px-4 py-2 shadow-md">
+          <p className="text-2xl hidden md:block font-bold text-blue-500 bg-gray-100 rounded-md px-4 py-2 shadow-md">
             {rep.phone}
           </p>
         </div>

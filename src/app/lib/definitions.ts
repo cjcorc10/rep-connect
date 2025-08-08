@@ -22,6 +22,8 @@ export type Rep = {
   state: string;
   district: string;
   senate_class?: string;
+  start: Date;
+  end: Date;
   party: string;
   url: string;
   address: string;
