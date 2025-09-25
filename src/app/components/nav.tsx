@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 const Links = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
+  // { href: '/about', label: 'About' },
   // { href: '/login', label: 'Sign in' },
 ];
 
@@ -28,12 +28,12 @@ export default function Nav() {
             )}
           >
             <Link href={link.href}>{link.label}</Link>
-            {path == link.href && (
+            {/* {path == link.href && (
               <motion.div
                 layoutId="active-link-id"
                 className="w-full h-1 bg-accent absolute bottom-[-3] rounded-full"
               ></motion.div>
-            )}
+            )} */}
           </li>
         ))}
       </ul>

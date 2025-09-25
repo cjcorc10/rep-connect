@@ -39,13 +39,13 @@ export default async function Page({ params }: RepPageProps) {
   return (
     <main className="relative">
       <header className="relative">
-        <div className="relative w-full aspect-[16/9] sm:h-56">
+        <div className="relative w-full aspect-[16/9] sm:h-56 md:h-74">
           <Image
-            src="/images/america.jpg"
+            src="/images/congress.jpg"
             alt="background image of legislative chamber with american flag"
             aria-hidden="true"
             fill
-            className="object-cover"
+            className="object-cover object-top"
             priority
             sizes="100vw"
           />
@@ -90,7 +90,7 @@ export default async function Page({ params }: RepPageProps) {
                         <AnchorAsButton
                           href={`https://twitter.com/${rep.twitter}`}
                         >
-                          Send mean tweet
+                          Send tweet
                         </AnchorAsButton>
                       </li>
                     )}
@@ -221,6 +221,45 @@ export default async function Page({ params }: RepPageProps) {
                   rel="noopener noreferrer"
                 >
                   Campaign finance overview (OpenSecrets)
+                </a>
+              </li>
+            )}
+            {rep.govtrack_id && (
+              <li>
+                <a
+                  href={`https://www.govtrack.us/congress/members/${rep.govtrack_id}`}
+                  className="text-blue-600 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Legislative profile (GovTrack)
+                </a>
+              </li>
+            )}
+            {rep.ballotpedia_id && (
+              <li>
+                <a
+                  href={`https://ballotpedia.org/${rep.ballotpedia_id}`}
+                  className="text-blue-600 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View committee assignments and more (Ballotpedia)
+                </a>
+              </li>
+            )}
+            {rep.wikipedia_id && (
+              <li>
+                <a
+                  href={`https://en.wikipedia.org/wiki/${rep.wikipedia_id.replace(
+                    ' ',
+                    '_'
+                  )}`}
+                  className="text-blue-600 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Wikipedia page
                 </a>
               </li>
             )}

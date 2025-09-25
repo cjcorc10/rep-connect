@@ -1,4 +1,4 @@
-import { use } from 'react';
+import { Suspense, use } from 'react';
 import RepCard from '@/app/reps/[zip]/repCard';
 import StreetForm from '@/app/components/streetForm';
 import { getHouseReps } from '@/app/lib/db';
@@ -26,25 +26,27 @@ export default function HouseContainer({
           >
             U.S. House of Representatives
           </h2>
-          <p className="text-sm text-amber-600 font-bold">
+          <p className="text-md text-gray-600 font-bold bg-gray-200 px-4 py-2 rounded-md">
             {repsByDistrict.length}{' '}
-            {repsByDistrict.length === 1 ? 'result' : 'results'}
+            {repsByDistrict.length === 1 ? 'rep' : 'reps'} found
           </p>
         </div>
-        <p className="mt-1 text-sm text-gray-600">
-          Showing representatives for your location in {state}.
+        <p className="mt-1 text-md text-gray-600">
+          House member representing{' '}
+          {multipleDistricts
+            ? `districts ${districts.join(', ')} in ${state}`
+            : `district ${districts[0]} in ${state}`}
         </p>
       </header>
 
       {multipleDistricts && (
-        <div className="mb-24 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center ">
+        <div className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center ">
           <p className="text-sm sm:text-base font-medium text-amber-900">
             We couldn’t determine a single district from your ZIP. Add
-            your street to narrow it down:
+            a street name to narrow it down or select from one of the
+            options below.{' '}
           </p>
-          <div className="max-w-xl">
-            <StreetForm />
-          </div>
+          <StreetForm />
         </div>
       )}
 
@@ -53,7 +55,7 @@ export default function HouseContainer({
           grid gap-4 sm:gap-6
           grid-cols-1
           sm:grid-cols-2
-          lg:grid-cols-3
+          lg:grid-cols-2
         "
       >
         {repsByDistrict.map((rep) => (

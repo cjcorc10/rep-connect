@@ -2,8 +2,7 @@
 import Image from 'next/image';
 import { Rep } from '../../lib/definitions';
 import clsx from 'clsx';
-import ContactTag from '../../components/contactTag';
-import { Phone } from 'lucide-react';
+import { Phone, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type RepCardProp = {
@@ -16,55 +15,53 @@ export default function RepCard({ rep }: RepCardProp) {
   return (
     <div
       onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
-      className="rounded-lg flex flex-col h-[325px] shadow-lg basis-[300px] max-w-[500px] bg-white hover:scale-105 transition active:scale-[1.02]"
+      className="mb-4 rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white hover:scale-105 transition active:scale-[1.02] border border-gray-200"
     >
-      <div className="flex justify-center items-center min-w-[180px] overflow-hidden rounded-t-lg">
+      <div className="flex justify-center p-8 items-center w-[140px] relative">
         <Image
-          src="/images/joshua-hoehne-X4YSBIsSl9s-unsplash.jpg"
-          className="w-full h-[120px] object-fill relative blur rounded-lg"
-          width={180}
-          height={250}
-          alt="american flag background"
-        />
-        <Image
-          className="w-[145px] h-[145px] border-3 border-blue-500 shadow-md rounded-full object-cover absolute object-top"
+          className="w-[100px] h-[100px] shadow-md rounded-full absolute object-cover object-top"
           src={rep.image_url || ''}
-          width={145}
-          height={145}
+          width={100}
+          height={100}
           alt={rep.full_name}
         />
+        <p
+          className={clsx(
+            'font-bold text-white shadow-md text-xl relative top-[40px] left-[35px] rounded-full w-6 h-6 text-center flex items-center justify-center',
+            {
+              'bg-blue-500': rep.party === 'Democrat',
+              'bg-red-500': rep.party === 'Republican',
+              'bg-green-500': rep.party === 'Independent',
+              'bg-gray-500': !rep.party,
+            }
+          )}
+        >
+          {rep.party === 'Democrat'
+            ? 'D'
+            : rep.party === 'Republican'
+            ? 'R'
+            : rep.party === 'Independent'
+            ? 'I'
+            : ''}
+        </p>
       </div>
-      <div className="flex flex-col flex-1 py-6 px-8 justify-between">
-        <div className=" flex flex-col">
-          <h3 className="text-2xl font-bold flex items-center justify-center text-blue-500">
+      <div className="flex flex-col flex-1 py-6 pr-6 justify-between">
+        <div className=" flex flex-col gap-1">
+          <h3 className="text-2xl font-bold flex items-center text-blue-500">
             {rep.full_name}
-            <span
-              className={clsx('ml-2 text-sm font-bold', {
-                'text-blue-500': rep.party === 'Democratic',
-                'text-red-500': rep.party === 'Republican',
-                'text-green-500': rep.party === 'Independent',
-                'text-gray-500': !rep.party,
-              })}
-            >
-              {'(' + rep.party[0] + ' - ' + rep.state + ')'}
-            </span>
           </h3>
-          {rep.district && <p>District: {rep.district}</p>}
-          <p>Address: {rep.address}</p>
-          <ContactTag url={rep.contact_form || rep.url} />
-        </div>
-        <div className="flex gap-x-4 justify-center mt-4">
+          <p className="flex flex-row gap-2 text-gray-700 ">
+            <MapPin color="black" size={20} /> {rep.address}
+          </p>
           <a
             href={`tel:${rep.phone}`}
-            className="text-xl font-bold  bg-blue-500 flex-1 rounded-md text-center py-2 text-white p-4 shadow-md hover:bg-blue-700 md:hidden"
+            className="text-blue-600 flex flex-row gap-2"
           >
-            <Phone className="inline mr-2 text-white" />
-            Call
-          </a>
-          <p className="text-2xl hidden md:block font-bold text-blue-500 bg-gray-100 rounded-md px-4 py-2 shadow-md">
+            <Phone size={20} />
             {rep.phone}
-          </p>
+          </a>
         </div>
+        <div></div>
       </div>
     </div>
   );

@@ -17,7 +17,6 @@ export default function SenateContainer({
       aria-labelledby="senate-heading"
       className="mt-6 sm:mt-8"
     >
-      {/* Heading */}
       <header className="mb-4 sm:mb-6">
         <h2
           id="senate-heading"
@@ -25,18 +24,16 @@ export default function SenateContainer({
         >
           U.S. Senate
         </h2>
-        <p className="mt-1 text-sm text-gray-600">
-          Showing senators for {state}
+        <p className="mt-1 text-md text-gray-600">
+          Senators representing the state of {state}
         </p>
       </header>
 
-      {/* Cards grid */}
       <div
         className="
           grid gap-4 sm:gap-6
           grid-cols-1
           sm:grid-cols-2
-          max-w-5xl mx-auto
         "
       >
         {senators.map((senator) => (
@@ -44,7 +41,6 @@ export default function SenateContainer({
         ))}
       </div>
 
-      {/* Empty state */}
       {senators.length === 0 && (
         <div className="mt-6 rounded-lg border border-gray-200 p-6 text-center text-gray-600">
           No senators found for this state.
