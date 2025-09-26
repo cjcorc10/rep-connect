@@ -1,9 +1,6 @@
-import { Suspense } from 'react';
-import { getCoordinates, getDistricts } from '@/app/lib/util';
-import HouseContainer from './houseContainer';
-import SenateContainer from './senateContainer';
 import Address from '@/app/components/address';
-import Loading from './loading';
+import RepFetchWrapper from '@/app/components/repFetchWrapper';
+import { Suspense } from 'react';
 
 type PageProps = {
   params: { zip: string };
@@ -18,17 +15,13 @@ export default async function Page({
   const { street } = await searchParams;
   const address = street ? `${street}, ${zip}` : zip;
 
-  const { northeast, southwest } = await getCoordinates(address);
-  const { state, districts } = await getDistricts({
-    northeast,
-    southwest,
-  });
-
   return (
     <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <section className="max-w-6xl mx-auto">
         <header className="text-center mb-6 sm:mb-8">
-          <Address address={address} />
+          <Suspense fallback={<div>loading address..</div>}>
+            <Address address={address} />
+          </Suspense>
           <h2 className="text-2xl font-bold mt-4">
             Your Representatives
           </h2>
@@ -37,11 +30,8 @@ export default async function Page({
             voice matters in our democracy.
           </p>
         </header>
-        <Suspense fallback={<Loading />}>
-          <SenateContainer state={state} />
-        </Suspense>
-        <Suspense fallback={<Loading />}>
-          <HouseContainer districts={districts} state={state} />
+        <Suspense fallback={<div>Loading representatives...</div>}>
+          <RepFetchWrapper address={address} />
         </Suspense>
       </section>
     </main>
