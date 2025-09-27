@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { Rep } from '../../lib/definitions';
+import { Rep } from '../lib/definitions';
 import clsx from 'clsx';
 import { Phone, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';

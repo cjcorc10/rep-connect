@@ -1,5 +1,5 @@
 import { use } from 'react';
-import RepCard from '@/app/reps/[zip]/repCard';
+import RepCard from '@/app/components/repCard';
 import { getSenators } from '@/app/lib/db';
 import type { Rep } from '@/app/lib/definitions';
 

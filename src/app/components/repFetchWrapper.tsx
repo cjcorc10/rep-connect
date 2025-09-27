@@ -1,6 +1,6 @@
 import { getCoordinates, getDistricts } from '../lib/util';
-import SenateContainer from '../reps/[zip]/senateContainer';
-import HouseContainer from '../reps/[zip]/houseContainer';
+import SenateContainer from './senateContainer';
+import HouseContainer from './houseContainer';
 type WrapperProps = {
   address: string;
 };
@@ -11,7 +11,7 @@ const sleep = (ms: number) =>
 export default async function RepFetchWrapper({
   address,
 }: WrapperProps) {
-  await sleep(2000);
+  //   await sleep(10000);
   const { northeast, southwest } = await getCoordinates(address);
   const { state, districts } = await getDistricts({
     northeast,
