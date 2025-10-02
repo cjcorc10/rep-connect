@@ -15,10 +15,12 @@ export default function RepCard({ rep }: RepCardProp) {
 
   return (
     <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
-      className="mb-4 rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white hover:scale-105 transition active:scale-[1.02] border border-gray-200"
+      className="mb-4 rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200"
     >
       <div className="flex justify-center p-8 items-center w-[140px] relative">
         <Image

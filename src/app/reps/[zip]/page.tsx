@@ -20,7 +20,9 @@ export default async function Page({
     <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <section className="max-w-6xl mx-auto">
         <header className="text-center mb-6 sm:mb-8">
-          <Address address={address} />
+          <Suspense fallback={<p>Loading...</p>}>
+            <Address address={address} />
+          </Suspense>
           <h2 className="text-2xl font-bold mt-4">
             Your Representatives
           </h2>
