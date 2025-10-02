@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation';
 import { fetchRep } from '@/app/lib/db';
 import AnchorAsButton from '@/app/components/anchorAsButton';
 
-type RepPageProps = { params: { id: string } };
+type RepPageProp = { params: Promise<{ id: string }> };
 
-export default async function Page({ params }: RepPageProps) {
+export default async function Page({ params }: RepPageProp) {
   const { id } = await params;
   const rep = await fetchRep(id);
   if (!rep) return notFound();

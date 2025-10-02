@@ -50,13 +50,6 @@ export type Rep = {
   image_url: string;
 };
 
-// export type Legislator = {
-//   id: Record<string, string | string[]>;
-//   name: Record<string, string>;
-//   bio: Record<string, string>;
-//   terms: Array<Record<string, string>>;
-// };
-
 // two letter state codes for FIPS codes
 export const fipsToState: Record<string, string> = {
   '01': 'AL',

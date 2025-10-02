@@ -4,8 +4,8 @@ import { Suspense } from 'react';
 import Loading from './loading';
 
 type PageProps = {
-  params: { zip: string };
-  searchParams: { street?: string };
+  params: Promise<{ zip: string }>;
+  searchParams: Promise<{ street?: string }>;
 };
 
 export default async function Page({
