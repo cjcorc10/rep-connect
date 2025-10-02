@@ -1,19 +1,36 @@
 import { Coordinates, fipsToState } from './definitions';
 
+type GeocodeData = {
+  status: string;
+  results: Array<{
+    geometry: {
+      bounds: {
+        northeast: { lat: number; lng: number };
+        southwest: { lat: number; lng: number };
+      };
+    };
+  }>;
+};
+
 // function gets bounds of zipcode
 export const getCoordinates = async (
   zipcode: string
-): Promise<Coordinates> => {
-  const response = await fetch(
-    `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
-  );
-  if (!response.ok) {
-    throw new Error('Failed to fetch district data');
-  }
-  const data = await response.json();
-  const { northeast, southwest } = data.results[0].geometry.bounds;
+): Promise<GeocodeData | null> => {
+  try {
+    const response = await fetch(
+      `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
+    );
+    if (!response.ok) {
+      throw new Error('Failed to fetch district data');
+    }
 
-  return { northeast, southwest };
+    return await response.json();
+  } catch {
+    return null;
+  }
+
+  //   const { northeast, southwest } = data.results[0].geometry.bounds;
+  //   return { northeast, southwest };
 };
 
 type DistrictFeature = {

@@ -75,7 +75,7 @@ export default function Hero() {
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 sm:px-8">
         <header className="text-center">
           <h1
-            className="text-2xl sm:text-5xl font-bold leading-tight text-gray-50"
+            className="text-3xl sm:text-5xl font-bold leading-tight text-gray-50"
             ref={titleRef}
           >
             Make your voice heard,

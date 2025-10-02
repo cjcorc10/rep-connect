@@ -2,14 +2,12 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchRep } from '@/app/lib/db';
 import AnchorAsButton from '@/app/components/anchorAsButton';
-import { motion } from 'framer-motion';
 
 type RepPageProps = { params: { id: string } };
 
 export default async function Page({ params }: RepPageProps) {
   const { id } = await params;
   const rep = await fetchRep(id);
-  console.log('Fetched rep:', rep);
   if (!rep) return notFound();
 
   // Fetch Wikipedia summary (gracefully handle failures)

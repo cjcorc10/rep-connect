@@ -3,6 +3,7 @@ import React, { useActionState } from 'react';
 import Button from './button';
 import { Search } from 'lucide-react';
 import { ErrorState, validateAddress } from '../lib/actions';
+import { motion } from 'framer-motion';
 
 const initialState: ErrorState = {
   message: undefined,
@@ -51,6 +52,7 @@ export default function SearchForm() {
                 ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-600
               "
             />
+            <input type="hidden" id="street" name="street" value="" />
           </div>
 
           <Button>
@@ -61,12 +63,14 @@ export default function SearchForm() {
       </form>
 
       {hasError && (
-        <div
+        <motion.div
           role="alert"
-          className="mt-3 text-sm sm:text-base font-medium text-red-600"
+          className="mt-3 text-sm sm:text-base font-medium text-red-700  bg-red-100/90 rounded-lg p-1"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
         >
           {state.message}
-        </div>
+        </motion.div>
       )}
     </>
   );

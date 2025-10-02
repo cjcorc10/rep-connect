@@ -4,6 +4,7 @@ import { Rep } from '../lib/definitions';
 import clsx from 'clsx';
 import { Phone, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 type RepCardProp = {
   rep: Rep;
@@ -13,7 +14,9 @@ export default function RepCard({ rep }: RepCardProp) {
   const router = useRouter();
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
       className="mb-4 rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white hover:scale-105 transition active:scale-[1.02] border border-gray-200"
     >
@@ -63,6 +66,6 @@ export default function RepCard({ rep }: RepCardProp) {
         </div>
         <div></div>
       </div>
-    </div>
+    </motion.div>
   );
 }

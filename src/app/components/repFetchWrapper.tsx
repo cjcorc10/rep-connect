@@ -12,7 +12,9 @@ export default async function RepFetchWrapper({
   address,
 }: WrapperProps) {
   //   await sleep(10000);
-  const { northeast, southwest } = await getCoordinates(address);
+  const data = await getCoordinates(address);
+  const { northeast, southwest } = data!.results[0].geometry.bounds;
+
   const { state, districts } = await getDistricts({
     northeast,
     southwest,
