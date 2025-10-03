@@ -1,8 +1,8 @@
-import CardSkeleton from '@/app/components/cardSkeleton';
-import TitleSkeleton from '@/app/components/titleSkeleton';
+import CardSkeleton from '@/app/components/skeletons/cardSkeleton';
+import TitleSkeleton from '@/app/components/skeletons/titleSkeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function Loading() {
+export default function RepsSkeleton() {
   return (
     <div>
       <section className="mb-12">

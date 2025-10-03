@@ -1,7 +1,7 @@
 import Address from '@/app/components/address';
 import RepFetchWrapper from '@/app/components/repFetchWrapper';
 import { Suspense } from 'react';
-import Loading from './loading';
+import RepsSkeleton from '../../components/skeletons/repsSkeleton';
 
 type PageProps = {
   params: Promise<{ zip: string }>;
@@ -20,9 +20,7 @@ export default async function Page({
     <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <section className="max-w-6xl mx-auto">
         <header className="text-center mb-6 sm:mb-8">
-          <Suspense fallback={<p>Loading...</p>}>
-            <Address address={address} />
-          </Suspense>
+          <Address address={address} />
           <h2 className="text-2xl font-bold mt-4">
             Your Representatives
           </h2>
@@ -31,7 +29,7 @@ export default async function Page({
             voice matters in our democracy.
           </p>
         </header>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<RepsSkeleton />}>
           <RepFetchWrapper address={address} />
         </Suspense>
       </section>
