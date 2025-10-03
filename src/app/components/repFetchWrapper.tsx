@@ -8,7 +8,6 @@ type WrapperProps = {
 export default async function RepFetchWrapper({
   address,
 }: WrapperProps) {
-  // await sleep(10000);
   const data = await getCoordinates(address);
   const { northeast, southwest } = data!.results[0].geometry.bounds;
 

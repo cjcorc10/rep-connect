@@ -44,6 +44,5 @@ export const fetchRep = async (id: string) => {
   if (error) {
     throw new Error('Failed to retrieve representative');
   }
-  console.log('Fetched rep data:', data);
   return data;
 };

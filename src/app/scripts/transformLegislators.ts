@@ -24,7 +24,6 @@ function transform() {
     };
   });
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(transformed, null, 2));
-  console.log(`Transformed data written to ${OUTPUT_FILE}`);
 }
 
 transform();

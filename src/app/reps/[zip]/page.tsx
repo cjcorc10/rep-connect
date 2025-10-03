@@ -2,6 +2,7 @@ import Address from '@/app/components/address';
 import RepFetchWrapper from '@/app/components/repFetchWrapper';
 import { Suspense } from 'react';
 import RepsSkeleton from '../../components/skeletons/repsSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 
 type PageProps = {
   params: Promise<{ zip: string }>;
