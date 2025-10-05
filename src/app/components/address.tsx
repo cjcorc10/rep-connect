@@ -1,10 +1,14 @@
 'use client';
 import { motion } from 'framer-motion';
-type AddressProps = {
-  address: string;
-};
+import { use } from 'react';
 
-export default function Address({ address }: AddressProps) {
+export default function Address({
+  addressPromise,
+}: {
+  addressPromise: Promise<string>;
+}) {
+  const address = use(addressPromise);
+
   return (
     <div className="flex justify-center items-center">
       <motion.div

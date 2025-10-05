@@ -1,13 +1,13 @@
 import { getCoordinates, getDistricts } from '../lib/util';
 import SenateContainer from './senateContainer';
 import HouseContainer from './houseContainer';
-type WrapperProps = {
-  address: string;
-};
 
 export default async function RepFetchWrapper({
-  address,
-}: WrapperProps) {
+  addressPromise,
+}: {
+  addressPromise: Promise<string>;
+}) {
+  const address = await addressPromise;
   const data = await getCoordinates(address);
   const { northeast, southwest } = data!.results[0].geometry.bounds;
 

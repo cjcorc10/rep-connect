@@ -13,15 +13,21 @@ export default async function Page({
   params,
   searchParams,
 }: PageProps) {
-  const { zip } = await params;
-  const { street } = await searchParams;
-  const address = street ? `${street}, ${zip}` : zip;
+  const addressPromise = (async () => {
+    const { zip } = await params;
+    const { street } = await searchParams;
+    return street ? `${street}, ${zip}` : zip;
+  })();
 
   return (
     <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       <section className="max-w-6xl mx-auto">
         <header className="text-center mb-6 sm:mb-8">
-          <Address address={address} />
+          <Suspense
+            fallback={<Skeleton className="h-24 w-24 rounded-full" />}
+          >
+            <Address addressPromise={addressPromise} />
+          </Suspense>
           <h2 className="text-2xl font-bold mt-4">
             Your Representatives
           </h2>
@@ -31,7 +37,7 @@ export default async function Page({
           </p>
         </header>
         <Suspense fallback={<RepsSkeleton />}>
-          <RepFetchWrapper address={address} />
+          <RepFetchWrapper addressPromise={addressPromise} />
         </Suspense>
       </section>
     </main>

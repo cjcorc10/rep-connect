@@ -40,7 +40,7 @@ export default async function Page({ params }: RepPageProp) {
         <div className="relative w-full aspect-[16/9] sm:h-56 md:h-74">
           <Image
             src="/images/congress.jpg"
-            alt="background image of legislative chamber with american flag"
+            alt="US Capitol building"
             aria-hidden="true"
             fill
             className="object-cover object-top"
