@@ -3,8 +3,6 @@ type ContainerProps = {
 };
 export default function Container({ children }: ContainerProps) {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-      {children}
-    </div>
+    <div className="flex flex-col min-h-screen ">{children}</div>
   );
 }

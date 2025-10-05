@@ -51,19 +51,21 @@ export const validateAddress = async (
 
   const { zip } = parsedData.data;
 
-  const raw = await getCoordinates(zip);
-  const geoData = GeoSchema.safeParse(raw);
-  const good =
-    geoData.success &&
-    geoData.data.status === 'OK' &&
-    geoData.data.results.length > 0;
+  // removed validation for now becaue operation is too heavy
 
-  if (!good) {
-    return {
-      message:
-        'Unable to fetch location data. Please try a different zip code.',
-    };
-  }
+  // const raw = await getCoordinates(zip);
+  // const geoData = GeoSchema.safeParse(raw);
+  // const good =
+  //   geoData.success &&
+  //   geoData.data.status === 'OK' &&
+  //   geoData.data.results.length > 0;
+
+  // if (!good) {
+  //   return {
+  //     message:
+  //       'Unable to fetch location data. Please try a different zip code.',
+  //   };
+  // }
 
   redirect(`/reps/${zip}`);
 };
