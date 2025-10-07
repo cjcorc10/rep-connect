@@ -1,26 +1,41 @@
 'use client';
-import React, { useActionState } from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import z from 'zod';
 import Button from './button';
 import { Search } from 'lucide-react';
-import { ErrorState, validateAddress } from '../lib/actions';
 import { motion } from 'framer-motion';
 
-const initialState: ErrorState = {
-  message: undefined,
-  error: undefined,
-};
-
 export default function SearchForm() {
-  const [state, formAction] = useActionState(
-    validateAddress,
-    initialState
-  );
-  const hasError = Boolean(state.message);
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const FormSchema = z.object({
+    zip: z
+      .string()
+      .regex(/^\d{5}(-\d{4})?$/)
+      .min(5),
+  });
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const parsedData = FormSchema.safeParse({
+      zip: formData.get('zip'),
+    });
+
+    if (!parsedData.success) {
+      setError(parsedData.error.message);
+      return;
+    }
+
+    const { zip } = parsedData.data;
+    router.push(`/reps/${zip}`);
+  };
 
   return (
     <>
       <form
-        action={formAction}
+        onSubmit={onSubmit}
         className="
           w-full max-w-[720px] mx-auto
           bg-white/95 backdrop-blur
@@ -41,7 +56,7 @@ export default function SearchForm() {
               autoComplete="postal-code"
               placeholder="Enter your ZIP code"
               required
-              aria-invalid={hasError}
+              aria-invalid={error ? 'true' : 'false'}
               className="
                 block w-full
                 rounded-lg
@@ -62,14 +77,14 @@ export default function SearchForm() {
         </div>
       </form>
 
-      {hasError && (
+      {error && (
         <motion.div
           role="alert"
           className="mt-3 text-sm sm:text-base font-medium text-red-700  bg-red-100/90 rounded-lg p-1"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          {state.message}
+          {error}
         </motion.div>
       )}
     </>

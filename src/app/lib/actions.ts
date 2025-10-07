@@ -3,14 +3,6 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { getCoordinates } from './util';
 
-// schemea for validating zip code in form data
-const FormSchema = z.object({
-  zip: z
-    .string()
-    .regex(/^\d{5}(-\d{4})?$/)
-    .min(5),
-});
-
 const GeoSchema = z.object({
   status: z.string(),
   results: z
@@ -31,43 +23,6 @@ const GeoSchema = z.object({
 export type ErrorState = {
   error?: string;
   message?: string;
-};
-
-// server action to fetch representatives based on zipcode
-export const validateAddress = async (
-  previousState: ErrorState,
-  formData: FormData
-) => {
-  const parsedData = FormSchema.safeParse({
-    zip: formData.get('zip'),
-  });
-
-  if (!parsedData.success) {
-    return {
-      error: parsedData.error.message,
-      message: 'Please enter a valid zip code.',
-    };
-  }
-
-  const { zip } = parsedData.data;
-
-  // removed validation for now becaue operation is too heavy
-
-  // const raw = await getCoordinates(zip);
-  // const geoData = GeoSchema.safeParse(raw);
-  // const good =
-  //   geoData.success &&
-  //   geoData.data.status === 'OK' &&
-  //   geoData.data.results.length > 0;
-
-  // if (!good) {
-  //   return {
-  //     message:
-  //       'Unable to fetch location data. Please try a different zip code.',
-  //   };
-  // }
-
-  redirect(`/reps/${zip}`);
 };
 
 const StreetFormSchema = z.object({
