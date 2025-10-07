@@ -24,7 +24,7 @@ export default function SearchForm() {
     });
 
     if (!parsedData.success) {
-      setError(parsedData.error.message);
+      setError('Please enter a valid ZIP code.');
       return;
     }
 

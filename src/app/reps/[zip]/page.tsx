@@ -9,10 +9,7 @@ type PageProps = {
   searchParams: Promise<{ street?: string }>;
 };
 
-export default async function Page({
-  params,
-  searchParams,
-}: PageProps) {
+export default function Page({ params, searchParams }: PageProps) {
   const addressPromise = (async () => {
     const { zip } = await params;
     const { street } = await searchParams;
