@@ -20,8 +20,13 @@ export default function RepCard({ rep }: RepCardProp) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
-      className="mb-4 rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200"
+      className="mb-4 relative rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200"
     >
+      {rep.district && (
+        <h3 className="absolute right-[25%] top-[50%] text-7xl font-bold text-blue-200">
+          {rep.district}
+        </h3>
+      )}
       <div className="flex justify-center p-8 items-center w-[140px] relative">
         <Image
           className="w-[100px] h-[100px] shadow-md rounded-full absolute object-cover object-top"

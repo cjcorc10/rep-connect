@@ -49,6 +49,7 @@ export default function StreetForm() {
       <Button>
         <Search />
       </Button>
+      <p className="text-red-500">{error}</p>
     </form>
   );
 }
