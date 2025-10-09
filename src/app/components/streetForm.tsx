@@ -4,17 +4,19 @@ import Button from './button';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import z from 'zod';
-import { useRouter } from 'next/navigation';
 
-export default function StreetForm() {
+const StreetSchema = z.object({
+  street: z.string().min(1),
+  zip: z.string().min(5),
+});
+
+export default function StreetForm({
+  refine,
+}: {
+  refine: (street: string, zip: string) => void;
+}) {
   const { zip } = useParams();
-  const router = useRouter();
-
   const [error, setError] = useState<string | null>(null);
-  const StreetSchema = z.object({
-    street: z.string().min(1),
-    zip: z.string().min(5),
-  });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ export default function StreetForm() {
     }
     const { street, zip } = parsedData.data;
 
-    router.push(`/reps/${zip}?street=${encodeURIComponent(street)}`);
+    refine(street, zip);
   };
 
   return (

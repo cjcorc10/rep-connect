@@ -2,6 +2,9 @@ import { getCoordinates, getDistricts } from '../lib/util';
 import SenateContainer from './senateContainer';
 import HouseContainer from './houseContainer';
 import { notFound } from 'next/navigation';
+import { getHouseReps, getSenators } from '../lib/db';
+import RepCard from './repCard';
+import { Rep } from '../lib/definitions';
 
 export default async function RepFetchWrapper({
   addressPromise,
@@ -27,10 +30,22 @@ export default async function RepFetchWrapper({
     northeast,
     southwest,
   });
+
+  const houseRepsInitial = (await getHouseReps(
+    districts,
+    state
+  )) as Rep[];
+  const senateReps = await getSenators(state);
+
   return (
     <div>
-      <SenateContainer state={state} />
-      <HouseContainer districts={districts} state={state} />
+      <SenateContainer state={state}>
+        {senateReps.map((senator) => (
+          <RepCard key={senator.bioguide_id} rep={senator} />
+        ))}
+      </SenateContainer>
+      {/* <HouseClientWrapper initialReps={houseRepsInitial} /> */}
+      <HouseContainer initialReps={houseRepsInitial} />
     </div>
   );
 }

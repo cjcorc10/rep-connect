@@ -1,17 +1,10 @@
-import { use } from 'react';
-import RepCard from '@/app/components/repCard';
-import { getSenators } from '@/app/lib/db';
-import type { Rep } from '@/app/lib/definitions';
-
-type SenateContainerProps = {
-  state: string;
-};
-
 export default function SenateContainer({
+  children,
   state,
-}: SenateContainerProps) {
-  const senators = use(getSenators(state)) as Rep[];
-
+}: {
+  children: React.ReactNode;
+  state: string;
+}) {
   return (
     <section
       aria-labelledby="senate-heading"
@@ -36,16 +29,8 @@ export default function SenateContainer({
           sm:grid-cols-2
         "
       >
-        {senators.map((senator) => (
-          <RepCard key={senator.bioguide_id} rep={senator} />
-        ))}
+        {children}
       </div>
-
-      {senators.length === 0 && (
-        <div className="mt-6 rounded-lg border border-gray-200 p-6 text-center text-gray-600">
-          No senators found for this state.
-        </div>
-      )}
     </section>
   );
 }
