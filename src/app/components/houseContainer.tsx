@@ -3,6 +3,7 @@ import RepCard from '@/app/components/repCard';
 import StreetForm from '@/app/components/streetForm';
 import type { Rep } from '@/app/lib/definitions';
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function HouseContainer({
   initialReps,
@@ -20,9 +21,7 @@ export default function HouseContainer({
       body: JSON.stringify({ street, zip }),
     });
     const data = await res.json();
-    if (data.reps) {
-      setReps(data.reps);
-    }
+    if (data.reps) setReps(data.reps);
   };
 
   const districts = Array.from(
@@ -51,30 +50,70 @@ export default function HouseContainer({
             : `district ${districts[0]} in ${reps[0].state}`}
         </p>
       </header>
+      <motion.div layout>
+        <AnimatePresence mode="wait">
+          {multipleDistricts && (
+            <motion.div
+              className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center"
+              animate={{
+                opacity: 1,
+                rotate: [0, 1, -1, 0],
+                scale: [1, 1.02, 1.02, 1],
+              }}
+              transition={{
+                duration: 0.5,
+              }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                padding: 0,
+                marginBottom: 0,
+                overflow: 'hidden',
+              }}
+            >
+              <p className="text-sm sm:text-base font-medium text-amber-900">
+                We couldn’t determine a single district from your ZIP.
+                Add a street name to narrow it down or select from one
+                of the options below.{' '}
+              </p>
+              <StreetForm refine={refine} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      {multipleDistricts && (
-        <div className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center ">
-          <p className="text-sm sm:text-base font-medium text-amber-900">
-            We couldn’t determine a single district from your ZIP. Add
-            a street name to narrow it down or select from one of the
-            options below.{' '}
-          </p>
-          <StreetForm refine={refine} />
-        </div>
-      )}
-
-      <div
-        className="
+        <motion.div
+          layout
+          transition={{
+            type: 'spring',
+            stiffness: 500,
+            damping: 40,
+          }}
+          className="
           grid gap-4 sm:gap-6
           grid-cols-1
           sm:grid-cols-2
           lg:grid-cols-2
         "
-      >
-        {reps.map((rep) => (
-          <RepCard key={rep.bioguide_id} rep={rep} />
-        ))}
-      </div>
+        >
+          <AnimatePresence initial={false}>
+            {reps.map((rep, i) => (
+              <motion.div
+                key={rep.bioguide_id}
+                layout
+                exit={{
+                  x: '-25%',
+                  opacity: 0,
+                  y: '-25%',
+                  rotate: -45,
+                }}
+                transition={{ duration: 0.5, delay: 0.33 * ++i }}
+              >
+                <RepCard rep={rep} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
 
       {reps.length === 0 && !multipleDistricts && (
         <div className="mt-6 rounded-lg border border-gray-200 p-6 text-center text-gray-600">
