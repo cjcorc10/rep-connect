@@ -1,3 +1,5 @@
+import ContainerHeading from './containerHeading';
+
 export default function SenateContainer({
   children,
   state,
@@ -10,18 +12,11 @@ export default function SenateContainer({
       aria-labelledby="senate-heading"
       className="mt-6 sm:mt-8"
     >
-      <header className="mb-4 sm:mb-6">
-        <h2
-          id="senate-heading"
-          className="text-2xl sm:text-3xl font-bold text-gray-800"
-        >
-          U.S. Senate
-        </h2>
+      <ContainerHeading isSenate={true}>
         <p className="mt-1 text-md text-gray-600">
           Senators representing the state of {state}
         </p>
-      </header>
-
+      </ContainerHeading>
       <div
         className="
           grid gap-4 sm:gap-6

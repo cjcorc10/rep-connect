@@ -44,7 +44,6 @@ export default async function RepFetchWrapper({
           <RepCard key={senator.bioguide_id} rep={senator} />
         ))}
       </SenateContainer>
-      {/* <HouseClientWrapper initialReps={houseRepsInitial} /> */}
       <HouseContainer initialReps={houseRepsInitial} />
     </div>
   );

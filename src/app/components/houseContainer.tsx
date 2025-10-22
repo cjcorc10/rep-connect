@@ -4,6 +4,8 @@ import StreetForm from '@/app/components/streetForm';
 import type { Rep } from '@/app/lib/definitions';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Container from './container';
+import ContainerHeading from './containerHeading';
 
 export default function HouseContainer({
   initialReps,
@@ -12,16 +14,25 @@ export default function HouseContainer({
 }) {
   const [reps, setReps] = useState<Rep[]>(initialReps);
 
-  const refine = async (street: string, zip: string) => {
+  // fetch house reps based on street and zip entered
+  const fetchReps = async (street: string, zip: string) => {
     const res = await fetch('/api/house', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({ street, zip }),
     });
     const data = await res.json();
-    if (data.reps) setReps(data.reps);
+    return data.reps;
+  };
+
+  // decide to change state based on if refine was successful
+  const refine = async (street: string, zip: string) => {
+    const newReps = await fetchReps(street, zip);
+    if (newReps.length !== reps.length) {
+      setReps(newReps);
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const districts = Array.from(
@@ -31,25 +42,22 @@ export default function HouseContainer({
 
   return (
     <section aria-labelledby="house-heading" className="mt-6 sm:mt-8">
-      <header className="mb-4 sm:mb-6">
+      <ContainerHeading isSenate={false}>
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <h2
-            id="house-heading"
-            className="text-2xl sm:text-3xl font-bold text-gray-800"
-          >
-            U.S. House of Representatives
-          </h2>
-          <p className="text-md text-gray-600 font-bold bg-gray-200 px-4 py-2 rounded-md">
+          <p className="mt-1 text-md text-gray-600">
+            House member representing{' '}
+            {multipleDistricts
+              ? `districts ${districts.join(', ')} in ${
+                  reps[0].state
+                }`
+              : `district ${districts[0]} in ${reps[0].state}`}
+          </p>
+          <p className="text-md text-gray-600 font-bold bg-gray-200 px-4 py-2 rounded-md ">
             {reps.length} {reps.length === 1 ? 'rep' : 'reps'} found
           </p>
         </div>
-        <p className="mt-1 text-md text-gray-600">
-          House member representing{' '}
-          {multipleDistricts
-            ? `districts ${districts.join(', ')} in ${reps[0].state}`
-            : `district ${districts[0]} in ${reps[0].state}`}
-        </p>
-      </header>
+      </ContainerHeading>
+
       <motion.div layout>
         <AnimatePresence mode="wait">
           {multipleDistricts && (
@@ -62,6 +70,7 @@ export default function HouseContainer({
               }}
               transition={{
                 duration: 0.5,
+                ease: 'easeOut',
               }}
               exit={{
                 opacity: 0,
@@ -87,6 +96,7 @@ export default function HouseContainer({
             type: 'spring',
             stiffness: 500,
             damping: 40,
+            ease: 'easeOut',
           }}
           className="
           grid gap-4 sm:gap-6
@@ -96,17 +106,19 @@ export default function HouseContainer({
         "
         >
           <AnimatePresence initial={false}>
-            {reps.map((rep, i) => (
+            {reps.map((rep) => (
               <motion.div
                 key={rep.bioguide_id}
                 layout
                 exit={{
-                  x: '-25%',
                   opacity: 0,
-                  y: '-25%',
-                  rotate: -45,
+                  scale: 0,
                 }}
-                transition={{ duration: 0.5, delay: 0.33 * ++i }}
+                transition={{
+                  duration: 0.75,
+                  delay: 0.33,
+                  ease: 'easeOut',
+                }}
               >
                 <RepCard rep={rep} />
               </motion.div>

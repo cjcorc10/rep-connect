@@ -80,7 +80,7 @@ export default function SearchForm() {
       {error && (
         <motion.div
           role="alert"
-          className="mt-3 text-sm sm:text-base font-medium text-red-700  bg-red-100/90 rounded-lg p-1"
+          className="mt-3 text-sm sm:text-base font-medium text-red-700  bg-red-100/90 rounded-lg p-1 w-fit"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
         >

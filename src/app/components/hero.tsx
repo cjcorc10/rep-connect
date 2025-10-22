@@ -10,10 +10,12 @@ import SearchForm from './searchForm';
 gsap.registerPlugin(SplitText, useGSAP);
 
 export default function Hero() {
+  // Refs for GSAP animations
   const titleRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const spanRef = useRef<HTMLSpanElement>(null);
+  //
   useGSAP(() => {
     const split = new SplitText(spanRef.current, { type: 'chars' });
 
