@@ -63,8 +63,17 @@ export default function HouseContainer({
           {multipleDistricts && (
             <motion.div
               className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center"
+              initial={{
+                opacity: 0,
+                scale: 0.95,
+                y: 10,
+                filter: 'blur(4px)',
+              }}
               animate={{
                 opacity: 1,
+                scale: 1,
+                filter: 'blur(0)',
+                y: 0,
               }}
               transition={{
                 duration: 0.5,
