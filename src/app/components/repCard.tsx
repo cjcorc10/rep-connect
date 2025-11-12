@@ -17,6 +17,7 @@ export default function RepCard({ rep }: RepCardProp) {
       onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
       className="mb-4 relative rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.95]
       transition-transform duration-200 ease-out cursor-pointer"
+      style={{ animation: 'fade-in-up 0.3s ease-out forwards' }}
     >
       {rep.district && (
         <h3 className="absolute right-[25%] top-[50%] text-7xl font-bold text-blue-200">

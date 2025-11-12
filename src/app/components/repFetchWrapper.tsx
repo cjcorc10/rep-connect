@@ -13,6 +13,7 @@ export default async function RepFetchWrapper({
 }) {
   const address = await addressPromise;
   const geo = await getCoordinates(address);
+  console.log('Geocoding result:', geo);
 
   const ok =
     geo &&

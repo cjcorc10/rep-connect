@@ -65,8 +65,6 @@ export default function HouseContainer({
               className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center"
               animate={{
                 opacity: 1,
-                rotate: [0, 1, -1, 0],
-                scale: [1, 1.02, 1.02, 1],
               }}
               transition={{
                 duration: 0.5,
@@ -112,10 +110,10 @@ export default function HouseContainer({
                 layout
                 exit={{
                   opacity: 0,
-                  scale: 0,
+                  scale: 0.8,
                 }}
                 transition={{
-                  duration: 0.75,
+                  duration: 0.5,
                   delay: 0.33,
                   ease: 'easeOut',
                 }}

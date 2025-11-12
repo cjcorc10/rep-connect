@@ -10,6 +10,9 @@ type PageProps = {
 };
 
 export default function Page({ params, searchParams }: PageProps) {
+  // const [activeRep, setActiveRep] = useState<string | null>(null);
+  // const ref = useRef<HTMLDivElement>(null);
+
   const addressPromise = (async () => {
     const { zip } = await params;
     const { street } = await searchParams;
