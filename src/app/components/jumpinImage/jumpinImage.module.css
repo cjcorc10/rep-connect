@@ -1,0 +1,15 @@
+.image {
+  --ease-spring: cubic-bezier(0.68, -0.15, 0.265, 1.2);
+  animation: jump 1s var(--ease-spring) forwards;
+  animation-delay: 1.5s;
+  transform: translateX(100%) translateY(100%);
+}
+
+@keyframes jump {
+  from {
+    transform: translateX(100%) translateY(100%);
+  }
+  to {
+    transform: translateX(0) translateY(0);
+  }
+}

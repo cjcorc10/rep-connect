@@ -1,10 +1,10 @@
-'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import z from 'zod';
-import Button from './button';
-import { Search } from 'lucide-react';
-import { motion } from 'framer-motion';
+"use client";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import z from "zod";
+import Button from "./button";
+import { Search } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function SearchForm() {
   const router = useRouter();
@@ -20,11 +20,11 @@ export default function SearchForm() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const parsedData = FormSchema.safeParse({
-      zip: formData.get('zip'),
+      zip: formData.get("zip"),
     });
 
     if (!parsedData.success) {
-      setError('Please enter a valid ZIP code.');
+      setError("Please enter a valid ZIP code.");
       return;
     }
 
@@ -56,7 +56,7 @@ export default function SearchForm() {
               autoComplete="postal-code"
               placeholder="Enter your ZIP code"
               required
-              aria-invalid={error ? 'true' : 'false'}
+              aria-invalid={error ? "true" : "false"}
               className="
                 block w-full
                 rounded-lg

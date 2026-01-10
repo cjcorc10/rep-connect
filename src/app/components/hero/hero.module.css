@@ -1,0 +1,45 @@
+.container {
+  opacity: 0;
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: inline-block;
+  color: rgb(255, 255, 255);
+  opacity: 0;
+  animation: fade-in-up 0.5s ease-out forwards;
+  animation-delay: 0.5s;
+}
+@keyframes fade-in-up {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.last {
+  display: inline-block;
+  color: #ffb6c1;
+  transform-style: preserve-3d;
+}
+
+.char {
+  --delay: 1s;
+  display: inline-block;
+  transform: rotateX(180deg) translateZ(20px) rotateZ(-45deg);
+  opacity: 0;
+  animation: fade-in-around 0.5s ease-out forwards;
+  animation-delay: calc(var(--index) * 0.1s + var(--delay));
+}
+
+@keyframes fade-in-around {
+  to {
+    opacity: 1;
+    transform: rotateX(0deg) translateZ(20px);
+  }
+}

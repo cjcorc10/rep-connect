@@ -76,11 +76,12 @@ export default function HouseContainer({
                 y: 0,
               }}
               transition={{
-                duration: 0.5,
+                duration: 0.4,
                 ease: 'easeOut',
               }}
               exit={{
                 opacity: 0,
+                filter: 'blur(4px)',
                 height: 0,
                 padding: 0,
                 marginBottom: 0,
@@ -119,11 +120,11 @@ export default function HouseContainer({
                 layout
                 exit={{
                   opacity: 0,
-                  scale: 0.8,
+                  filter: 'blur(4px)',
                 }}
                 transition={{
                   duration: 0.5,
-                  delay: 0.33,
+                  // delay: 0.33,
                   ease: 'easeOut',
                 }}
               >

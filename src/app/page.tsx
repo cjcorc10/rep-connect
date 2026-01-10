@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import JumpingImage from './components/jumpinImage';
-import Hero from './components/hero';
+import Image from "next/image";
+import JumpingImage from "./components/jumpinImage/jumpinImage";
+import Hero from "./components/hero/hero";
 
 export default function Home() {
   return (
