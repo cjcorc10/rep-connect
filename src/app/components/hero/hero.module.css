@@ -7,7 +7,8 @@
   font-size: 2.5rem;
   font-weight: 700;
   display: inline-block;
-  color: rgb(255, 255, 255);
+  color: white;
+  mix-blend-mode: difference;
   opacity: 0;
   animation: fade-in-up 0.5s ease-out forwards;
   animation-delay: 0.5s;
