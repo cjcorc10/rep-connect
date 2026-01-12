@@ -1,11 +1,10 @@
-'use client';
-import RepCard from '@/app/components/repCard';
-import StreetForm from '@/app/components/streetForm';
-import type { Rep } from '@/app/lib/definitions';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Container from './container';
-import ContainerHeading from './containerHeading';
+"use client";
+import RepCard from "@/app/components/repCard";
+import StreetForm from "@/app/components/streetForm";
+import type { Rep } from "@/app/lib/definitions";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import ContainerHeading from "./containerHeading";
 
 export default function HouseContainer({
   initialReps,
@@ -16,8 +15,8 @@ export default function HouseContainer({
 
   // fetch house reps based on street and zip entered
   const fetchReps = async (street: string, zip: string) => {
-    const res = await fetch('/api/house', {
-      method: 'POST',
+    const res = await fetch("/api/house", {
+      method: "POST",
       body: JSON.stringify({ street, zip }),
     });
     const data = await res.json();
@@ -45,15 +44,15 @@ export default function HouseContainer({
       <ContainerHeading isSenate={false}>
         <div className="flex flex-wrap items-end justify-between gap-2">
           <p className="mt-1 text-md text-gray-600">
-            House member representing{' '}
+            House member representing{" "}
             {multipleDistricts
-              ? `districts ${districts.join(', ')} in ${
+              ? `districts ${districts.join(", ")} in ${
                   reps[0].state
                 }`
               : `district ${districts[0]} in ${reps[0].state}`}
           </p>
           <p className="text-md text-gray-600 font-bold bg-gray-200 px-4 py-2 rounded-md ">
-            {reps.length} {reps.length === 1 ? 'rep' : 'reps'} found
+            {reps.length} {reps.length === 1 ? "rep" : "reps"} found
           </p>
         </div>
       </ContainerHeading>
@@ -67,31 +66,31 @@ export default function HouseContainer({
                 opacity: 0,
                 scale: 0.95,
                 y: 10,
-                filter: 'blur(4px)',
+                filter: "blur(4px)",
               }}
               animate={{
                 opacity: 1,
                 scale: 1,
-                filter: 'blur(0)',
+                filter: "blur(0)",
                 y: 0,
               }}
               transition={{
                 duration: 0.4,
-                ease: 'easeOut',
+                ease: "easeOut",
               }}
               exit={{
                 opacity: 0,
-                filter: 'blur(4px)',
+                filter: "blur(4px)",
                 height: 0,
                 padding: 0,
                 marginBottom: 0,
-                overflow: 'hidden',
+                overflow: "hidden",
               }}
             >
               <p className="text-sm sm:text-base font-medium text-amber-900">
                 We couldn’t determine a single district from your ZIP.
                 Add a street name to narrow it down or select from one
-                of the options below.{' '}
+                of the options below.{" "}
               </p>
               <StreetForm refine={refine} />
             </motion.div>
@@ -101,10 +100,10 @@ export default function HouseContainer({
         <motion.div
           layout
           transition={{
-            type: 'spring',
+            type: "spring",
             stiffness: 500,
             damping: 40,
-            ease: 'easeOut',
+            ease: "easeOut",
           }}
           className="
           grid gap-4 sm:gap-6
@@ -113,25 +112,11 @@ export default function HouseContainer({
           lg:grid-cols-2
         "
         >
-          <AnimatePresence initial={false}>
-            {reps.map((rep) => (
-              <motion.div
-                key={rep.bioguide_id}
-                layout
-                exit={{
-                  opacity: 0,
-                  filter: 'blur(4px)',
-                }}
-                transition={{
-                  duration: 0.5,
-                  // delay: 0.33,
-                  ease: 'easeOut',
-                }}
-              >
-                <RepCard rep={rep} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
+          {reps.map((rep) => (
+            <div key={rep.bioguide_id}>
+              <RepCard rep={rep} />
+            </div>
+          ))}
         </motion.div>
       </motion.div>
 
