@@ -95,85 +95,80 @@ export default function SelectedRepModal() {
           <X size={24} className="text-gray-600" />
         </button>
 
-        <header className="relative">
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 relative md:flex">
-            <motion.div
-              layoutId={`rep-image-${selectedRep.bioguide_id}`}
-              className="w-28 h-28 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-lg bg-white "
-            >
-              <Image
-                src={portraitSrc}
-                alt={selectedRep.full_name}
-                width={224}
-                height={224}
-                className="w-full h-full object-cover object-top"
-              />
-            </motion.div>
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
-              <div className="text-center sm:text-left">
-                <motion.h1
-                  layoutId={`${selectedRep.bioguide_id}-name`}
-                  className="font-bold text-2xl sm:text-3xl"
-                >
-                  <motion.div
-                    layoutId={`${selectedRep.bioguide_id}-party-badge`}
-                    className="inline-block w-12 h-12 mr-4"
-                  >
-                    <PartyBadge party={selectedRep.party} />
-                  </motion.div>
-                  {selectedRep.full_name}{" "}
-                </motion.h1>
-                <p className="text-base sm:text-lg mt-0.5">{role}</p>
-
-                <nav
-                  aria-label="Representative links"
-                  className="mt-2"
-                >
-                  <ul className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-sm sm:text-base">
-                    {selectedRep.phone && (
-                      <li>
-                        <AnchorAsButton
-                          href={`tel:${selectedRep.phone}`}
-                        >
-                          Call
-                        </AnchorAsButton>
-                      </li>
-                    )}
-                    {selectedRep.twitter && (
-                      <li>
-                        <AnchorAsButton
-                          href={`https://twitter.com/${selectedRep.twitter}`}
-                        >
-                          Send tweet
-                        </AnchorAsButton>
-                      </li>
-                    )}
-                    {selectedRep.opensecrets_id && (
-                      <li>
-                        <AnchorAsButton
-                          href={`https://www.opensecrets.org/members-of-congress/summary?cid=${selectedRep.opensecrets_id}`}
-                        >
-                          Follow the money
-                        </AnchorAsButton>
-                      </li>
-                    )}
-                  </ul>
-                </nav>
-              </div>
-            </div>
-            <aside className="flex-1 flex flex-col items-center justify-center text-center sm:text-left mt-6 sm:mt-0">
-              <h2 className="text-2xl font-bold">Term expires:</h2>
-              <h3
-                className={
-                  `text-xl` +
-                  (isNextMidTerm ? " text-red-600" : " text-gray-800")
-                }
+        <header className="mx-auto max-w-5xl px-4 sm:px-6 relative md:flex pt-8 gap-4">
+          <motion.div
+            layoutId={`rep-image-${selectedRep.bioguide_id}`}
+            className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-50 md:h-50 rounded-xl overflow-hidden shadow-lg bg-white "
+          >
+            <Image
+              src={portraitSrc}
+              alt={selectedRep.full_name}
+              fill
+              className="object-cover object-top"
+            />
+          </motion.div>
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
+            <div className="text-center sm:text-left">
+              <motion.h1
+                layoutId={`${selectedRep.bioguide_id}-name`}
+                className="font-bold text-2xl sm:text-3xl text-blue-500"
               >
-                {expiration.toLocaleDateString()}
-              </h3>
-            </aside>
+                <motion.div
+                  layoutId={`${selectedRep.bioguide_id}-party-badge`}
+                  className="inline-block w-12 h-12 mr-4"
+                >
+                  <PartyBadge party={selectedRep.party} />
+                </motion.div>
+                {selectedRep.full_name}{" "}
+              </motion.h1>
+              <div>
+                <p>{selectedRep.address}</p>
+                <p>{selectedRep.phone}</p>
+              </div>
+              <p className="text-base sm:text-lg mt-0.5">{role}</p>
+            </div>
           </div>
         </header>
+        <nav aria-label="Representative links" className="mt-2">
+          <ul className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-sm sm:text-base">
+            {selectedRep.phone && (
+              <li>
+                <AnchorAsButton href={`tel:${selectedRep.phone}`}>
+                  Call
+                </AnchorAsButton>
+              </li>
+            )}
+            {selectedRep.twitter && (
+              <li>
+                <AnchorAsButton
+                  href={`https://twitter.com/${selectedRep.twitter}`}
+                >
+                  Send tweet
+                </AnchorAsButton>
+              </li>
+            )}
+            {selectedRep.opensecrets_id && (
+              <li>
+                <AnchorAsButton
+                  href={`https://www.opensecrets.org/members-of-congress/summary?cid=${selectedRep.opensecrets_id}`}
+                >
+                  Follow the money
+                </AnchorAsButton>
+              </li>
+            )}
+          </ul>
+        </nav>
+        <aside className="flex-1 flex flex-col items-center justify-center text-center sm:text-left mt-6 sm:mt-0">
+          <h2 className="text-2xl font-bold">Term expires:</h2>
+          <h3
+            className={
+              `text-xl` +
+              (isNextMidTerm ? " text-red-600" : " text-gray-800")
+            }
+          >
+            {expiration.toLocaleDateString()}
+          </h3>
+        </aside>
         <AnimatePresence>
           <motion.div
             initial={{
