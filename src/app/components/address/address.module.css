@@ -1,0 +1,20 @@
+.addressContainer {
+
+}
+
+.addressTitle {
+    font-size: 5rem;
+    text-align: start;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1s ease;
+    color: #252525;
+    background-color: white;
+    width: fit-content;
+    border-radius: 15px;
+    padding: 0.2rem 1rem;
+}
+
+.addressTitle[data-mounted='true'] {
+    clip-path: inset(0 0 0 0);
+}
+

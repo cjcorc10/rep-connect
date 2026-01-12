@@ -1,5 +1,5 @@
 "use client";
-import Address from "@/app/components/address";
+import Address from "@/app/components/address/address";
 import RepFetchWrapper from "@/app/components/repFetchWrapper";
 import { SelectedRepProvider } from "@/app/components/selectedRepContext";
 import SelectedRepModal from "@/app/components/selectedRepModal";
