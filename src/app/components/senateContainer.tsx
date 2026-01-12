@@ -1,4 +1,4 @@
-import ContainerHeading from './containerHeading';
+import ContainerHeading from "./containerHeading";
 
 export default function SenateContainer({
   children,

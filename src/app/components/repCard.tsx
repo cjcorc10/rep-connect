@@ -1,75 +1,77 @@
-'use client';
-import Image from 'next/image';
-import { Rep } from '../lib/definitions';
-import clsx from 'clsx';
-import { Phone, MapPin } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+"use client";
+import Image from "next/image";
+import { Rep } from "../lib/definitions";
+import { Phone, MapPin } from "lucide-react";
+import { useSelectedRep } from "./selectedRepContext";
+import { motion } from "framer-motion";
+import PartyBadge from "./partyBadge";
 
 type RepCardProp = {
   rep: Rep;
 };
 
 export default function RepCard({ rep }: RepCardProp) {
-  const router = useRouter();
+  const { setSelectedRep } = useSelectedRep();
 
   return (
-    <div
-      onClick={() => router.push(`/rep/${rep.bioguide_id}`)}
-      className="mb-4 relative rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200 hover:bg-gray-50 active:scale-[0.95]
-      transition-transform duration-200 ease-out cursor-pointer"
-      style={{ animation: 'fade-in-up 0.3s ease-out forwards' }}
+    <motion.div
+      layoutId={`rep-card-${rep.bioguide_id}`}
+      onClick={() => setSelectedRep(rep)}
+      className="mb-4 relative rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200 hover:bg-gray-50 cursor-pointer"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      }}
     >
       {rep.district && (
-        <h3 className="absolute right-[25%] top-[50%] text-7xl font-bold text-blue-200">
+        <motion.h3
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="absolute right-[25%] top-[50%] text-7xl font-bold text-blue-200"
+        >
           {rep.district}
-        </h3>
+        </motion.h3>
       )}
       <div className="flex justify-center p-8 items-center w-[140px] relative">
-        <Image
-          className="w-[100px] h-[100px] shadow-md rounded-full absolute object-cover object-top"
-          src={rep.image_url || ''}
-          width={100}
-          height={100}
-          alt={rep.full_name}
-        />
-        <p
-          className={clsx(
-            'font-bold text-white shadow-md text-xl relative top-[40px] left-[35px] rounded-full w-6 h-6 text-center flex items-center justify-center',
-            {
-              'bg-blue-500': rep.party === 'Democrat',
-              'bg-red-500': rep.party === 'Republican',
-              'bg-green-500': rep.party === 'Independent',
-              'bg-gray-500': !rep.party,
-            }
-          )}
+        <motion.div
+          layoutId={`rep-image-${rep.bioguide_id}`}
+          className="absolute w-[100px] h-[100px] rounded-full overflow-hidden shadow-md transform origin-center"
         >
-          {rep.party === 'Democrat'
-            ? 'D'
-            : rep.party === 'Republican'
-            ? 'R'
-            : rep.party === 'Independent'
-            ? 'I'
-            : ''}
-        </p>
+          <Image
+            src={rep.image_url || ""}
+            fill
+            alt={rep.full_name}
+            style={{ objectFit: "cover", objectPosition: "top" }}
+          />
+        </motion.div>
+        <motion.div
+          layoutId={`${rep.bioguide_id}-party-badge`}
+          className="absolute bottom-[40px] right-[20px] w-6 h-6"
+        >
+          <PartyBadge party={rep.party} />
+        </motion.div>
       </div>
       <div className="flex flex-col flex-1 py-6 pr-6 justify-between">
         <div className=" flex flex-col gap-1">
-          <h3 className="text-2xl font-bold flex items-center text-blue-500">
+          <motion.h3
+            layoutId={`${rep.bioguide_id}-name`}
+            className="text-2xl font-bold flex items-center text-blue-500"
+          >
             {rep.full_name}
-          </h3>
+          </motion.h3>
           <p className="flex flex-row gap-2 text-gray-700 ">
             <MapPin color="black" size={20} /> {rep.address}
           </p>
-          <a
-            href={`tel:${rep.phone}`}
-            className="text-blue-600 flex flex-row gap-2"
-          >
+          <p className="text-gray-700 flex flex-row gap-2">
             <Phone size={20} />
             {rep.phone}
-          </a>
+          </p>
         </div>
-        <div></div>
       </div>
-    </div>
+    </motion.div>
   );
 }

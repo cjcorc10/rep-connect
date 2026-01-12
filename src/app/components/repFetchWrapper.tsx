@@ -1,51 +1,83 @@
-import { getCoordinates, getDistricts } from '../lib/util';
-import SenateContainer from './senateContainer';
-import HouseContainer from './houseContainer';
-import { notFound } from 'next/navigation';
-import { getHouseReps, getSenators } from '../lib/db';
-import RepCard from './repCard';
-import { Rep } from '../lib/definitions';
+"use client";
+import { useState, useEffect } from "react";
+import { notFound } from "next/navigation";
+import SenateContainer from "./senateContainer";
+import HouseContainer from "./houseContainer";
+import RepCard from "./repCard";
+import { Rep } from "../lib/definitions";
+import RepsSkeleton from "./skeletons/repsSkeleton";
 
-export default async function RepFetchWrapper({
-  addressPromise,
+type RepsData = {
+  state: string;
+  districts: string[];
+  houseReps: Rep[];
+  senateReps: Rep[];
+};
+
+export default function RepFetchWrapper({
+  address,
 }: {
-  addressPromise: Promise<string>;
+  address: string;
 }) {
-  const address = await addressPromise;
-  const geo = await getCoordinates(address);
-  console.log('Geocoding result:', geo);
+  const [data, setData] = useState<RepsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFoundError, setNotFoundError] = useState(false);
 
-  const ok =
-    geo &&
-    geo.status === 'OK' &&
-    geo.results &&
-    geo.results.length > 0;
+  useEffect(() => {
+    async function fetchReps() {
+      try {
+        setLoading(true);
+        setNotFoundError(false);
+        const response = await fetch("/api/reps", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ address }),
+        });
 
-  if (!ok) {
-    notFound();
+        if (!response.ok) {
+          if (response.status === 404) {
+            setNotFoundError(true);
+            return;
+          }
+          throw new Error("Failed to fetch representatives");
+        }
+
+        const repsData = await response.json();
+        setData(repsData);
+      } catch (err) {
+        console.error("Error fetching reps:", err);
+        setNotFoundError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchReps();
+  }, [address]);
+
+  if (loading) {
+    return <RepsSkeleton />;
   }
 
-  const { northeast, southwest } = geo!.results[0].geometry.bounds;
+  if (notFoundError) {
+    notFound();
+    return null; // This line won't execute, but satisfies TypeScript
+  }
 
-  const { state, districts } = await getDistricts({
-    northeast,
-    southwest,
-  });
-
-  const houseRepsInitial = (await getHouseReps(
-    districts,
-    state
-  )) as Rep[];
-  const senateReps = await getSenators(state);
+  if (!data) {
+    return null;
+  }
 
   return (
     <div>
-      <SenateContainer state={state}>
-        {senateReps.map((senator) => (
+      <SenateContainer state={data.state}>
+        {data.senateReps.map((senator) => (
           <RepCard key={senator.bioguide_id} rep={senator} />
         ))}
       </SenateContainer>
-      <HouseContainer initialReps={houseRepsInitial} />
+      <HouseContainer initialReps={data.houseReps} />
     </div>
   );
 }
