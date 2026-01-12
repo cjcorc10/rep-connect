@@ -10,15 +10,18 @@ type RepCardProp = {
   rep: Rep;
 };
 
+
 export default function RepCard({ rep }: RepCardProp) {
   const { setSelectedRep } = useSelectedRep();
-
+  const role =
+  rep.type === "sen"
+    ? `Senator for ${rep.state}`
+    : `Representative for ${rep.state}`;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => setSelectedRep(rep)}
       className="mb-4 relative rounded-lg flex flex-row min-h-[175px] shadow-lg bg-white border border-gray-200 hover:bg-gray-50 cursor-pointer"
-      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{
         type: "spring",
@@ -27,14 +30,11 @@ export default function RepCard({ rep }: RepCardProp) {
       }}
     >
       {rep.district && (
-        <motion.h3
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="absolute right-[25%] top-[50%] text-7xl font-bold text-blue-200"
+        <h3
+            className="absolute right-[10%] top-[50%] text-7xl font-bold text-blue-200 z-10"
         >
           {rep.district}
-        </motion.h3>
+        </h3>
       )}
       <div className="flex justify-center p-8 items-center w-[140px] relative">
         <motion.div
@@ -55,21 +55,18 @@ export default function RepCard({ rep }: RepCardProp) {
           <PartyBadge party={rep.party} />
         </motion.div>
       </div>
-      <div className="flex flex-col flex-1 py-6 pr-6 justify-between">
-        <div className=" flex flex-col gap-1">
+      <div className="flex flex-col justify-center">
+        <div className=" flex flex-col gap-1 z-20">
           <motion.h3
             layoutId={`${rep.bioguide_id}-name`}
             className="text-2xl font-bold flex items-center text-blue-500"
           >
             {rep.full_name}
           </motion.h3>
-          <p className="flex flex-row gap-2 text-gray-700 ">
-            <MapPin color="black" size={20} /> {rep.address}
-          </p>
-          <p className="text-gray-700 flex flex-row gap-2">
-            <Phone size={20} />
-            {rep.phone}
-          </p>
+          <motion.p 
+            layoutId={`${rep.bioguide_id}-role`}
+            className="text-base text-lg mt-0.5">{role}</motion.p>
+
         </div>
       </div>
     </motion.div>

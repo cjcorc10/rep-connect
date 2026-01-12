@@ -4,9 +4,10 @@ import { useSelectedRep } from "./selectedRepContext";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import AnchorAsButton from "./anchorAsButton";
-import { X } from "lucide-react";
+import { MapPin, Phone, X } from "lucide-react";
 import PartyBadge from "./partyBadge";
 import RepInfo from "./repInfo";
+import CardEntryWrapper from "./cardEntryWrapper";
 
 type WikiData = {
   extract?: string;
@@ -52,11 +53,7 @@ export default function SelectedRepModal() {
   const role =
     selectedRep.type === "sen"
       ? `Senator for ${selectedRep.state}`
-      : `Representative for ${selectedRep.state}${
-          selectedRep.district
-            ? `, District ${selectedRep.district}`
-            : ""
-        }`;
+      : `Representative for ${selectedRep.state}`;
 
   const currentYear = new Date().getFullYear();
   const nextMidTermYear =
@@ -121,11 +118,8 @@ export default function SelectedRepModal() {
                 </motion.div>
                 {selectedRep.full_name}{" "}
               </motion.h1>
-              <div>
-                <p>{selectedRep.address}</p>
-                <p>{selectedRep.phone}</p>
-              </div>
-              <p className="text-base sm:text-lg mt-0.5">{role}</p>
+              <motion.p layoutId={`${selectedRep.bioguide_id}-role`} className="text-base sm:text-lg mt-0.5">{role}</motion.p>
+
             </div>
           </div>
         </header>
