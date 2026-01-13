@@ -22,11 +22,11 @@ export default function RepCard({ rep }: RepCardProp) {
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => setSelectedRep(rep)}
-      className={clsx(
+      className={clsx(styles.repCardContainer,
         rep.party === "Republican"
           ? "border-l-red-500"
           : "border-l-blue-500",
-        "relative flex flex-row cursor-pointer h-[65vh] rounded-xl overflow-hidden border-l-4"
+        "relative flex flex-row cursor-pointer overflow-hidden border-l-4"
       )}
       whileTap={{ scale: 0.98 }}
       transition={{
@@ -53,10 +53,10 @@ export default function RepCard({ rep }: RepCardProp) {
         layoutId={`${rep.bioguide_id}-name`}
         className={clsx(
           styles.repCardName,
-          "text-[5rem] text-white font-bold rounded-t-lg absolute bottom-0 mix-blend-difference"
+          "text-white font-bold rounded-t-lg absolute bottom-0 mix-blend-difference"
         )}
       >
-        {rep.last_name}
+        {rep.first_name.slice(0,1)} {rep.last_name}
       </motion.h3>
     </motion.div>
   );

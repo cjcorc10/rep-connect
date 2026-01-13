@@ -40,7 +40,7 @@ export default function HouseContainer({
   const multipleDistricts = districts.length > 1;
 
   return (
-    <section aria-labelledby="house-heading" className="mt-6 sm:mt-8">
+    <section aria-labelledby="house-heading" className="mt-6">
       <ContainerHeading isSenate={false}>
         <div className="flex flex-wrap items-end justify-between gap-2">
           <p className="mt-1 text-md text-gray-600">
@@ -106,11 +106,7 @@ export default function HouseContainer({
             ease: "easeOut",
           }}
           className="
-          grid gap-4 sm:gap-6
-          grid-cols-1
-          sm:grid-cols-2
-          lg:grid-cols-2
-        "
+          flex flex-wrap gap-6 justify-center"
         >
           {reps.map((rep) => (
             <div key={rep.bioguide_id}>

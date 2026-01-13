@@ -2,7 +2,7 @@
 import Address from "@/app/components/address/address";
 import RepFetchWrapper from "@/app/components/repFetchWrapper";
 import { SelectedRepProvider } from "@/app/components/selectedRepContext";
-import SelectedRepModal from "@/app/components/selectedRepModal";
+import SelectedRepModal from "@/app/components/selectedRepModal/selectedRepModal";
 import { useParams, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Rep } from "@/app/lib/definitions";

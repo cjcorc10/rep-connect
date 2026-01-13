@@ -1,0 +1,28 @@
+.modal {
+    position: relative;
+    width: 100%;
+    max-width: 95vw;
+    background-color: white;
+    border-radius: 5%;
+    height: 80vh;
+    overflow-y: auto;
+    
+    .imageContainer {
+        height: 65vh;
+        width: clamp(25rem, 30vw, 30rem);
+        position: relative; 
+        overflow: hidden;
+        border-radius: 5%;
+    }
+    .textContainer {
+        
+        .repName {
+            font-size: clamp(2rem, 7vw, 4rem);
+            mix-blend-mode: black;
+            line-height: 1.0;
+            color: white;
+            mix-blend-mode: difference;
+            font-weight: bold;
+        }
+    }
+}

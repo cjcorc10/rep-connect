@@ -22,7 +22,7 @@ export default function RepInfo({
   isNextMidTerm,
 }: RepInfoProps) {
   return (
-    <article className="mx-auto max-w-5xl sm:py-10 space-y-8">
+    <article className="mx-auto max-w-5xl py-10 px-4 space-y-8">
       <section
         aria-labelledby="bio-heading"
         className="prose prose-sm sm:prose-base max-w-none"

@@ -1,14 +1,15 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSelectedRep } from "./selectedRepContext";
+import { useSelectedRep } from "../selectedRepContext";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import AnchorAsButton from "./anchorAsButton";
+import AnchorAsButton from "../anchorAsButton";
 import { X } from "lucide-react";
-import RepInfo from "./repInfo";
+import RepInfo from "../repInfo";
 import clsx from "clsx";
-import { useRepImage } from "./repCard/useRepImage";
-import { Rep } from "../lib/definitions";
+import { useRepImage } from "../repCard/useRepImage";
+import { Rep } from "../../lib/definitions";
+import styles from "./selectedRepModal.module.scss";
 
 type WikiData = {
   extract?: string;
@@ -62,7 +63,7 @@ export default function SelectedRepModal() {
     currentYear % 2 === 0 ? currentYear : currentYear + 1;
   const electionYear = new Date(selectedRep.end).getFullYear() - 1;
   const isNextMidTerm = electionYear === nextMidTermYear;
-  const portraitSrc = imageUrl || selectedRep.image_url || "";
+  const portraitSrc = imageUrl || "";
   const expiration = new Date(selectedRep.end);
 
   return (
@@ -74,7 +75,7 @@ export default function SelectedRepModal() {
       <motion.div
         layoutId={`rep-card-${selectedRep.bioguide_id}`}
         className={clsx(
-          "relative w-full max-w-5xl bg-white rounded-lg shadow-2xl h-[80vh] overflow-y-auto",
+          styles.modal,
           selectedRep.party === "Republican"
             ? "border-l-red-500 border-l-4"
             : "border-l-blue-500 border-l-4"
@@ -94,36 +95,38 @@ export default function SelectedRepModal() {
           <X size={24} className="text-gray-600" />
         </button>
 
-        <header className="mx-auto max-w-5xl relative flex flex-col  gap-4 items-center mb-6">
+        <header className="mx-auto max-w-5xl relative flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6">
           <motion.div
             layoutId={`rep-image-${selectedRep.bioguide_id}`}
-            className="relative h-[65vh] w-full  overflow-hidden shadow-lg bg-white "
+            className={styles.imageContainer}
           >
             <Image
               src={portraitSrc}
               alt={selectedRep.full_name}
               fill
-              className="object-cover object-top"
+              className="object-cover"
             />
           </motion.div>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end">
-            <div className="text-center sm:text-left">
+          <div className={styles.textContainer}>
               <motion.h1
                 layoutId={`${selectedRep.bioguide_id}-name`}
-                className="font-bold text-2xl sm:text-3xl text-blue-500"
+                className={styles.repName}
               >
-                {selectedRep.full_name}{" "}
+                <span className={styles.firstName}>
+                {selectedRep.first_name.slice(0,1)}{" "}
+                </span>
+                <span className={styles.lastName}>
+                {selectedRep.last_name}
+                </span>
               </motion.h1>
-              <motion.p
-                layoutId={`${selectedRep.bioguide_id}-role`}
+              {/* <p
                 className="text-base sm:text-lg mt-0.5"
               >
                 {role}
-              </motion.p>
-              <motion.p layoutId={`${selectedRep.bioguide_id}-party`}>
+              </p>
+              <p >
                 {selectedRep.party}
-              </motion.p>
-            </div>
+              </p> */}
           </div>
         </header>
         <AnimatePresence>

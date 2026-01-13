@@ -14,11 +14,7 @@ export default function SenateContainer({
     >
       <ContainerHeading isSenate={true} />
       <div
-        className="
-          grid gap-4 sm:gap-6
-          grid-cols-1
-          sm:grid-cols-2
-        "
+        className="flex gap-6 justify-center flex-wrap"
       >
         {children}
       </div>

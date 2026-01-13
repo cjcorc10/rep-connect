@@ -1,0 +1,17 @@
+.repCardName {
+    font-size: clamp(2rem, 7vw, 4rem);
+}
+
+.repCardContainer {
+    height: 65vh;
+    width: clamp(25rem, 30vw, 30rem);
+}
+
+.repCardContainer {
+    border-radius: 5%;
+}
+
+.repCardImage {
+    border-radius: 5%;
+    overflow: hidden;
+}
