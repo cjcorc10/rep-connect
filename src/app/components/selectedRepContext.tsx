@@ -7,9 +7,9 @@ type SelectedRepContextType = {
   setSelectedRep: (rep: Rep | null) => void;
 };
 
-const SelectedRepContext = createContext<SelectedRepContextType | undefined>(
-  undefined
-);
+const SelectedRepContext = createContext<
+  SelectedRepContextType | undefined
+>(undefined);
 
 export function SelectedRepProvider({
   children,
@@ -21,7 +21,9 @@ export function SelectedRepProvider({
   setSelectedRep: (rep: Rep | null) => void;
 }) {
   return (
-    <SelectedRepContext.Provider value={{ selectedRep, setSelectedRep }}>
+    <SelectedRepContext.Provider
+      value={{ selectedRep, setSelectedRep }}
+    >
       {children}
     </SelectedRepContext.Provider>
   );

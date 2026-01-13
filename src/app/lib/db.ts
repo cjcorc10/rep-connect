@@ -34,15 +34,3 @@ export const getHouseReps = async (
   return data;
 };
 
-export const fetchRep = async (id: string) => {
-  const { data, error } = await supabase
-    .from('legislators-current')
-    .select('*')
-    .eq('bioguide_id', id)
-    .single();
-
-  if (error) {
-    throw new Error('Failed to retrieve representative');
-  }
-  return data;
-};
