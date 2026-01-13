@@ -74,7 +74,7 @@ export default function SelectedRepModal() {
       <motion.div
         layoutId={`rep-card-${selectedRep.bioguide_id}`}
         className={clsx(
-          "relative w-full max-w-5xl bg-white rounded-lg shadow-2xl h-[80vh] overflow-y-auto p-8",
+          "relative w-full max-w-5xl bg-white rounded-lg shadow-2xl h-[80vh] overflow-y-auto",
           selectedRep.party === "Republican"
             ? "border-l-red-500 border-l-4"
             : "border-l-blue-500 border-l-4"
@@ -94,10 +94,10 @@ export default function SelectedRepModal() {
           <X size={24} className="text-gray-600" />
         </button>
 
-        <header className="mx-auto max-w-5xl relative flex flex-row gap-4 items-center mb-6">
+        <header className="mx-auto max-w-5xl relative flex flex-col  gap-4 items-center mb-6">
           <motion.div
             layoutId={`rep-image-${selectedRep.bioguide_id}`}
-            className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-40 md:h-40 rounded-full overflow-hidden shadow-lg bg-white "
+            className="relative h-[65vh] w-full  overflow-hidden shadow-lg bg-white "
           >
             <Image
               src={portraitSrc}

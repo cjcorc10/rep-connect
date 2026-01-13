@@ -9,12 +9,6 @@ export default function MainContainer({
     <main
       className="relative flex flex-col flex-1 md:m-2 rounded-xl shadow-md  border-gray-100 overflow-hidden"
       style={{ backgroundColor: "#e9e9e9" }}
-      // style={{
-      //   backgroundImage:
-      //     'radial-gradient(circle, rgba(0,0,0,.08) 1px, transparent 0)',
-      //   backgroundSize: '20px 20px',
-      //   backgroundRepeat: 'repeat',
-      // }}
     >
       {children}
     </main>
