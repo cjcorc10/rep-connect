@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { notFound } from "next/navigation";
 import SenateContainer from "./senateContainer";
 import HouseContainer from "./houseContainer";
-import RepCard from "./repCard";
+import RepCard from "./repCard/repCard";
 import { Rep } from "../lib/definitions";
 import RepsSkeleton from "./skeletons/repsSkeleton";
 

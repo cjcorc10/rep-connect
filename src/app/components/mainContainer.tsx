@@ -7,7 +7,8 @@ export default function MainContainer({
 }: MainContainerProps) {
   return (
     <main
-      className="flex flex-col flex-1 md:m-2 rounded-2xl bg-gray-50 shadow-md  border-gray-100 overflow-hidden"
+      className="relative flex flex-col flex-1 md:m-2 rounded-xl shadow-md  border-gray-100 overflow-hidden"
+      style={{ backgroundColor: "#e9e9e9" }}
       // style={{
       //   backgroundImage:
       //     'radial-gradient(circle, rgba(0,0,0,.08) 1px, transparent 0)',

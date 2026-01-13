@@ -12,11 +12,7 @@ export default function SenateContainer({
       aria-labelledby="senate-heading"
       className="mt-6 sm:mt-8"
     >
-      <ContainerHeading isSenate={true}>
-        <p className="mt-1 text-md text-gray-600">
-          Senators representing the state of {state}
-        </p>
-      </ContainerHeading>
+      <ContainerHeading isSenate={true} />
       <div
         className="
           grid gap-4 sm:gap-6

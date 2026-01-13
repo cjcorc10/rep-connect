@@ -1,5 +1,5 @@
-import styles from './address.module.css'
-import { useState, useEffect } from 'react';
+import styles from "./address.module.css";
+import { useState, useEffect } from "react";
 export default function Address({ address }: { address: string }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -7,11 +7,11 @@ export default function Address({ address }: { address: string }) {
   }, []);
   return (
     <div className={styles.addressContainer}>
-        <h1 className={styles.addressTitle}
-          data-mounted={mounted}
-        >
+      <form>
+        <h1 className={styles.addressTitle} data-mounted={mounted}>
           {address}
         </h1>
+      </form>
     </div>
   );
 }

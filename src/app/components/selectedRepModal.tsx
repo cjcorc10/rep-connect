@@ -75,7 +75,7 @@ export default function SelectedRepModal() {
       {/* Modal Content - This uses the same layoutId as the card */}
       <motion.div
         layoutId={`rep-card-${selectedRep.bioguide_id}`}
-        className="relative w-full max-w-5xl bg-white rounded-lg shadow-2xl h-[80vh] overflow-y-auto"
+        className="relative w-full max-w-5xl bg-white rounded-lg shadow-2xl h-[80vh] overflow-y-auto p-8"
         onClick={(e) => e.stopPropagation()}
         transition={{
           type: "spring",
@@ -92,10 +92,10 @@ export default function SelectedRepModal() {
           <X size={24} className="text-gray-600" />
         </button>
 
-        <header className="mx-auto max-w-5xl px-4 sm:px-6 relative md:flex pt-8 gap-4">
+        <header className="mx-auto max-w-5xl relative flex flex-row gap-4 items-center mb-6">
           <motion.div
             layoutId={`rep-image-${selectedRep.bioguide_id}`}
-            className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-50 md:h-50 rounded-xl overflow-hidden shadow-lg bg-white "
+            className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-40 md:h-40 rounded-full overflow-hidden shadow-lg bg-white "
           >
             <Image
               src={portraitSrc}
@@ -112,18 +112,22 @@ export default function SelectedRepModal() {
               >
                 <motion.div
                   layoutId={`${selectedRep.bioguide_id}-party-badge`}
-                  className="inline-block w-12 h-12 mr-4"
+                  className="inline-block w-12 h-12 mr-4 rounded-full"
                 >
                   <PartyBadge party={selectedRep.party} />
                 </motion.div>
                 {selectedRep.full_name}{" "}
               </motion.h1>
-              <motion.p layoutId={`${selectedRep.bioguide_id}-role`} className="text-base sm:text-lg mt-0.5">{role}</motion.p>
-
+              <motion.p
+                layoutId={`${selectedRep.bioguide_id}-role`}
+                className="text-base sm:text-lg mt-0.5"
+              >
+                {role}
+              </motion.p>
             </div>
           </div>
         </header>
-        <nav aria-label="Representative links" className="mt-2">
+        <nav aria-label="Representative links" className="my-6">
           <ul className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-sm sm:text-base">
             {selectedRep.phone && (
               <li>

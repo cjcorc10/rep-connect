@@ -1,5 +1,5 @@
 "use client";
-import RepCard from "@/app/components/repCard";
+import RepCard from "@/app/components/repCard/repCard";
 import StreetForm from "@/app/components/streetForm";
 import type { Rep } from "@/app/lib/definitions";
 import { useState } from "react";
