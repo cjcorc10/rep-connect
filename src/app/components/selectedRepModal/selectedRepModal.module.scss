@@ -1,9 +1,10 @@
 .modal {
     position: relative;
     width: 100%;
-    max-width: 95vw;
+    max-width: 50rem;
     background-color: white;
-    border-radius: 5%;
+    border-radius: 5% 0 0 5%;
+
     height: 80vh;
     overflow-y: auto;
     
@@ -12,7 +13,7 @@
         width: clamp(25rem, 30vw, 30rem);
         position: relative; 
         overflow: hidden;
-        border-radius: 5%;
+        border-radius: 5% 0 0 5%;
     }
     .textContainer {
         
@@ -24,5 +25,22 @@
             mix-blend-mode: difference;
             font-weight: bold;
         }
+        .firstName{
+            position: relative;
+            .fullFirstName {
+                clip-path: inset(0 100% 0 0);
+                animation: reveal 1.2s ease forwards;
+            }
+            .firstInitial {
+                position: absolute;
+                left: 0;    
+            }
+        }
+    }
+}
+
+@keyframes reveal {
+    to {
+        clip-path: inset(0 0 0 0);
     }
 }

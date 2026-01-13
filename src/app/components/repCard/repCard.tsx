@@ -53,7 +53,7 @@ export default function RepCard({ rep }: RepCardProp) {
         layoutId={`${rep.bioguide_id}-name`}
         className={clsx(
           styles.repCardName,
-          "text-white font-bold rounded-t-lg absolute bottom-0 mix-blend-difference"
+          "text-white font-bold rounded-t-lg absolute bottom-0 left-[5%] mix-blend-difference"
         )}
       >
         {rep.first_name.slice(0,1)} {rep.last_name}

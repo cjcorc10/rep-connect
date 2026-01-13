@@ -10,6 +10,7 @@ import clsx from "clsx";
 import { useRepImage } from "../repCard/useRepImage";
 import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
+import { set } from "zod";
 
 type WikiData = {
   extract?: string;
@@ -74,6 +75,7 @@ export default function SelectedRepModal() {
     >
       <motion.div
         layoutId={`rep-card-${selectedRep.bioguide_id}`}
+        animate={{ transition: { duration: 3}}}
         className={clsx(
           styles.modal,
           selectedRep.party === "Republican"
@@ -81,11 +83,7 @@ export default function SelectedRepModal() {
             : "border-l-blue-500 border-l-4"
         )}
         onClick={(e) => e.stopPropagation()}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        }}
+
       >
         <button
           onClick={() => setSelectedRep(null)}
@@ -95,7 +93,7 @@ export default function SelectedRepModal() {
           <X size={24} className="text-gray-600" />
         </button>
 
-        <header className="mx-auto max-w-5xl relative flex flex-col sm:flex-row gap-4 items-start sm:items-end mb-6">
+        <header className="mx-auto max-w-5xl relative flex flex-col sm:flex-row gap-4 items-center sm:items-end mb-6">
           <motion.div
             layoutId={`rep-image-${selectedRep.bioguide_id}`}
             className={styles.imageContainer}
@@ -113,7 +111,12 @@ export default function SelectedRepModal() {
                 className={styles.repName}
               >
                 <span className={styles.firstName}>
-                {selectedRep.first_name.slice(0,1)}{" "}
+                <span className={styles.fullFirstName}>
+                {selectedRep.first_name}
+                </span>
+                <span className={styles.firstInitial}>
+                {selectedRep.first_name.slice(0,1)}
+                </span>
                 </span>
                 <span className={styles.lastName}>
                 {selectedRep.last_name}

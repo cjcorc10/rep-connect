@@ -5,13 +5,11 @@
 .repCardContainer {
     height: 65vh;
     width: clamp(25rem, 30vw, 30rem);
+    border-radius: 5% 0 0 5%;
 }
 
-.repCardContainer {
-    border-radius: 5%;
-}
 
 .repCardImage {
-    border-radius: 5%;
+    border-radius: 5% 0 0 5%;
     overflow: hidden;
 }
