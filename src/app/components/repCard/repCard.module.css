@@ -1,7 +1,0 @@
-.repCard {
-  transition: transform 0.2s ease-in-out;
-}
-
-.repCard:hover {
-  transform: translateX(2%);
-}
