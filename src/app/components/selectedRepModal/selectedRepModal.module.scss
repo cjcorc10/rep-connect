@@ -16,21 +16,24 @@
     gap: 1rem;
     @media (min-width: 640px) {
       flex-direction: row;
+      align-items: end;
     }
   }
   .imageContainer {
     height: 65vh;
-    width: min(100%, 35rem);
+    width: 100%;
     position: relative;
     overflow: hidden;
     border-radius: 3rem 3rem 0 0;
+    @media (min-width: 640px) {
+      width: 40rem;
+    }
   }
   .repName {
     font-size: clamp(2rem, 7vw, 3.8rem);
-    mix-blend-mode: black;
+    mix-blend-mode: difference;
     line-height: 1;
     color: white;
-    mix-blend-mode: difference;
     font-weight: bold;
     width: fit-content;
   }
