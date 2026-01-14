@@ -105,13 +105,10 @@ export default function HouseContainer({
             damping: 40,
             ease: "easeOut",
           }}
-          className="
-          flex flex-wrap gap-6 justify-center"
+          className="flex flex-wrap gap-12 justify-center"
         >
           {reps.map((rep) => (
-            <div key={rep.bioguide_id}>
-              <RepCard rep={rep} />
-            </div>
+            <RepCard key={rep.bioguide_id} rep={rep} />
           ))}
         </motion.div>
       </motion.div>

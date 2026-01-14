@@ -10,7 +10,6 @@ import clsx from "clsx";
 import { useRepImage } from "../repCard/useRepImage";
 import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
-import { set } from "zod";
 
 type WikiData = {
   extract?: string;
@@ -21,7 +20,9 @@ type WikiData = {
 
 export default function SelectedRepModal() {
   const { selectedRep, setSelectedRep } = useSelectedRep();
-  const { imageUrl } = useRepImage(selectedRep as Rep);
+  const { imageUrl, loading: imageLoading } = useRepImage(
+    selectedRep as Rep
+  );
   const [wiki, setWiki] = useState<WikiData | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -51,31 +52,42 @@ export default function SelectedRepModal() {
       });
   }, [selectedRep?.wikipedia_id]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedRep(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [setSelectedRep]);
+
   if (!selectedRep) {
     return null;
   }
-  const role =
-    selectedRep.type === "sen"
-      ? `Senator for ${selectedRep.state}`
-      : `Representative for ${selectedRep.state}`;
 
   const currentYear = new Date().getFullYear();
   const nextMidTermYear =
     currentYear % 2 === 0 ? currentYear : currentYear + 1;
   const electionYear = new Date(selectedRep.end).getFullYear() - 1;
   const isNextMidTerm = electionYear === nextMidTermYear;
-  const portraitSrc = imageUrl || "";
+  // Use original image initially to prevent flash, only switch to high-quality when loaded
+  // Check if imageUrl is different from original to know if a new image was fetched
+  const portraitSrc =
+    !imageLoading && imageUrl && imageUrl !== selectedRep.image_url
+      ? imageUrl
+      : selectedRep.image_url || "";
   const expiration = new Date(selectedRep.end);
 
   return (
     <motion.div
       key={`modal-${selectedRep.bioguide_id}`}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center"
       onClick={() => setSelectedRep(null)}
     >
       <motion.div
         layoutId={`rep-card-${selectedRep.bioguide_id}`}
-        animate={{ transition: { duration: 3}}}
+        animate={{ transition: { duration: 3 } }}
         className={clsx(
           styles.modal,
           selectedRep.party === "Republican"
@@ -83,17 +95,8 @@ export default function SelectedRepModal() {
             : "border-l-blue-500 border-l-4"
         )}
         onClick={(e) => e.stopPropagation()}
-
       >
-        <button
-          onClick={() => setSelectedRep(null)}
-          className="absolute top-4 right-4 z-50 p-2 hover:bg-gray-100 rounded-full transition-colors"
-          aria-label="Close modal"
-        >
-          <X size={24} className="text-gray-600" />
-        </button>
-
-        <header className="mx-auto max-w-5xl relative flex flex-col sm:flex-row gap-4 items-center sm:items-end mb-6">
+        <header className={styles.header}>
           <motion.div
             layoutId={`rep-image-${selectedRep.bioguide_id}`}
             className={styles.imageContainer}
@@ -105,32 +108,12 @@ export default function SelectedRepModal() {
               className="object-cover"
             />
           </motion.div>
-          <div className={styles.textContainer}>
-              <motion.h1
-                layoutId={`${selectedRep.bioguide_id}-name`}
-                className={styles.repName}
-              >
-                <span className={styles.firstName}>
-                <span className={styles.fullFirstName}>
-                {selectedRep.first_name}
-                </span>
-                <span className={styles.firstInitial}>
-                {selectedRep.first_name.slice(0,1)}
-                </span>
-                </span>
-                <span className={styles.lastName}>
-                {selectedRep.last_name}
-                </span>
-              </motion.h1>
-              {/* <p
-                className="text-base sm:text-lg mt-0.5"
-              >
-                {role}
-              </p>
-              <p >
-                {selectedRep.party}
-              </p> */}
-          </div>
+          <motion.h1
+            layoutId={`${selectedRep.bioguide_id}-name`}
+            className={styles.repName}
+          >
+            {selectedRep.full_name}
+          </motion.h1>
         </header>
         <AnimatePresence>
           <motion.nav
@@ -143,9 +126,9 @@ export default function SelectedRepModal() {
               ease: "easeOut",
             }}
             aria-label="Representative links"
-            className="my-6"
+            className={styles.nav}
           >
-            <ul className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-2 text-sm sm:text-base">
+            <ul className={styles.navList}>
               {selectedRep.phone && (
                 <li>
                   <AnchorAsButton href={`tel:${selectedRep.phone}`}>

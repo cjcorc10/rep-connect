@@ -22,7 +22,8 @@ export default function RepCard({ rep }: RepCardProp) {
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => setSelectedRep(rep)}
-      className={clsx(styles.repCardContainer,
+      className={clsx(
+        styles.repCardContainer,
         rep.party === "Republican"
           ? "border-l-red-500"
           : "border-l-blue-500",
@@ -56,7 +57,7 @@ export default function RepCard({ rep }: RepCardProp) {
           "text-white font-bold rounded-t-lg absolute bottom-0 left-[5%] mix-blend-difference"
         )}
       >
-        {rep.first_name.slice(0,1)} {rep.last_name}
+        {rep.first_name.slice(0, 1)} {rep.last_name}
       </motion.h3>
     </motion.div>
   );

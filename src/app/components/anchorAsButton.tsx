@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import React from 'react';
+import { Button } from "@/components/ui/button";
+import React from "react";
 
 type AnchorAsButtonProps = {
   href: string;
@@ -11,7 +11,7 @@ export default function AnchorAsButton({
   children,
 }: AnchorAsButtonProps) {
   return (
-    <Button asChild>
+    <Button size="lg" asChild>
       <a href={href}>{children}</a>
     </Button>
   );

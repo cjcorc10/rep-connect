@@ -1,46 +1,54 @@
 .modal {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  max-width: 50rem;
+  background-color: white;
+  border-radius: 3rem 3rem 0 0;
+  height: 90vh;
+  overflow-y: auto;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    @media (min-width: 640px) {
+      flex-direction: row;
+    }
+  }
+  .imageContainer {
+    height: 65vh;
+    width: min(100%, 35rem);
     position: relative;
-    width: 100%;
-    max-width: 50rem;
-    background-color: white;
-    border-radius: 5% 0 0 5%;
-
-    height: 80vh;
-    overflow-y: auto;
-    
-    .imageContainer {
-        height: 65vh;
-        width: clamp(25rem, 30vw, 30rem);
-        position: relative; 
-        overflow: hidden;
-        border-radius: 5% 0 0 5%;
+    overflow: hidden;
+    border-radius: 3rem 3rem 0 0;
+  }
+  .repName {
+    font-size: clamp(2rem, 7vw, 3.8rem);
+    mix-blend-mode: black;
+    line-height: 1;
+    color: white;
+    mix-blend-mode: difference;
+    font-weight: bold;
+    width: fit-content;
+  }
+  .nav {
+    .navList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1rem;
+      @media (min-width: 640px) {
+        // opacity: 0;
+        gap: 3rem;
+        justify-content: start;
+        padding-left: 3rem;
+      }
     }
-    .textContainer {
-        
-        .repName {
-            font-size: clamp(2rem, 7vw, 4rem);
-            mix-blend-mode: black;
-            line-height: 1.0;
-            color: white;
-            mix-blend-mode: difference;
-            font-weight: bold;
-        }
-        .firstName{
-            position: relative;
-            .fullFirstName {
-                clip-path: inset(0 100% 0 0);
-                animation: reveal 1.2s ease forwards;
-            }
-            .firstInitial {
-                position: absolute;
-                left: 0;    
-            }
-        }
-    }
-}
-
-@keyframes reveal {
-    to {
-        clip-path: inset(0 0 0 0);
-    }
+  }
 }
