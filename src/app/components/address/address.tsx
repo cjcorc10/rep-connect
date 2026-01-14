@@ -8,9 +8,8 @@ export default function Address({ address }: { address: string }) {
   return (
     <div className={styles.addressContainer}>
       <form>
-        <h1 className={styles.addressTitle} data-mounted={mounted}>
-          {address}
-        </h1>
+        <input className={styles.addressTitle} data-mounted={mounted} value={address}
+          onChange={(e) => address =  e.currentTarget.value}/>
       </form>
     </div>
   );

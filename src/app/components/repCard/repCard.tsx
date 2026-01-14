@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Rep } from "../../lib/definitions";
 import { useSelectedRep } from "../selectedRepContext";
-import { motion } from "framer-motion";
+import { motion, scale } from "framer-motion";
 import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.css";
@@ -18,16 +18,14 @@ export default function RepCard({ rep }: RepCardProp) {
     rep.type === "sen"
       ? `Senator for ${rep.state}`
       : `Representative for ${rep.state}`;
+  const partyColor = rep.party === "Republican" ? "#F52727" : "#276CF5"
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => setSelectedRep(rep)}
       className={clsx(
         styles.repCardContainer,
-        rep.party === "Republican"
-          ? "border-l-red-500"
-          : "border-l-blue-500",
-        "relative flex flex-row cursor-pointer overflow-hidden border-l-4"
+        "relative flex flex-row cursor-pointer"
       )}
       whileTap={{ scale: 0.98 }}
       transition={{
@@ -36,12 +34,14 @@ export default function RepCard({ rep }: RepCardProp) {
         damping: 30,
       }}
     >
+      <motion.div className={styles.partyBG} layoutId={`${rep.bioguide_id}-partyColor`} style={{backgroundColor: partyColor}}/>
       <motion.div
         layoutId={`rep-image-${rep.bioguide_id}`}
         className={clsx(
           styles.repCardImage,
           "absolute w-full h-full"
         )}
+        whileHover={{x: 5}}
       >
         <Image
           src={imageUrl || rep.image_url || ""}

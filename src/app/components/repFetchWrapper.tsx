@@ -6,6 +6,7 @@ import HouseContainer from "./houseContainer";
 import RepCard from "./repCard/repCard";
 import { Rep } from "../lib/definitions";
 import RepsSkeleton from "./skeletons/repsSkeleton";
+import {motion} from 'framer-motion'
 
 type RepsData = {
   state: string;

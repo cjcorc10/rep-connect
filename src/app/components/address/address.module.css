@@ -5,6 +5,8 @@
   margin: 6rem 0;
 }
 
+
+
 .addressTitle {
   font-size: clamp(5rem, 15vw, 7rem);
   font-weight: 600;
@@ -13,7 +15,7 @@
   transition: clip-path 1s ease;
   color: #252525;
   background-color: white;
-  width: fit-content;
+  width: 50vw;
   border-radius: 15px;
   padding: 0.2rem 1rem;
 }
