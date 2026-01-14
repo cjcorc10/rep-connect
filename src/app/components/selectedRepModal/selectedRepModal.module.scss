@@ -14,18 +14,21 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
     @media (min-width: 640px) {
       flex-direction: row-reverse;
-      align-items: end;
+      align-items: center;
     }
     .partyBG {
       position: absolute;
       height: 100%;
-      width: 50%;
+      width: 100%;
       inset: 0;
       z-index: 1;
       border-radius: 3rem;
+      @media (min-width: 640px) {
+        width: 75%;
+        
+      }
     }
     .imageContainer {
       height: 65vh;
@@ -39,15 +42,14 @@
       }
     }
     .repName {
-      font-size: clamp(2rem, 7vw, 3.8rem);
-      // mix-blend-mode: difference;
+      display: absolute;
+      font-size: 5rem;
+      mix-blend-mode: difference;
       line-height: 1.1;
       color: white;
       font-weight: bold;
-      width: fit-content;
-      text-align: center;
+      transform: rotate(45deg);
       z-index: 3;
-      
     }
   }
     .nav {
