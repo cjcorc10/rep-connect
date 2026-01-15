@@ -18,7 +18,10 @@ export default function RepCard({ rep }: RepCardProp) {
     rep.type === "sen"
       ? `Senator for ${rep.state}`
       : `Representative for ${rep.state}`;
-  const partyColor = rep.party === "Republican" ? "#F52727" : "#276CF5"
+  const partyColor =
+    rep.party === "Republican"
+      ? "var(--accent-red)"
+      : "var(--accent-blue)";
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
@@ -34,31 +37,28 @@ export default function RepCard({ rep }: RepCardProp) {
         damping: 30,
       }}
     >
-      <motion.div className={styles.partyBG} layoutId={`${rep.bioguide_id}-partyColor`} style={{backgroundColor: partyColor}}/>
+      <motion.div
+        className={styles.partyBG}
+        layoutId={`${rep.bioguide_id}-partyColor`}
+        style={{ backgroundColor: partyColor }}
+      />
       <motion.div
         layoutId={`rep-image-${rep.bioguide_id}`}
         className={clsx(
           styles.repCardImage,
           "absolute w-full h-full"
         )}
-        whileHover={{x: 5}}
+        whileHover={{ x: 5 }}
       >
+        <div className={styles.repCardImageGradient} />
         <Image
           src={imageUrl || rep.image_url || ""}
           fill
           alt={rep.full_name}
           style={{ objectFit: "cover", objectPosition: "" }}
         />
+        <h3 className={styles.repCardName}>{rep.full_name}</h3>
       </motion.div>
-      <motion.h3
-        layoutId={`${rep.bioguide_id}-name`}
-        className={clsx(
-          styles.repCardName,
-          "text-white font-bold rounded-t-lg absolute bottom-0 left-[5%] mix-blend-difference"
-        )}
-      >
-        {rep.first_name.slice(0, 1)} {rep.last_name}
-      </motion.h3>
     </motion.div>
   );
 }

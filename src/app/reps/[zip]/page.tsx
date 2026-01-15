@@ -28,7 +28,10 @@ export default function Page() {
       <AnimatePresence>
         {selectedRep ? (
           <motion.div
-            className="fixed inset-0 bg-black/50 h-full z-40"
+            className="fixed inset-0 bg-black/5 h-full z-40"
+            style={{
+              backdropFilter: "blur(5px)",
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -36,7 +39,13 @@ export default function Page() {
         ) : null}
       </AnimatePresence>
       {selectedRep ? <SelectedRepModal /> : null}
-      <main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <motion.main
+        className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6"
+        animate={{
+          filter: selectedRep ? "blur(5px)" : "blur(0px)",
+          transition: { duration: 0.2 },
+        }}
+      >
         <section className="max-w-6xl mx-auto">
           <header className="text-center">
             <Address address={address} />
@@ -50,7 +59,7 @@ export default function Page() {
           </header>
           <RepFetchWrapper address={address} />
         </section>
-      </main>
+      </motion.main>
     </SelectedRepProvider>
   );
 }

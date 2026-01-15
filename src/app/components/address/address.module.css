@@ -5,37 +5,26 @@
   margin: 6rem 0;
 }
 
-
-
+.addressDisplay,
 .addressTitle {
   font-size: clamp(5rem, 15vw, 7rem);
   font-weight: 600;
   text-align: center;
+  color: #252525;
+  width: clamp(20rem, 25vw, 100%);
+}
+.addressTitle {
   clip-path: inset(0 100% 0 0);
   transition: clip-path 1s ease;
-  color: #252525;
   background-color: white;
-  width: 50vw;
-  border-radius: 15px;
-  padding: 0.2rem 1rem;
+  border-radius: 16px;
+  padding: 0.5rem 1rem;
 }
 
 .addressTitle[data-mounted="true"] {
   clip-path: inset(0 0 0 0);
 }
 
-.addressTitle[data-mounted="true"]::after {
-  content: "|";
-  display: inline-block;
-  animation: blink 1s step-end infinite;
-  color: #252525;
-  opacity: 0;
-  transform: translateY(-5%);
+.submit {
+  border: black 1px solid;
 }
-
-@keyframes blink {
-  50% {
-    opacity: 1;
-  }
-}
-

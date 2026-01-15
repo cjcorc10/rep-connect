@@ -1,15 +1,14 @@
 "use client";
-import { motion, AnimatePresence, MotionConfig } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSelectedRep } from "../selectedRepContext";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import AnchorAsButton from "../anchorAsButton";
-import { X } from "lucide-react";
 import RepInfo from "../repInfo";
-import clsx from "clsx";
 import { useRepImage } from "../repCard/useRepImage";
 import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
+import RepCard from "../repCard/repCard";
 
 type WikiData = {
   extract?: string;
@@ -78,119 +77,126 @@ export default function SelectedRepModal() {
       ? imageUrl
       : selectedRep.image_url || "";
   const expiration = new Date(selectedRep.end);
-  const partyColor = selectedRep.party === "Republican" ? "#F52727" : "#276CF5"
+  const partyColor =
+    selectedRep.party === "Republican"
+      ? "var(--accent-red)"
+      : "var(--accent-blue)";
   return (
     <>
-    <motion.div
-      key={`modal-${selectedRep.bioguide_id}`}
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={() => setSelectedRep(null)}
-      >
       <motion.div
-        layoutId={`rep-card-${selectedRep.bioguide_id}`}
-        animate={{ transition: { duration: 3 } }}
-        className={
-          styles.modal}
+        key={`modal-${selectedRep.bioguide_id}`}
+        className="fixed inset-0 z-50 flex items-center justify-center"
+        onClick={() => setSelectedRep(null)}
+      >
+        <motion.div
+          layoutId={`rep-card-${selectedRep.bioguide_id}`}
+          animate={{ transition: { duration: 3 } }}
+          className={styles.modal}
           onClick={(e) => e.stopPropagation()}
-          >
-        <header className={styles.header}>
-          <motion.div layoutId={`${selectedRep.bioguide_id}-partyColor`} style={{backgroundColor: partyColor}} className={styles.partyBG} />
-          <motion.div
-            layoutId={`rep-image-${selectedRep.bioguide_id}`}
-            className={styles.imageContainer}
+        >
+          <header className={styles.header}>
+            {/* <motion.div
+              layoutId={`${selectedRep.bioguide_id}-partyColor`}
+              style={{ backgroundColor: partyColor }}
+              className={styles.partyBG}
+            />
+            <motion.div
+              layoutId={`rep-image-${selectedRep.bioguide_id}`}
+              className={styles.imageContainer}
             >
-            <Image
-              src={portraitSrc}
-              alt={selectedRep.full_name}
-              fill
-              className="object-cover"
+              <Image
+                src={portraitSrc}
+                alt={selectedRep.full_name}
+                fill
+                className="object-cover"
               />
-          </motion.div>
-          <motion.h1
-            initial={{filter: 'blur(4px)'}}
-            animate={{filter: 'blur(0)'}}
-            layoutId={`${selectedRep.bioguide_id}-name`}
-            className={styles.repName}
+              <motion.h1
+                initial={{ filter: "blur(4px)" }}
+                animate={{ filter: "blur(0)" }}
+                layoutId={`${selectedRep.bioguide_id}-name`}
+                className={styles.repName}
+              >
+                {selectedRep.full_name}
+              </motion.h1>
+            </motion.div> */}
+            <RepCard rep={selectedRep} />
+          </header>
+          <AnimatePresence>
+            {/* <motion.nav
+              initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
+              exit={{ opacity: 0, y: 10, filter: "blur(5px)" }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5,
+                ease: "easeOut",
+              }}
+              aria-label="Representative links"
+              className={styles.nav}
             >
-            {selectedRep.full_name}
-          </motion.h1>
-        </header>
-        <AnimatePresence>
-          <motion.nav
-            initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0)'}}
-            exit={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-            transition={{
-              duration: 0.5,
-              delay: 0.5,
-              ease: "easeOut",
-            }}
-            aria-label="Representative links"
-            className={styles.nav}
-            >
-            <ul className={styles.navList}>
-              {selectedRep.phone && (
-                <li>
-                  <AnchorAsButton href={`tel:${selectedRep.phone}`}>
-                    Call
-                  </AnchorAsButton>
-                </li>
-              )}
-              {selectedRep.twitter && (
-                <li>
-                  <AnchorAsButton
-                    href={`https://twitter.com/${selectedRep.twitter}`}
+              <ul className={styles.navList}>
+                {selectedRep.phone && (
+                  <li>
+                    <AnchorAsButton href={`tel:${selectedRep.phone}`}>
+                      Call
+                    </AnchorAsButton>
+                  </li>
+                )}
+                {selectedRep.twitter && (
+                  <li>
+                    <AnchorAsButton
+                      href={`https://twitter.com/${selectedRep.twitter}`}
                     >
-                    Send tweet
-                  </AnchorAsButton>
-                </li>
-              )}
-              {selectedRep.opensecrets_id && (
-                <li>
-                  <AnchorAsButton
-                    href={`https://www.opensecrets.org/members-of-congress/summary?cid=${selectedRep.opensecrets_id}`}
+                      Send tweet
+                    </AnchorAsButton>
+                  </li>
+                )}
+                {selectedRep.opensecrets_id && (
+                  <li>
+                    <AnchorAsButton
+                      href={`https://www.opensecrets.org/members-of-congress/summary?cid=${selectedRep.opensecrets_id}`}
                     >
-                    Follow the money
-                  </AnchorAsButton>
-                </li>
-              )}
-            </ul>
-          </motion.nav>
-        </AnimatePresence>
-        <aside className={styles.midTerm}>
-          <h2 className="text-2xl font-bold">Term expires:</h2>
-          <h3
-            className={
-              `text-xl` +
-              (isNextMidTerm ? " text-red-600" : " text-gray-800")
-            }
+                      Follow the money
+                    </AnchorAsButton>
+                  </li>
+                )}
+              </ul>
+            </motion.nav> */}
+          </AnimatePresence>
+          <aside className={styles.midTerm}>
+            <h2 className="text-2xl font-bold">Term expires:</h2>
+            <h3
+              className={
+                `text-xl` +
+                (isNextMidTerm ? " text-red-600" : " text-gray-800")
+              }
             >
-            {expiration.toLocaleDateString()}
-          </h3>
-        </aside>
-        <AnimatePresence>
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 10,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { delay: 0.3, duration: 0.3 },
-            }}
-            exit={{ opacity: 0 }}
+              {expiration.toLocaleDateString()}
+            </h3>
+          </aside>
+          <AnimatePresence>
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.3, duration: 0.3 },
+              }}
+              exit={{ opacity: 0 }}
             >
-            <RepInfo
-              rep={selectedRep}
-              wiki={wiki}
-              loading={loading}
-              isNextMidTerm={isNextMidTerm}
+              <RepInfo
+                rep={selectedRep}
+                wiki={wiki}
+                loading={loading}
+                isNextMidTerm={isNextMidTerm}
               />
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
       </motion.div>
-    </motion.div>
-              </>
+    </>
   );
 }
