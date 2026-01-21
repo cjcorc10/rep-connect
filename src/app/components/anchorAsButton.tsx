@@ -11,7 +11,7 @@ export default function AnchorAsButton({
   children,
 }: AnchorAsButtonProps) {
   return (
-    <Button size="lg" asChild>
+  <Button size="lg" asChild>
       <a href={href}>{children}</a>
     </Button>
   );

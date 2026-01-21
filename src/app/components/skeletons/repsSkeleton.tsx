@@ -1,22 +1,26 @@
 import CardSkeleton from '@/app/components/skeletons/cardSkeleton';
 import TitleSkeleton from '@/app/components/skeletons/titleSkeleton';
-import { Skeleton } from '@/components/ui/skeleton';
 
 export default function RepsSkeleton() {
   return (
     <div>
-      <section className="mb-12">
+      <section
+        aria-labelledby="senate-heading"
+        className="mt-6 sm:mt-8"
+      >
         <TitleSkeleton />
-        <div className="flex flex-row items-center space-x-4">
+        <div className="flex gap-12 justify-center flex-wrap">
           <CardSkeleton />
           <CardSkeleton />
         </div>
       </section>
 
-      <section>
+      <section
+        aria-labelledby="house-heading"
+        className="mt-6"
+      >
         <TitleSkeleton />
-        <Skeleton className="w-full h-32 mt-8" />
-        <div className="flex flex-row items-center space-x-4">
+        <div className="flex flex-wrap gap-12 justify-center">
           <CardSkeleton />
           <CardSkeleton />
         </div>

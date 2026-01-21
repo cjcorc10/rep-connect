@@ -9,6 +9,9 @@ import { useRepImage } from "../repCard/useRepImage";
 import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
 import RepCard from "../repCard/repCard";
+import RepImageContainer from "../repImageContainer/repImageContainer";
+import { Phone, Twitter } from "lucide-react";
+import clsx from "clsx";
 
 type WikiData = {
   extract?: string;
@@ -89,40 +92,32 @@ export default function SelectedRepModal() {
         onClick={() => setSelectedRep(null)}
       >
         <motion.div
-          layoutId={`rep-card-${selectedRep.bioguide_id}`}
-          animate={{ transition: { duration: 3 } }}
           className={styles.modal}
+          layoutId={`rep-card-${selectedRep.bioguide_id}`}
           onClick={(e) => e.stopPropagation()}
         >
           <header className={styles.header}>
-            {/* <motion.div
-              layoutId={`${selectedRep.bioguide_id}-partyColor`}
-              style={{ backgroundColor: partyColor }}
-              className={styles.partyBG}
-            />
-            <motion.div
-              layoutId={`rep-image-${selectedRep.bioguide_id}`}
-              className={styles.imageContainer}
-            >
-              <Image
-                src={portraitSrc}
-                alt={selectedRep.full_name}
-                fill
-                className="object-cover"
-              />
-              <motion.h1
-                initial={{ filter: "blur(4px)" }}
-                animate={{ filter: "blur(0)" }}
-                layoutId={`${selectedRep.bioguide_id}-name`}
-                className={styles.repName}
-              >
-                {selectedRep.full_name}
-              </motion.h1>
-            </motion.div> */}
-            <RepCard rep={selectedRep} />
+
+            <motion.div layoutId={`rep-image-${selectedRep.bioguide_id}`} className={styles.imageContainer}>
+              <RepImageContainer portraitSrc={portraitSrc} />
+            </motion.div>
+            <motion.h3 className={styles.repName} layoutId={`rep-name-${selectedRep.bioguide_id}`}>{selectedRep.full_name}</motion.h3>
           </header>
+          <aside className={styles.midTerm}>
+            <h2 className={styles.midTermTitle}>Term expires: {" "}
+
+            <span
+                style={{
+                  color: isNextMidTerm ? "red" : "green"
+                }}
+              >
+                {expiration.toLocaleDateString()}
+              </span>
+            </h2>
+          </aside>
+
           <AnimatePresence>
-            {/* <motion.nav
+            <motion.nav
               initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
               exit={{ opacity: 0, y: 10, filter: "blur(5px)" }}
@@ -138,7 +133,10 @@ export default function SelectedRepModal() {
                 {selectedRep.phone && (
                   <li>
                     <AnchorAsButton href={`tel:${selectedRep.phone}`}>
-                      Call
+                      <Phone
+                        size={24}
+                        color="white"
+                      />
                     </AnchorAsButton>
                   </li>
                 )}
@@ -147,33 +145,17 @@ export default function SelectedRepModal() {
                     <AnchorAsButton
                       href={`https://twitter.com/${selectedRep.twitter}`}
                     >
-                      Send tweet
-                    </AnchorAsButton>
-                  </li>
-                )}
-                {selectedRep.opensecrets_id && (
-                  <li>
-                    <AnchorAsButton
-                      href={`https://www.opensecrets.org/members-of-congress/summary?cid=${selectedRep.opensecrets_id}`}
-                    >
-                      Follow the money
+                      <Twitter
+                        size={24}
+                        color="white"
+                      />
                     </AnchorAsButton>
                   </li>
                 )}
               </ul>
-            </motion.nav> */}
+            </motion.nav>
           </AnimatePresence>
-          <aside className={styles.midTerm}>
-            <h2 className="text-2xl font-bold">Term expires:</h2>
-            <h3
-              className={
-                `text-xl` +
-                (isNextMidTerm ? " text-red-600" : " text-gray-800")
-              }
-            >
-              {expiration.toLocaleDateString()}
-            </h3>
-          </aside>
+            
           <AnimatePresence>
             <motion.div
               initial={{

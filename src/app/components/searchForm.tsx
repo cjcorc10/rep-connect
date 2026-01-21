@@ -36,12 +36,10 @@ export default function SearchForm() {
     <>
       <form
         onSubmit={onSubmit}
-        className="
-          w-full max-w-[720px] mx-auto
+        className="w-full max-w-[720px] mx-auto
           bg-white/95 backdrop-blur
           rounded-xl shadow-md
-          p-2
-        "
+          p-2"
       >
         <div className="flex items-stretch gap-2">
           <div className="flex-1 min-w-0">

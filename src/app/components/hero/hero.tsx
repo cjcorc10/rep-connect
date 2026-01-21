@@ -10,29 +10,10 @@ export default function Hero() {
   const heroTitle =
     "Make your voice heard, contact your representatives ";
   const heroLast = "Today.";
-  const timeoutId = useRef<NodeJS.Timeout | null>(null);
-  const x = useSpring(0, {damping: 15})
-  const backgroundMask = useMotionTemplate`inset(0 ${x}% 0 0)`
-  const onPointerLeave = () => {
-    if(timeoutId.current) clearTimeout(timeoutId.current);
-    timeoutId.current = setTimeout(() => {
-      x.set(0);
-    }, 2000);
-  }
-  const onPointerEnter = () => {
-    if(timeoutId.current) clearTimeout(timeoutId.current);
-  }
+
 
   return (
     <section
-    onPointerLeave={onPointerLeave}
-    onPointerEnter={onPointerEnter}
-    onPointerMove={(e) => {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const diffX = Math.max(rect.right - e.clientX, 0)
-      const percentX = Math.min((diffX / rect.width) * 100, 100)
-      x.set(percentX)
-    }}
       className={`${styles.container}
             relative w-full overflow-hidden shadow-2xl
             sm:rounded-3xl sm:max-w-[min(1000px,92vw)]
@@ -40,7 +21,6 @@ export default function Hero() {
           `}
     >
       <motion.div className="hidden sm:block absolute inset-0"
-        style={{clipPath: backgroundMask}}
       >
         <Image
           src="/images/kamran-abdullayev.jpg"

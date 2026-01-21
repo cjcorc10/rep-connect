@@ -1,77 +1,68 @@
+@import '../../styles/typography';
+
 .modal {
-  position: absolute;
-  bottom: 0;
+  position: fixed;
   width: 100%;
-  max-width: 50rem;
+  max-width: 70rem;
   background-color: white;
-  border-radius: 3rem 3rem 0 0;
+  border-radius: 3rem ;
   height: 90vh;
   overflow-y: auto;
 
   .header {
-    position: relative;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    @media (min-width: 640px) {
-      flex-direction: row-reverse;
-      align-items: center;
-    }
-    .partyBG {
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      inset: 0;
-      z-index: 1;
-      border-radius: 3rem 3rem 0 0;
-      flex-grow: 1;
-      @media (min-width: 640px) {
-        width: 75%;
-      }
-    }
+    align-items: center;
+    height: 75vh;
+    flex-direction: column;
     .imageContainer {
+      width: min(100%, 32rem);
       height: 65vh;
-      width: 100%;
       position: relative;
       overflow: hidden;
-      border-radius: 3rem 3rem 0 0;
-      z-index: 2;
-      @media (min-width: 640px) {
-        width: 40rem;
-      }
+      border-radius: 3rem;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .repName {
-      font-size: 4rem;
-      // mix-blend-mode: difference;
-      line-height: 1.1;
-      inset: 0;
-      color: white;
-      font-weight: bold;
+      @include display-d2;
+      margin-top: 1rem;
       z-index: 3;
     }
   }
-  .nav {
+    .midTerm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      .midTermTitle {
+        @include display-d3;
+        line-height: 1;
+        margin-bottom: 1rem;
+        .nextMidTerm {
+
+          color: red;
+        }
+        .currentMidTerm {
+          color: black;
+        }
+      }
+  
+    }
+    
+ .nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+            }
     .navList {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      font-size: 1rem;
-      padding: 2rem;
-
-      @media (min-width: 640px) {
-        gap: 3rem;
-        padding-left: 3rem;
-      }
     }
   }
-  .midTerm {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 1rem;
-  }
-}

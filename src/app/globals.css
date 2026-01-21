@@ -1,8 +1,56 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 body {
-  font-family: "Inter Tight", sans-serif;
+  font-family: "IBM Plex Serif", serif;
+}
+
+/* Typography System - Type Guide */
+@layer utilities {
+  /* Display/D1: IBM Plex Sans, SemiBold, 64px */
+  .display-d1 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600; /* SemiBold */
+    font-size: 64px;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  /* Display/D2: IBM Plex Sans, SemiBold, 32px */
+  .display-d2 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600; /* SemiBold */
+    font-size: 32px;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  /* Display/D3: IBM Plex Sans, SemiBold, 16px */
+  .display-d3 {
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 400; /* SemiBold */
+    font-size: 24px;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  /* Text/T1: IBM Plex Serif, Regular, 16px */
+  .text-t1 {
+    font-family: "IBM Plex Serif", serif;
+    font-weight: 400; /* Regular */
+    font-size: 16px;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  /* Text/T2: IBM Plex Serif, Light, 12px */
+  .text-t2 {
+    font-family: "IBM Plex Serif", serif;
+    font-weight: 300; /* Light */
+    font-size: 12px;
+    line-height: normal;
+    letter-spacing: normal;
+  }
 }
 
 /* remove arrows from number input */
@@ -22,6 +70,7 @@ html {
 :root {
   --accent-red: #ff5252;
   --accent-blue: #4760ff;
+
 }
 
 @theme inline {
