@@ -36,7 +36,7 @@ export default function RepInfo({
         {loading ? (
           <p className="text-gray-500">Loading...</p>
         ) : (
-          <p className="text-t1 px-24">
+          <p className="text-t1 md:px-24">
             {wiki?.extract || "No additional information available."}
           </p>
         )}
@@ -49,7 +49,7 @@ export default function RepInfo({
         >
           Details
         </h2>
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm sm:text-base px-24">
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-sm sm:text-base md:px-24">
           {rep.party && (
             <>
               <dt className="font-medium text-gray-600">Party</dt>
@@ -69,7 +69,7 @@ export default function RepInfo({
         >
           Contact
         </h2>
-        <address className="not-italic space-y-1 text-sm sm:text-base px-24">
+        <address className="not-italic space-y-1 text-sm sm:text-base md:px-24">
           {rep.address && (
             <p className="whitespace-pre-line">{rep.address}</p>
           )}
@@ -86,7 +86,7 @@ export default function RepInfo({
         </address>
 
         {isNextMidTerm && rep.phone && (
-          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-center sm:text-left mx-24">
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-center sm:text-left md:mx-24">
             <p className="text-red-600 font-bold text-base mb-2">
               This candidate is up for re-election in the next
               mid-term.
@@ -115,7 +115,7 @@ export default function RepInfo({
         >
           Transparency & Data
         </h2>
-        <ul className="list-disc pl-5 space-y-1 text-sm sm:text-base mx-24">
+        <ul className="list-disc pl-5 space-y-1 text-sm sm:text-base md:mx-24">
           {rep.opensecrets_id && (
             <li>
               <a

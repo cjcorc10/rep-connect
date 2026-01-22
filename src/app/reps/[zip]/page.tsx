@@ -11,7 +11,6 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function Page() {
   const params = useParams();
   const searchParams = useSearchParams();
-  // State variable to hold the currently selected rep data
   const [selectedRep, setSelectedRep] = useState<Rep | null>(null);
 
   const address = useMemo(() => {

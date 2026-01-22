@@ -3,8 +3,7 @@
 import Image from "next/image";
 import SearchForm from "../searchForm";
 import styles from "./hero.module.css";
-import {motion, useSpring, useMotionTemplate} from "framer-motion";
-import { useRef } from "react";
+import {motion} from "framer-motion";
 
 export default function Hero() {
   const heroTitle =

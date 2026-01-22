@@ -1,11 +1,10 @@
 "use client";
-import Image from "next/image";
 import { Rep } from "../../lib/definitions";
 import { useSelectedRep } from "../selectedRepContext";
-import { motion, scale } from "framer-motion";
+import { motion } from "framer-motion";
 import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
-import styles from "./repCard.module.css";
+import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
 
 type RepCardProp = {
@@ -39,7 +38,7 @@ export default function RepCard({ rep }: RepCardProp) {
 
         >
         <RepImageContainer portraitSrc={imageUrl} />
-        <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className="text-white text-3xl font-bold absolute bottom-5 w-full text-center z-2">{rep.full_name}</motion.h3>
+        <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>{rep.full_name}</motion.h3>
         </motion.div>
     </motion.div>
   );

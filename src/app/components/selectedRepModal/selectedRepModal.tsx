@@ -117,28 +117,22 @@ export default function SelectedRepModal() {
           </aside>
 
           <AnimatePresence>
-            <motion.nav
-              initial={{ opacity: 0, y: 10, filter: "blur(5px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0)" }}
-              exit={{ opacity: 0, y: 10, filter: "blur(5px)" }}
-              transition={{
-                duration: 0.5,
-                delay: 0.5,
-                ease: "easeOut",
-              }}
+            <nav
               aria-label="Representative links"
               className={styles.nav}
             >
               <ul className={styles.navList}>
                 {selectedRep.phone && (
-                  <li>
+                  <motion.li
+                  initial={{}}
+                  >
                     <AnchorAsButton href={`tel:${selectedRep.phone}`}>
                       <Phone
                         size={24}
                         color="white"
                       />
                     </AnchorAsButton>
-                  </li>
+                  </motion.li>
                 )}
                 {selectedRep.twitter && (
                   <li>
@@ -153,7 +147,7 @@ export default function SelectedRepModal() {
                   </li>
                 )}
               </ul>
-            </motion.nav>
+            </nav>
           </AnimatePresence>
             
           <AnimatePresence>

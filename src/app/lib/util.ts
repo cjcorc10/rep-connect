@@ -12,11 +12,9 @@ type GeocodeData = {
   }>;
 };
 
-// function gets bounds of zipcode
 export const getCoordinates = async (
   zipcode: string
 ): Promise<GeocodeData | null> => {
-  try {
     const response = await fetch(
       `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
     );
@@ -25,18 +23,11 @@ export const getCoordinates = async (
     }
 
     return await response.json();
-  } catch {
-    return null;
-  }
-
-  //   const { northeast, southwest } = data.results[0].geometry.bounds;
-  //   return { northeast, southwest };
 };
 
 type DistrictFeature = {
   attributes: Record<string, string>;
 };
-// function gets districts based on coordinates
 export const getDistricts = async (coordinates: Coordinates) => {
   const url = constructDistrictUrl(coordinates);
   const response = await fetch(url);
@@ -48,19 +39,16 @@ export const getDistricts = async (coordinates: Coordinates) => {
   const features = data.features || [];
   const stateCode = features[0].attributes.STATE;
 
-  // extract the district number from string
   const districts = features.map(
     (feature: DistrictFeature) =>
       feature.attributes.NAME.split(' ')[2]
   );
 
-  // convert state code to state abbreviation
   const state = fipsToState[stateCode];
 
   return { state, districts };
 };
 
-// constructs the url for fetching the districts based on coordinates
 const constructDistrictUrl = (coordinates: Coordinates) => {
   const baseURL = process.env.DISTRICT_API_URL;
   if (!baseURL) {
@@ -68,10 +56,8 @@ const constructDistrictUrl = (coordinates: Coordinates) => {
   }
   const { northeast, southwest } = coordinates;
 
-  // construct the bounding box geometry parameter (xmin,ymin,xmax,ymax)
   const geometry = `${southwest.lng},${southwest.lat},${northeast.lng},${northeast.lat}`;
 
-  // add query parameters
   const queryParams = new URLSearchParams({
     geometry,
     geometryType: 'esriGeometryEnvelope',

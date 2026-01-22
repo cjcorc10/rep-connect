@@ -1,0 +1,25 @@
+@import '../../styles/typography';
+
+.repCardContainer {
+  height: 65vh;
+  width: min(100%, 32rem);
+  border-radius: 3rem;
+  position: relative;
+}
+
+.repCardImage {
+  border-radius: 3rem;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.repName {
+  @include display-d2;
+  color: white;
+  mix-blend-mode: difference;
+  position: absolute;
+  bottom: 5;
+  text-align: center; 
+  z-index: 2;
+  width: 100%;
+}
