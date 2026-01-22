@@ -5,7 +5,7 @@ import SenateContainer from "./senateContainer";
 import HouseContainer from "./houseContainer";
 import RepCard from "./repCard/repCard";
 import { Rep } from "../lib/definitions";
-import RepsSkeleton from "./skeletons/repsSkeleton";
+// import RepsSkeleton from "./skeletons/repsSkeleton";
 import {motion} from 'framer-motion'
 
 type RepsData = {
@@ -59,7 +59,8 @@ export default function RepFetchWrapper({
   }, [address]);
 
   if (loading) {
-    return <RepsSkeleton />;
+    // return <RepsSkeleton />;
+    return null;
   }
 
   if (notFoundError) {

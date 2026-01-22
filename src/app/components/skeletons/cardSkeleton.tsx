@@ -2,13 +2,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CardSkeleton() {
   return (
-    <div className="flex items-center space-x-4 min-h-[175px] w-full">
-      <Skeleton className="h-[100px] w-[100px] rounded-full" />
-      <div className="flex flex-col flex-1 space-y-4">
-        <Skeleton className="h-6 w-[175px] rounded-full" />
-        <Skeleton className="h-6 w-[400px] rounded-full" />
-        <Skeleton className="h-6 w-[150px] rounded-full" />
-      </div>
+    <div className="relative h-[65vh] w-full max-w-[32rem] rounded-[3rem] overflow-hidden shadow-lg">
+      {/* Image skeleton with gradient overlay */}
+      <Skeleton className="absolute inset-0 w-full h-full rounded-[3rem]" />
+      {/* Gradient overlay simulation */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/50 rounded-[3rem]" />
+      {/* Name skeleton at bottom center - matches display-d2 typography */}
+      <Skeleton className="absolute bottom-5 left-1/2 -translate-x-1/2 h-8 w-48 rounded-full" />
     </div>
   );
 }

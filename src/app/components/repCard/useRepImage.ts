@@ -7,7 +7,6 @@ export function useRepImage(rep: Rep) {
 
   useEffect(() => {
 
-    // if no wikipedia id, use the fallback image
     if (!rep.wikipedia_id) {
       setImageUrl(rep.image_url);
       return;
@@ -15,10 +14,14 @@ export function useRepImage(rep: Rep) {
 
     setLoading(true);
 
-    const params = new URLSearchParams();
-      params.append("wikipedia_id", rep.wikipedia_id);
+    const params = new URLSearchParams('wikipedia_id=' + rep.wikipedia_id);
 
-    fetch(`/api/rep-image?${params.toString()}`)
+    fetch(`/api/rep-image?${params.toString()}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         setImageUrl(data.imageUrl);

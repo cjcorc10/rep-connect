@@ -19,7 +19,7 @@ export default function RepsSkeleton() {
         aria-labelledby="house-heading"
         className="mt-6"
       >
-        <TitleSkeleton />
+        <TitleSkeleton showSubtext={true} />
         <div className="flex flex-wrap gap-12 justify-center">
           <CardSkeleton />
           <CardSkeleton />

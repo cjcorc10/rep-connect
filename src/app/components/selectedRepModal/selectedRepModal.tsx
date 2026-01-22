@@ -80,10 +80,7 @@ export default function SelectedRepModal() {
       ? imageUrl
       : selectedRep.image_url || "";
   const expiration = new Date(selectedRep.end);
-  const partyColor =
-    selectedRep.party === "Republican"
-      ? "var(--accent-red)"
-      : "var(--accent-blue)";
+
   return (
     <>
       <motion.div

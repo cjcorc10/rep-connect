@@ -22,7 +22,10 @@ export default function RepCard({ rep }: RepCardProp) {
         styles.repCardContainer,
         "relative flex flex-row cursor-pointer shadow-lg"
       )}
-      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 10, scale: 0.95}}
+      whileTap={{ y: 0.5 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, delay: 0.2 }}}
+      viewport={{ once: true }}
       transition={{
         type: "spring",
         stiffness: 300,
@@ -37,7 +40,12 @@ export default function RepCard({ rep }: RepCardProp) {
         )}
 
         >
-        <RepImageContainer portraitSrc={imageUrl} />
+          {imageUrl ? (
+
+            <RepImageContainer portraitSrc={imageUrl} />
+          ) : (
+            <div className="w-full h-full bg-gray-200 animate-pulse" />
+          )}
         <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>{rep.full_name}</motion.h3>
         </motion.div>
     </motion.div>
