@@ -59,10 +59,10 @@ export default function HouseContainer({
         </div>
       </ContainerHeading>
 
-      <motion.div layout>
         {refining &&
           <Refine refineReps={refineReps} multipleDistricts={multipleDistricts} />
         }
+
         <motion.div
           layout
           transition={{
@@ -77,7 +77,6 @@ export default function HouseContainer({
             <RepCard key={rep.bioguide_id} rep={rep} />
           ))}
         </motion.div>
-      </motion.div>
 
       {reps.length === 0 && !multipleDistricts && (
         <div className="mt-6 rounded-lg border border-gray-200 p-6 text-center text-gray-600">

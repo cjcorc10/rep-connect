@@ -3,6 +3,8 @@ import StreetForm from "../streetForm";
 import RefineContainer from "./container/refineContainer";
 import styles from './refine.module.scss';
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, X} from "lucide-react";
 
 type RefineProps = {
     refineReps: (street: string, zip: string) => Promise<boolean>;
@@ -14,19 +16,9 @@ export default function Refine({ refineReps, multipleDistricts }: RefineProps) {
     const [showError, setShowError] = useState(false);
     const [refined, setRefined] = useState<boolean | null>(null);
 
-    // Handle error state: show error if refinement happened but multipleDistricts is still true,
-    // or if refinement didn't happen at all
+
     useEffect(() => {
-        if (refined === true && multipleDistricts) {
-            // Refinement happened (reps changed) but still multiple districts
-            setShowError(true);
-            const timer = setTimeout(() => {
-                setShowError(false);
-                setRefined(null);
-            }, 3000);
-            return () => clearTimeout(timer);
-        } else if (refined === false) {
-            // No refinement happened
+        if (refined === true && multipleDistricts || refined === false) {
             setShowError(true);
             const timer = setTimeout(() => {
                 setShowError(false);
@@ -43,32 +35,54 @@ export default function Refine({ refineReps, multipleDistricts }: RefineProps) {
     };
 
     return (
-        <RefineContainer>
-            <div className={styles.main}>
+        <div className={styles.main}>
+            <RefineContainer>
+
+                <AnimatePresence mode="popLayout">
                 {!isOpen ? (
-                    // State 1: Initial state - show refine button
-                    <>
-                        <p>Multiple districts were returned from your ZIP code. To refine results, click refine.</p>
-                        <button onClick={() => setIsOpen(true)}>refine</button>
-                    </>
+                    <motion.div key="popup" className={styles.contentWrapper}>
+                        <motion.p
+                        style={{position: 'relative'}}
+                        exit={{y: -80, opacity: 0}}
+                        className="text-lg"
+                        >Multiple districts were returned from your ZIP code. To refine results, click refine.</motion.p>
+                        <motion.button layoutId="refine-wrapper" className={styles.button} onClick={() => setIsOpen(true)}>
+                            <motion.p layoutId="refine-text">refine</motion.p>
+                        </motion.button>
+                    </motion.div>
                 ) : (
-                    <>
+                    <div>
+                        <AnimatePresence mode="popLayout" initial={false}>
                         {!multipleDistricts && refined ? (
-                            // State 3: Success - multipleDistricts is now false after refinement
-                            <p>Reps refined</p>
+                            <motion.div key="reps-refined" initial={{y: -20, opacity: 0}} animate={{y: 0, opacity: 1}} exit={{y: 40, opacity: 0, filter: 'blur(7px)'}} transition={{ease: 'easeOut'}} className={styles.status}>
+                                <p>Reps refined</p>
+                                <div className="flex justify-center items-center bg-black rounded-full p-2">
+                                    <Check className="w-10 h-10 text-white" />
+                                </div>
+                            </motion.div>
                         ) : showError ? (
-                            // State 4: Error - show error message briefly
-                            <p>Unsuccessful, please try again</p>
+                            <motion.div key="unsuccessful" initial={{y: -20, opacity: 0}} animate={{y: 0, opacity: 1}} exit={{y: 40, opacity: 0, filter: 'blur(7px)'}} transition={{ease: 'easeOut'}} className={styles.status}>
+                                <p>Unsuccessful, please try again</p>
+                                <div className="flex justify-center items-center bg-black rounded-full p-2">
+                                    <X className="w-7 h-7 text-white" />
+                                </div>
+                            </motion.div>
                         ) : (
-                            // State 2: Form state - show form to enter street address
-                            <>
-                                <p>Enter your street address to refine results.</p>
-                                <StreetForm refine={handleRefine} />
-                            </>
+                            <motion.div key="street-form"
+                            initial={{y: -20, opacity: 0}} animate={{y: 0, opacity: 1}}
+                            exit={{filter: 'blur(7px)', opacity: 0}}
+                            className={styles.contentWrapper}>
+                            {/* <motion.p className="text-lg" initial={{opacity: 0, y: -30}} animate={{opacity: 1, y: 0}} exit={{opacity: 0}} transition={{delay: 0.3, duration: 0.3}}>Enter your street name.</motion.p> */}
+
+                                <StreetForm refine={handleRefine}  />
+                            </motion.div>
                         )}
-                    </>
+                        </AnimatePresence>
+                    </div>
                 )}
-            </div>
-        </RefineContainer>
+                </AnimatePresence>
+            </RefineContainer>
+        </div>
     );
 }
+
