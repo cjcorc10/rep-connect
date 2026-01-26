@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/header";
 import Container from "./components/container";
-import MainContainer from "./components/mainContainer";
 
 export const metadata: Metadata = {
   title: "RepConnect",
@@ -19,7 +18,7 @@ export default function RootLayout({
       <body className="overflow-y-scroll">
         <Container>
           <Header />
-          <MainContainer>{children}</MainContainer>
+          {children}
         </Container>
       </body>
     </html>

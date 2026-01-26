@@ -15,8 +15,8 @@ export default function Hero() {
     <section
       className={`${styles.container}
             relative w-full overflow-hidden shadow-2xl
-            sm:rounded-3xl sm:max-w-[min(1000px,92vw)]
-            sm:h-[clamp(22rem,48vh,34rem)]
+            sm:rounded-3xl sm:max-w-[min(50rem,92vw)]
+            sm:h-[clamp(22rem,40vh,30rem)]
           `}
     >
       <motion.div className="hidden sm:block absolute inset-0"
@@ -33,7 +33,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/35" />
       </motion.div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 sm:px-8">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full sm:px-8">
         <header className="text-center">
           <h2 className={styles.title}>
             {heroTitle}
@@ -52,12 +52,10 @@ export default function Hero() {
         </header>
 
         <div
-          className="mt-4 w-full max-w-[720px]"
+          className="mt-4 w-full max-w-[50rem]"
           aria-label="Find your representatives by location"
         >
-          <div>
             <SearchForm />
-          </div>
         </div>
       </div>
     </section>

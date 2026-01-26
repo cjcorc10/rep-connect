@@ -1,0 +1,15 @@
+@use '../../styles/typography' as *;
+.nav {
+    .navList {
+        display: flex;
+        @include text-t1;
+        gap: 3em;
+        .listItem {
+            z-index: 10;
+        }
+        .listItem:hover {
+            color: #6b6b6b;
+
+        }
+    }
+}

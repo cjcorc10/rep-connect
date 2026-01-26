@@ -5,6 +5,7 @@ import type { Rep } from "@/app/lib/definitions";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ContainerHeading from "./containerHeading";
+import Refine from "./refine/refine";
 
 export default function HouseContainer({
   initialReps,
@@ -12,7 +13,7 @@ export default function HouseContainer({
   initialReps: Rep[];
 }) {
   const [reps, setReps] = useState<Rep[]>(initialReps);
-
+  const [refining, setRefining] = useState(reps.length > 1);
   // fetch house reps based on street and zip entered
   const fetchReps = async (street: string, zip: string) => {
     const res = await fetch("/api/house", {
@@ -24,7 +25,7 @@ export default function HouseContainer({
   };
 
   // decide to change state based on if refine was successful
-  const refine = async (street: string, zip: string) => {
+  const refineReps = async (street: string, zip: string) => {
     const newReps = await fetchReps(street, zip);
     if (newReps.length !== reps.length) {
       setReps(newReps);
@@ -37,6 +38,7 @@ export default function HouseContainer({
   const districts = Array.from(
     new Set(reps.map((rep) => rep.district))
   );
+  
   const multipleDistricts = districts.length > 1;
 
   return (
@@ -51,52 +53,16 @@ export default function HouseContainer({
                 }`
               : `district ${districts[0]} in ${reps[0].state}`}
           </p>
-          <p className="text-md text-gray-600 font-bold bg-gray-200 px-4 py-2 rounded-md ">
+          <p className="text-md text-gray-600 font-bold bg-gray-200 py-2 rounded-md ">
             {reps.length} {reps.length === 1 ? "rep" : "reps"} found
           </p>
         </div>
       </ContainerHeading>
 
       <motion.div layout>
-        <AnimatePresence mode="wait">
-          {multipleDistricts && (
-            <motion.div
-              className="mb-12 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col items-center"
-              initial={{
-                opacity: 0,
-                scale: 0.95,
-                y: 10,
-                filter: "blur(4px)",
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                filter: "blur(0)",
-                y: 0,
-              }}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-              }}
-              exit={{
-                opacity: 0,
-                filter: "blur(4px)",
-                height: 0,
-                padding: 0,
-                marginBottom: 0,
-                overflow: "hidden",
-              }}
-            >
-              <p className="text-sm sm:text-base font-medium text-amber-900">
-                We couldn’t determine a single district from your ZIP.
-                Add a street name to narrow it down or select from one
-                of the options below.{" "}
-              </p>
-              <StreetForm refine={refine} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
+        {refining &&
+          <Refine refineReps={refineReps} multipleDistricts={multipleDistricts} />
+        }
         <motion.div
           layout
           transition={{
@@ -105,7 +71,7 @@ export default function HouseContainer({
             damping: 40,
             ease: "easeOut",
           }}
-          className="flex flex-wrap gap-12 justify-center"
+          className="flex flex-wrap gap-16 justify-center"
         >
           {reps.map((rep) => (
             <RepCard key={rep.bioguide_id} rep={rep} />

@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import Button from "./button";
-import { Search } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import {motion} from "framer-motion";
 
 export default function SearchForm() {
   const router = useRouter();
@@ -36,13 +35,8 @@ export default function SearchForm() {
     <>
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-[720px] mx-auto
-          bg-white/95 backdrop-blur
-          rounded-xl shadow-md
-          p-2"
-      >
-        <div className="flex items-stretch gap-2">
-          <div className="flex-1 min-w-0">
+        className="w-fit mx-auto">
+        <div className="flex gap-2 relative items-center">
             <label htmlFor="zip" className="sr-only">
               ZIP code
             </label>
@@ -56,22 +50,20 @@ export default function SearchForm() {
               required
               aria-invalid={error ? "true" : "false"}
               className="
-                block w-full
+                block
                 rounded-lg
                 px-4 py-3
-                text-base sm:text-lg
+                text-2xl
                 bg-white text-gray-900 placeholder:text-gray-500
                 outline-none
-                ring-1 ring-gray-300 focus:ring-2 focus:ring-blue-600
+                ring-1 ring-gray-300 
               "
             />
             <input type="hidden" id="street" name="street" value="" />
-          </div>
+          <button className="absolute right-2 bg-black rounded-lg p-2 px-4 active:scale-95">
+            <ArrowRight color="white"/>
+          </button>
 
-          <Button>
-            <Search className="mr-2" />
-            Search
-          </Button>
         </div>
       </form>
 

@@ -13,7 +13,7 @@ export default function SenateContainer({
       className="mt-6 sm:mt-8"
     >
       <ContainerHeading isSenate={true} />
-      <div className="flex gap-12 justify-center flex-wrap">
+      <div className="flex gap-16 justify-center flex-wrap">
         {children}
       </div>
     </section>

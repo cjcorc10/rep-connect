@@ -1,4 +1,4 @@
-@import '../../styles/typography';
+@use '../../styles/typography' as *;
 
 .repCardContainer {
   height: 65vh;

@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export default function ContainerHeading({
   children,
   isSenate,
@@ -6,11 +8,15 @@ export default function ContainerHeading({
   isSenate: boolean;
 }) {
   return (
-    <header className="mb-4 sm:mb-6 z-30">
+    <motion.header 
+      initial={{ opacity: 0, y: 10}}
+      animate={{ opacity: 1, y: 0}}
+      transition={{ duration: 0.5, delay: 0.2  }}
+    className="mb-4 sm:mb-6 z-30">
       <h2 className="text-[2rem] font-bold text-gray-800">
         U.S. {isSenate ? "Senate" : "House of Representatives"}
       </h2>
       {children}
-    </header>
+    </motion.header>
   );
 }

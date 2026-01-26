@@ -1,10 +1,10 @@
 'use client';
-import { Loader, Search } from 'lucide-react';
-import Button from './button';
+import { ArrowRight, Loader, Search } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import z from 'zod';
 import { motion } from 'framer-motion';
+import SubmitButton from "./button/submitButton";
 
 const StreetSchema = z.object({
   street: z.string().min(1),
@@ -46,20 +46,25 @@ export default function StreetForm({
     <>
       <motion.form
         onSubmit={onSubmit}
-        className="flex bg-white rounded-2xl shadow-md px-4 py-2 mt-4 max-w-full"
+        className="flex bg-gray-100 rounded-lg shadow-md px-4 py-2 max-w-full relative items-center"
       >
         <input type="hidden" name="zip" value={zip} />
         <input
           type="text"
           ref={inputRef}
-          className="outline-none text-gray-800 text-md w-100"
+          className="outline-none text-black text-lg w-100"
           placeholder="Enter your street address (e.g., 191 Main St)"
           name="street"
           required
         />
-        <Button>
-          {loading ? <Loader className="animate-spin" /> : <Search />}
-        </Button>
+          <button className="absolute right-1 bg-black rounded-lg p-1 px-2 active:scale-95">
+        {!loading ? (
+            <ArrowRight color="white"/>
+            
+          ) : (
+            <Loader color="white" className="animate-spin" />
+          )}
+          </button>
       </motion.form>
       <p className="text-red-500 font-bold text-sm pt-4">{error}</p>
     </>

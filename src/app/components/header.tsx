@@ -1,11 +1,11 @@
 import Link from "next/link";
-import Nav from "./nav";
+import Nav from "./nav/nav";
 import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="flex justify-between items-center px-8 bg-white h-12 mt-1">
-      <h1 className="text-2xl font-bold ">
+    <header className="flex justify-between items-center px-8 h-12 mt-1">
+      <h1 className="display-d2">
         <Link href="/">
           {" "}
           <Image
