@@ -15,7 +15,9 @@ export default function Header() {
             height={20}
             className="inline-block mr-2"
           />
+          <span className="hidden sm:inline"> 
           Repconnect
+          </span>
         </Link>
       </h1>
       <Nav />

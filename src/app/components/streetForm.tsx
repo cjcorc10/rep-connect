@@ -40,8 +40,7 @@ export default function StreetForm({
     const { street, zip } = parsedData.data;
     setLoading(true);
     
-    // Block for 3 seconds before allowing refinement
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const res = await refine(street, zip);
     setLoading(false);
