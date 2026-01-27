@@ -25,6 +25,7 @@ export default function Refine({ refineReps, multipleDistricts }: RefineProps) {
                 setRefined(null);
             }, 3000);
             return () => clearTimeout(timer);
+            console.log('timer', timer);
         }
     }, [refined, multipleDistricts]);
 
@@ -63,9 +64,10 @@ export default function Refine({ refineReps, multipleDistricts }: RefineProps) {
                         ) : showError ? (
                             <motion.div key="unsuccessful" initial={{y: -20, opacity: 0}} animate={{y: 0, opacity: 1}} exit={{y: 40, opacity: 0, filter: 'blur(7px)'}} transition={{ease: 'easeOut'}} className={styles.status}>
                                 <p>Unsuccessful, please try again</p>
-                                <div className="flex justify-center items-center bg-black rounded-full p-2">
+                                <motion.div initial={{scale: 0.75}} animate={{scale: 1}} className="flex justify-center items-center bg-black rounded-full p-2">
                                     <X className="w-7 h-7 text-white" />
-                                </div>
+                                </motion.div>
+                                <p></p>
                             </motion.div>
                         ) : (
                             <motion.div key="street-form"

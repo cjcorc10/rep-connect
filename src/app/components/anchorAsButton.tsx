@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import React from "react";
 
 type AnchorAsButtonProps = {
@@ -11,8 +10,8 @@ export default function AnchorAsButton({
   children,
 }: AnchorAsButtonProps) {
   return (
-  <Button size="lg" asChild>
+  <button className="bg-black p-2 rounded-lg active:scale-95">
       <a href={href}>{children}</a>
-    </Button>
+    </button>
   );
 }

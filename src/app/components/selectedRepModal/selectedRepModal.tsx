@@ -73,8 +73,6 @@ export default function SelectedRepModal() {
     currentYear % 2 === 0 ? currentYear : currentYear + 1;
   const electionYear = new Date(selectedRep.end).getFullYear() - 1;
   const isNextMidTerm = electionYear === nextMidTermYear;
-  // Use original image initially to prevent flash, only switch to high-quality when loaded
-  // Check if imageUrl is different from original to know if a new image was fetched
   const portraitSrc =
     !imageLoading && imageUrl && imageUrl !== selectedRep.image_url
       ? imageUrl
@@ -105,7 +103,7 @@ export default function SelectedRepModal() {
 
             <span
                 style={{
-                  color: isNextMidTerm ? "red" : "green"
+                  color: isNextMidTerm ? "red" : "black"
                 }}
               >
                 {expiration.toLocaleDateString()}

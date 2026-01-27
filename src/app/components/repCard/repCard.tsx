@@ -23,8 +23,8 @@ export default function RepCard({ rep }: RepCardProp) {
         "relative flex flex-row cursor-pointer shadow-lg"
       )}
       initial={{ opacity: 0, y: 10, scale: 0.95}}
+      animate={{opacity: 1, y: 0, scale: 1}}
       whileTap={{ y: 0.5 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, delay: 0.2 }}}
       viewport={{ once: true }}
       transition={{
         type: "spring",
