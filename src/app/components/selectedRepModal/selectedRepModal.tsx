@@ -10,7 +10,7 @@ import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
 import RepCard from "../repCard/repCard";
 import RepImageContainer from "../repImageContainer/repImageContainer";
-import { Phone, Twitter } from "lucide-react";
+import { Phone, Twitter, X } from "lucide-react";
 import clsx from "clsx";
 
 type WikiData = {
@@ -92,7 +92,9 @@ export default function SelectedRepModal() {
           onClick={(e) => e.stopPropagation()}
         >
           <header className={styles.header}>
-
+            <div className={styles.closeButton}>
+              <X size={24} color="black" />
+            </div>
             <motion.div layoutId={`rep-image-${selectedRep.bioguide_id}`} className={styles.imageContainer}>
               <RepImageContainer portraitSrc={portraitSrc} />
             </motion.div>

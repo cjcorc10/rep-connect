@@ -5,35 +5,59 @@
   width: 100%;
   max-width: 70rem;
   background-color: white;
-  border-radius: 3rem ;
+  border-radius: 3rem 3rem 0 0;
   height: 90vh;
   overflow-y: auto;
+  bottom: 0;
+  padding: 0 0 2rem 0;
+
   @media (min-width: 768px) {
+  border-radius: 3rem;
+  bottom: auto;
   padding: 2rem 0;
   }
   .header {
     display: flex;
-    justify-content: center;
     align-items: center;
     height: 75vh;
     flex-direction: column;
+    align-self: baseline;
+    position: relative;
+    .closeButton { 
+      opacity: 0;
+      @media (max-width: 768px) {
+      position: absolute;
+      z-index: 20;
+      top: 5%;
+      right: 5%;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      opacity: 0.5;
+      border-radius: 99%;
+      padding: 0.5rem;
+      }
+    }
     .imageContainer {
       width: min(100%, 32rem);
       height: 65vh;
-      position: relative;
       overflow: hidden;
-      border-radius: 3rem;
+      border-radius: 3rem 3rem 0 0;
       z-index: 5;
       display: flex;
       justify-content: center;
       align-items: center;
+      
+      @media (min-width: 768px) {
+        position: relative;
+        border-radius: 3rem;
     }
+  }
     .repName {
       @include display-d2;
+      color: white;
       mix-blend-mode: difference;
       margin-top: 1rem;
-      color: white;
-      z-index: 3;
+      z-index: 5;
     }
   }
     .midTerm {
