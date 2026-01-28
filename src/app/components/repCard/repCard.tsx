@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type RepCardProp = {
   rep: Rep;
@@ -13,7 +14,7 @@ type RepCardProp = {
 
 export default function RepCard({ rep }: RepCardProp) {
   const { setSelectedRep } = useSelectedRep();
-  const { imageUrl } = useRepImage(rep);
+  const { imageUrl, loading } = useRepImage(rep);
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
@@ -38,16 +39,24 @@ export default function RepCard({ rep }: RepCardProp) {
           styles.repCardImage,
           "absolute w-full h-full"
         )}
-
-        >
-          {imageUrl ? (
-
-            <RepImageContainer portraitSrc={imageUrl} />
-          ) : (
-            <div className="w-full h-full bg-gray-200 animate-pulse" />
-          )}
-        <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>{rep.full_name}</motion.h3>
-        </motion.div>
+      >
+        {loading ? (
+          <>
+            <Skeleton className="absolute inset-0 w-full h-full rounded-[3rem]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/50 rounded-[3rem]" />
+            <Skeleton className="absolute bottom-5 left-1/2 -translate-x-1/2 h-8 w-48 rounded-full" />
+          </>
+        ) : imageUrl ? (
+          <RepImageContainer portraitSrc={imageUrl} />
+        ) : (
+          <div className="w-full h-full bg-gray-200 animate-pulse" />
+        )}
+        {!loading && (
+          <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>
+            {rep.full_name}
+          </motion.h3>
+        )}
+      </motion.div>
     </motion.div>
   );
 }

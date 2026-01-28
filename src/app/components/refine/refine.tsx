@@ -49,6 +49,7 @@ export default function Refine({ refineReps, multipleDistricts }: RefineProps) {
                         >Multiple districts were returned from your ZIP code. To refine results, click refine.</motion.p>
                         <motion.button layoutId="refine-wrapper" className={styles.button} onClick={() => setIsOpen(true)}>
                             <motion.p layoutId="refine-text">refine</motion.p>
+                            <motion.div layoutId="button-square" className={styles.square}></motion.div>
                         </motion.button>
                     </motion.div>
                 ) : (

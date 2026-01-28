@@ -5,8 +5,9 @@
   right: 0;
   
   @media (min-width: 768px) {
+    position: absolute;
     top: 50%;
-  left: 100%;
+  left: 105%;
   transform: translate(25%, -50%);
   z-index: 10;
 }

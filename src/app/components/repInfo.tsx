@@ -124,7 +124,7 @@ export default function RepInfo({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Campaign finance overview (OpenSecrets)
+                Who is funding this candidate? (OpenSecrets)
               </a>
             </li>
           )}
@@ -136,7 +136,7 @@ export default function RepInfo({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Legislative profile (GovTrack)
+                What is this candidate's legislative history? (GovTrack)
               </a>
             </li>
           )}
@@ -148,7 +148,7 @@ export default function RepInfo({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View committee assignments and more (Ballotpedia)
+                What is this candidate's committee assignments? (Ballotpedia)
               </a>
             </li>
           )}

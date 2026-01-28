@@ -17,8 +17,19 @@
     cursor: pointer;
     font-size: 1.2rem;
     padding: 0.3rem 0;
-    
+    position: relative;
+    overflow: hidden;
 
+}
+
+.square {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15%;
+    border-radius: 0.5rem 0 0 0;
+    height: 20%;
+    background-color: black;
 }
 
 .contentWrapper, .status{
