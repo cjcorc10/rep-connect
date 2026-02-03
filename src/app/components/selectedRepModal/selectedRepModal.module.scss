@@ -1,4 +1,4 @@
-@use '../../styles/typography' as *;
+@use "../../styles/typography" as *;
 
 .modal {
   position: fixed;
@@ -12,9 +12,9 @@
   padding: 0 0 2rem 0;
 
   @media (min-width: 768px) {
-  border-radius: 3rem;
-  bottom: auto;
-  padding: 2rem 0;
+    border-radius: 3rem;
+    bottom: auto;
+    padding: 2rem 0;
   }
   .header {
     display: flex;
@@ -23,18 +23,18 @@
     flex-direction: column;
     align-self: baseline;
     position: relative;
-    .closeButton { 
+    .closeButton {
       opacity: 0;
       @media (max-width: 768px) {
-      position: absolute;
-      z-index: 20;
-      top: 5%;
-      right: 5%;
-      cursor: pointer;
-      background-color: #f0f0f0;
-      opacity: 0.5;
-      border-radius: 99%;
-      padding: 0.5rem;
+        position: absolute;
+        z-index: 20;
+        top: 5%;
+        right: 5%;
+        cursor: pointer;
+        background-color: #f0f0f0;
+        opacity: 0.5;
+        border-radius: 99%;
+        padding: 0.5rem;
       }
     }
     .imageContainer {
@@ -46,51 +46,48 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      
+
       @media (min-width: 768px) {
         position: relative;
         border-radius: 3rem;
+      }
     }
-  }
     .repName {
       @include display-d2;
-      color: white;
-      mix-blend-mode: difference;
+      color: black;
       margin-top: 1rem;
       z-index: 5;
     }
   }
-    .midTerm {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      .midTermTitle {
-        @include display-d3;
-        line-height: 1;
-        margin-bottom: 1rem;
-        .nextMidTerm {
-
-          color: red;
-        }
-        .currentMidTerm {
-          color: black;
-        }
+  .midTerm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    .midTermTitle {
+      @include display-d3;
+      line-height: 1;
+      margin-bottom: 1rem;
+      .nextMidTerm {
+        color: red;
       }
-  
-    }
-    
- .nav {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-            }
-    .navList {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
+      .currentMidTerm {
+        color: black;
+      }
     }
   }
+
+  .nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  .navList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+}

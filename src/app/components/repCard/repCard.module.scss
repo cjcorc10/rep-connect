@@ -1,4 +1,4 @@
-@use '../../styles/typography' as *;
+@use "../../styles/typography" as *;
 
 .repCardContainer {
   height: 65vh;
@@ -16,10 +16,9 @@
 .repName {
   @include display-d2;
   color: white;
-  mix-blend-mode: difference;
   position: absolute;
   bottom: 5;
-  text-align: center; 
+  text-align: center;
   z-index: 2;
   width: 100%;
 }
