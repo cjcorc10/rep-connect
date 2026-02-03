@@ -52,7 +52,7 @@ export default function SearchForm() {
                 block
                 rounded-full
                 px-4 py-3
-                text-base sm:text-xl md:text-2xl
+                text-2xl
                 bg-white text-gray-900 placeholder:text-gray-500
                 outline-none
                 ring-1 ring-gray-300 

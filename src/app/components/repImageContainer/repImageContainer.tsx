@@ -1,21 +1,30 @@
 import Image from "next/image";
-import React from 'react'
+import React from "react";
 
-
-export default function RepImageContainer({ portraitSrc }: { portraitSrc: string }) {
-    return <div className="w-full h-full relative">
-      <div style={{
-        "position": "absolute",
-        "inset": 0,
-         "background": "linear-gradient(to bottom, #ffffff00, #252525)",
-         "opacity": 1,
-         "zIndex": 1,
-      }} />
+export default function RepImageContainer({
+  portraitSrc,
+}: {
+  portraitSrc: string;
+}) {
+  return (
+    <div className="w-full h-full relative">
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(to bottom, #ffffff00, #252525)",
+          opacity: 1,
+          zIndex: 1,
+        }}
+      />
       <Image
-      src={portraitSrc}
-      alt={`portrait`}
-      fill
-      className="object-cover w-full h-full"
-      />;
-      </div>
+        src={portraitSrc}
+        alt={`portrait`}
+        fill
+        className="object-cover w-full h-full"
+      />
+      ;
+    </div>
+  );
 }

@@ -2,16 +2,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useSelectedRep } from "../selectedRepContext";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import AnchorAsButton from "../anchorAsButton";
 import RepInfo from "../repInfo";
 import { useRepImage } from "../repCard/useRepImage";
 import { Rep } from "../../lib/definitions";
 import styles from "./selectedRepModal.module.scss";
-import RepCard from "../repCard/repCard";
 import RepImageContainer from "../repImageContainer/repImageContainer";
 import { Phone, Twitter, X } from "lucide-react";
-import clsx from "clsx";
 
 type WikiData = {
   extract?: string;
@@ -73,10 +70,7 @@ export default function SelectedRepModal() {
     currentYear % 2 === 0 ? currentYear : currentYear + 1;
   const electionYear = new Date(selectedRep.end).getFullYear() - 1;
   const isNextMidTerm = electionYear === nextMidTermYear;
-  const portraitSrc =
-    !imageLoading && imageUrl && imageUrl !== selectedRep.image_url
-      ? imageUrl
-      : selectedRep.image_url || "";
+
   const expiration = new Date(selectedRep.end);
 
   return (
@@ -102,7 +96,7 @@ export default function SelectedRepModal() {
               layoutId={`rep-image-${selectedRep.bioguide_id}`}
               className={styles.imageContainer}
             >
-              <RepImageContainer portraitSrc={portraitSrc} />
+              <RepImageContainer portraitSrc={imageUrl} />
             </motion.div>
             <motion.h3
               className={styles.repName}
