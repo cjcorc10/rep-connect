@@ -136,7 +136,8 @@ export default function RepInfo({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                What is this candidate's legislative history? (GovTrack)
+                What is this candidate&apos;s legislative history?
+                (GovTrack)
               </a>
             </li>
           )}
@@ -148,7 +149,8 @@ export default function RepInfo({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                What is this candidate's committee assignments? (Ballotpedia)
+                What is this candidate&apos;s committee assignments?
+                (Ballotpedia)
               </a>
             </li>
           )}

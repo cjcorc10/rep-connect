@@ -2,7 +2,6 @@ import ContainerHeading from "./containerHeading";
 
 export default function SenateContainer({
   children,
-  state,
 }: {
   children: React.ReactNode;
   state: string;

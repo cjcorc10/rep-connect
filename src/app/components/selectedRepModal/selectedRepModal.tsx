@@ -19,9 +19,7 @@ type WikiData = {
 
 export default function SelectedRepModal() {
   const { selectedRep, setSelectedRep } = useSelectedRep();
-  const { imageUrl, loading: imageLoading } = useRepImage(
-    selectedRep as Rep
-  );
+  const { imageUrl } = useRepImage(selectedRep as Rep);
   const [wiki, setWiki] = useState<WikiData | null>(null);
   const [loading, setLoading] = useState(false);
 

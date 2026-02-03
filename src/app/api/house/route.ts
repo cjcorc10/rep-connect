@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import { getDistricts, getCoordinates } from '@/app/lib/util';
-import { getHouseReps } from '@/app/lib/db';
+import { NextResponse } from "next/server";
+import { getDistricts, getCoordinates } from "@/app/lib/util";
+import { getHouseReps } from "@/app/lib/db";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     };
     if (!zip)
       return NextResponse.json(
-        { error: 'ZIP code is required' },
+        { error: "ZIP code is required" },
         { status: 400 }
       );
 
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const g = geo?.results?.[0]?.geometry;
     if (!g)
       return NextResponse.json(
-        { error: 'Failed to get coordinates' },
+        { error: "Failed to get coordinates" },
         { status: 500 }
       );
 
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const reps = await getHouseReps(districts, state);
 
     return NextResponse.json({ state, districts, reps });
-  } catch (error) {
-    return NextResponse.json({ error: 'Server' }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: "Server" }, { status: 500 });
   }
 }

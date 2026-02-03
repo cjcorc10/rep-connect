@@ -1,9 +1,8 @@
 "use client";
 import RepCard from "@/app/components/repCard/repCard";
-import StreetForm from "@/app/components/streetForm";
 import type { Rep } from "@/app/lib/definitions";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import ContainerHeading from "./containerHeading";
 import Refine from "./refine/refine";
 
@@ -13,7 +12,7 @@ export default function HouseContainer({
   initialReps: Rep[];
 }) {
   const [reps, setReps] = useState<Rep[]>(initialReps);
-  const [refining, setRefining] = useState(reps.length > 1);
+  const [refining] = useState(reps.length > 1);
   // fetch house reps based on street and zip entered
   const fetchReps = async (street: string, zip: string) => {
     const res = await fetch("/api/house", {
