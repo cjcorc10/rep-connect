@@ -92,20 +92,31 @@ export default function SelectedRepModal() {
           onClick={(e) => e.stopPropagation()}
         >
           <header className={styles.header}>
-            <div className={styles.closeButton}>
+            <div
+              onClick={() => setSelectedRep(null)}
+              className={styles.closeButton}
+            >
               <X size={24} color="black" />
             </div>
-            <motion.div layoutId={`rep-image-${selectedRep.bioguide_id}`} className={styles.imageContainer}>
+            <motion.div
+              layoutId={`rep-image-${selectedRep.bioguide_id}`}
+              className={styles.imageContainer}
+            >
               <RepImageContainer portraitSrc={portraitSrc} />
             </motion.div>
-            <motion.h3 className={styles.repName} layoutId={`rep-name-${selectedRep.bioguide_id}`}>{selectedRep.full_name}</motion.h3>
+            <motion.h3
+              className={styles.repName}
+              layoutId={`rep-name-${selectedRep.bioguide_id}`}
+            >
+              {selectedRep.full_name}
+            </motion.h3>
           </header>
           <aside className={styles.midTerm}>
-            <h2 className={styles.midTermTitle}>Term expires: {" "}
-
-            <span
+            <h2 className={styles.midTermTitle}>
+              Term expires:{" "}
+              <span
                 style={{
-                  color: isNextMidTerm ? "red" : "black"
+                  color: isNextMidTerm ? "red" : "black",
                 }}
               >
                 {expiration.toLocaleDateString()}
@@ -120,14 +131,9 @@ export default function SelectedRepModal() {
             >
               <ul className={styles.navList}>
                 {selectedRep.phone && (
-                  <motion.li
-                  initial={{}}
-                  >
+                  <motion.li initial={{}}>
                     <AnchorAsButton href={`tel:${selectedRep.phone}`}>
-                      <Phone
-                        size={24}
-                        color="white"
-                      />
+                      <Phone size={24} color="white" />
                     </AnchorAsButton>
                   </motion.li>
                 )}
@@ -136,17 +142,14 @@ export default function SelectedRepModal() {
                     <AnchorAsButton
                       href={`https://twitter.com/${selectedRep.twitter}`}
                     >
-                      <Twitter
-                        size={24}
-                        color="white"
-                      />
+                      <Twitter size={24} color="white" />
                     </AnchorAsButton>
                   </li>
                 )}
               </ul>
             </nav>
           </AnimatePresence>
-            
+
           <AnimatePresence>
             <motion.div
               initial={{

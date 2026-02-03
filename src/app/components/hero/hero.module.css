@@ -1,18 +1,72 @@
 .container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  max-width: min(50rem, 92vw);
+  /* Taller on small screens so title + form don’t get cut off */
+  height: clamp(24rem, 55vh, 38rem);
+  min-height: 24rem;
   opacity: 0;
   animation: fade-in-up 0.5s ease-out forwards;
 }
 
+.imageWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.cover {
+  object-fit: cover;
+}
+
+.cover img {
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 1rem 1.25rem;
+  gap: 0.75rem;
+}
+
+.header {
+  text-align: center;
+}
+
 .title {
-  font-size: clamp(1.5rem, 8vw, 3rem);
+  font-size: clamp(1.875rem, 6vw + 1.25rem, 3rem);
   font-weight: 700;
+  line-height: 1.25;
   display: inline-block;
   mix-blend-mode: difference;
   color: white;
-  opacity: 0;
-  animation: fade-in-up 0.5s ease-out forwards;
-  animation-delay: 0.5s;
+  max-width: 100%;
 }
+
+.last {
+  display: inline-block;
+  color: #ffb6c1;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 50rem;
+}
+
 @keyframes fade-in-up {
   from {
     transform: translateY(10px);
@@ -23,24 +77,25 @@
   }
 }
 
-.last {
-  display: inline-block;
-  color: #ffb6c1;
-  transform-style: preserve-3d;
+@media (min-width: 640px) {
+  .container {
+    height: clamp(22rem, 30vh, 30rem);
+    min-height: unset;
+  }
+
+  .content {
+    padding: 1.5rem 2rem;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: clamp(2rem, 4vw + 1.25rem, 2.75rem);
+  }
 }
 
-.char {
-  --delay: 1s;
-  display: inline-block;
-  transform: rotateX(180deg) translateZ(20px) rotateZ(-45deg);
-  opacity: 0;
-  animation: fade-in-around 0.5s ease-out forwards;
-  animation-delay: calc(var(--index) * 0.1s + var(--delay));
-}
-
-@keyframes fade-in-around {
-  to {
-    opacity: 1;
-    transform: rotateX(0deg) translateZ(20px);
+@media (min-width: 1024px) {
+  .content {
+    padding: 2rem;
+    gap: 1.25rem;
   }
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { ArrowRight } from "lucide-react";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function SearchForm() {
   const router = useRouter();
@@ -33,37 +33,35 @@ export default function SearchForm() {
 
   return (
     <>
-      <form
-        onSubmit={onSubmit}
-        className="w-fit mx-auto">
+      <form onSubmit={onSubmit} className="w-full mx-auto px-8">
         <div className="flex gap-2 relative items-center">
-            <label htmlFor="zip" className="sr-only">
-              ZIP code
-            </label>
-            <input
-              type="text"
-              id="zip"
-              name="zip"
-              inputMode="numeric"
-              autoComplete="postal-code"
-              placeholder="Enter your ZIP code"
-              required
-              aria-invalid={error ? "true" : "false"}
-              className="
+          <label htmlFor="zip" className="sr-only">
+            ZIP code
+          </label>
+          <input
+            type="text"
+            id="zip"
+            name="zip"
+            inputMode="numeric"
+            autoComplete="postal-code"
+            placeholder="Enter your ZIP code"
+            required
+            aria-invalid={error ? "true" : "false"}
+            className="
+              w-full
                 block
-                rounded-lg
+                rounded-full
                 px-4 py-3
-                text-2xl
+                text-base sm:text-xl md:text-2xl
                 bg-white text-gray-900 placeholder:text-gray-500
                 outline-none
                 ring-1 ring-gray-300 
               "
-            />
-            <input type="hidden" id="street" name="street" value="" />
-          <button className="absolute right-2 bg-black rounded-lg p-2 px-4 active:scale-95">
-            <ArrowRight color="white"/>
+          />
+          <input type="hidden" id="street" name="street" value="" />
+          <button className="absolute right-2 bg-black rounded-full p-2 px-4 active:scale-95">
+            <ArrowRight color="white" />
           </button>
-
         </div>
       </form>
 
