@@ -6,7 +6,6 @@ export function useRepImage(rep: Rep) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-
     if (!rep.wikipedia_id) {
       setImageUrl(rep.image_url);
       return;
@@ -14,7 +13,9 @@ export function useRepImage(rep: Rep) {
 
     setLoading(true);
 
-    const params = new URLSearchParams('wikipedia_id=' + rep.wikipedia_id);
+    const params = new URLSearchParams(
+      "wikipedia_id=" + rep.wikipedia_id
+    );
 
     fetch(`/api/rep-image?${params.toString()}`, {
       method: "GET",

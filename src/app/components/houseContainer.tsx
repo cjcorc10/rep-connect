@@ -38,7 +38,7 @@ export default function HouseContainer({
   const districts = Array.from(
     new Set(reps.map((rep) => rep.district))
   );
-  
+
   const multipleDistricts = districts.length > 1;
 
   return (
@@ -53,30 +53,33 @@ export default function HouseContainer({
                 }`
               : `district ${districts[0]} in ${reps[0].state}`}
           </p>
-          <p className="text-md text-gray-600 font-bold bg-gray-200 py-2 rounded-md ">
+          <p className="text-md text-gray-600 font-bold bg-gray-200 p-2 rounded-md">
             {reps.length} {reps.length === 1 ? "rep" : "reps"} found
           </p>
         </div>
       </ContainerHeading>
 
-        {refining &&
-          <Refine refineReps={refineReps} multipleDistricts={multipleDistricts} />
-        }
+      {refining && (
+        <Refine
+          refineReps={refineReps}
+          multipleDistricts={multipleDistricts}
+        />
+      )}
 
-        <motion.div
-          layout
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 40,
-            ease: "easeOut",
-          }}
-          className="flex flex-wrap gap-16 justify-center"
-        >
-          {reps.map((rep) => (
-            <RepCard key={rep.bioguide_id} rep={rep} />
-          ))}
-        </motion.div>
+      <motion.div
+        layout
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 40,
+          ease: "easeOut",
+        }}
+        className="flex flex-wrap gap-16 justify-center"
+      >
+        {reps.map((rep) => (
+          <RepCard key={rep.bioguide_id} rep={rep} />
+        ))}
+      </motion.div>
 
       {reps.length === 0 && !multipleDistricts && (
         <div className="mt-6 rounded-lg border border-gray-200 p-6 text-center text-gray-600">

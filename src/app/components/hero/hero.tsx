@@ -3,59 +3,41 @@
 import Image from "next/image";
 import SearchForm from "../searchForm";
 import styles from "./hero.module.css";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Hero() {
   const heroTitle =
     "Make your voice heard, contact your representatives ";
   const heroLast = "Today.";
 
-
   return (
-    <section
-      className={`${styles.container}
-            relative w-full overflow-hidden shadow-2xl
-            sm:rounded-3xl sm:max-w-[min(50rem,92vw)]
-            sm:h-[clamp(22rem,40vh,30rem)]
-          `}
-    >
-      <motion.div className="hidden sm:block absolute inset-0"
-      >
+    <section className={styles.container}>
+      <motion.div className={styles.imageWrap}>
         <Image
           src="/images/kamran-abdullayev.jpg"
           alt="voting image"
           aria-hidden="true"
           fill
           priority
-          className="object-cover"
+          className={styles.cover}
           sizes="(max-width: 1024px) 92vw, 1000px"
         />
-        <div className="absolute inset-0 bg-black/35" />
+        <div className={styles.overlay} />
       </motion.div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center h-full sm:px-8">
-        <header className="text-center">
+      <div className={styles.content}>
+        <header className={styles.header}>
           <h2 className={styles.title}>
             {heroTitle}
-            <span className={styles.last}>
-              {heroLast.split("").map((char, i) => (
-                <span
-                  key={i}
-                  className={styles.char}
-                  style={{ "--index": i } as React.CSSProperties}
-                >
-                  {char}
-                </span>
-              ))}
-            </span>
+            <span className={styles.last}>{heroLast}</span>
           </h2>
         </header>
 
         <div
-          className="mt-4 w-full max-w-[50rem]"
+          className={styles.formWrapper}
           aria-label="Find your representatives by location"
         >
-            <SearchForm />
+          <SearchForm />
         </div>
       </div>
     </section>

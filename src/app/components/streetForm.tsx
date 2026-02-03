@@ -62,12 +62,12 @@ export default function StreetForm({
         <input
           type="text"
           ref={inputRef}
-          className="outline-none text-black text-lg w-full py-1 absolute top-0"
-          placeholder="Enter your address"
+          className="outline-none text-black text-lg w-full py-1 absolute top-0 "
+          placeholder="Enter your street address"
           name="street"
           required
         />
-          <motion.button initial={{opacity: 0, filter: 'blur(7px)'}} animate={{opacity: 1, filter: 'blur(0px)'}} className="bg-black rounded-lg w-[70px] h-[35px] active:scale-95 absolute right-[2%] bottom-[5%] overflow-hidden">
+          <motion.button layoutId="button-square" initial={{opacity: 0, filter: 'blur(7px)'}} animate={{opacity: 1, filter: 'blur(0px)'}} className="bg-black rounded-lg w-[70px] h-[35px] active:scale-95 absolute right-[2%] bottom-[5%] overflow-hidden">
             <AnimatePresence mode="popLayout">
 
         {!loading ? (
