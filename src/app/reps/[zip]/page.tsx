@@ -48,10 +48,10 @@ export default function Page() {
         <section className="max-w-6xl mx-auto">
           <header className="text-center">
             <Address address={address} />
-            <h2 className="text-[3rem] font-bold mt-4">
+            <h2 className="display-d2 font-bold">
               Your Representatives
             </h2>
-            <p className="text-lg text-gray-700">
+            <p className="text-t1 text-gray-700 mt-2">
               Find and contact your elected officials in Congress.
               Your voice matters in our democracy.
             </p>

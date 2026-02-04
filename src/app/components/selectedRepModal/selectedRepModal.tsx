@@ -78,18 +78,22 @@ export default function SelectedRepModal() {
         className="fixed inset-0 z-50 flex items-center justify-center"
         onClick={() => setSelectedRep(null)}
       >
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedRep(null);
+          }}
+          className={styles.closeButton}
+          aria-label="Close"
+        >
+          <X size={24} color="black" />
+        </div>
         <motion.div
           className={styles.modal}
           layoutId={`rep-card-${selectedRep.bioguide_id}`}
           onClick={(e) => e.stopPropagation()}
         >
           <header className={styles.header}>
-            <div
-              onClick={() => setSelectedRep(null)}
-              className={styles.closeButton}
-            >
-              <X size={24} color="black" />
-            </div>
             <motion.div
               layoutId={`rep-image-${selectedRep.bioguide_id}`}
               className={styles.imageContainer}

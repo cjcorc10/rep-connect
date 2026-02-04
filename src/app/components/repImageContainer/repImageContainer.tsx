@@ -18,13 +18,20 @@ export default function RepImageContainer({
           zIndex: 1,
         }}
       />
-      <Image
-        src={portraitSrc}
-        alt={`portrait`}
-        fill
-        className="object-cover w-full h-full"
-      />
-      ;
+
+      {
+        // if the portraitSrc is not empty, show the image
+        portraitSrc.trim() !== "" ? (
+          <Image
+            src={portraitSrc}
+            alt="portrait"
+            fill
+            className="object-cover w-full h-full"
+          />
+        ) : (
+          <div className="absolute inset-0 w-full h-full bg-gray-200 animate-pulse" />
+        )
+      }
     </div>
   );
 }

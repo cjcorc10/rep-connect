@@ -44,7 +44,7 @@ export default function HouseContainer({
     <section aria-labelledby="house-heading" className="mt-6">
       <ContainerHeading isSenate={false}>
         <div className="flex flex-wrap items-end justify-between gap-2">
-          <p className="mt-1 text-md text-gray-600">
+          <p className="mt-1 text-t1 text-gray-600">
             House member representing{" "}
             {multipleDistricts
               ? `districts ${districts.join(", ")} in ${
@@ -52,7 +52,7 @@ export default function HouseContainer({
                 }`
               : `district ${districts[0]} in ${reps[0].state}`}
           </p>
-          <p className="text-md text-gray-600 font-bold bg-gray-200 p-2 rounded-md">
+          <p className="text-t1 text-gray-600 font-bold bg-gray-200 p-2 rounded-md">
             {reps.length} {reps.length === 1 ? "rep" : "reps"} found
           </p>
         </div>
