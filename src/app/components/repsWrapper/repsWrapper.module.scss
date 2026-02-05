@@ -6,15 +6,14 @@
   width: 100%;
 
   .congress {
-    @include display-d2;
+    @include display-d1;
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    color: #4749a3;
+    color: white;
   }
   .names {
-    @include display-d3;
+    @include display-d2;
     position: absolute;
     bottom: 0;
     right: 0;
