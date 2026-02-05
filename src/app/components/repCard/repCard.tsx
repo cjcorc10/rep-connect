@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type RepCardProp = {
   rep: Rep;
@@ -13,7 +14,8 @@ type RepCardProp = {
 
 export default function RepCard({ rep }: RepCardProp) {
   const { setSelectedRep } = useSelectedRep();
-  const { imageUrl } = useRepImage(rep);
+  const { imageUrl, loading } = useRepImage(rep);
+  const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
@@ -22,8 +24,8 @@ export default function RepCard({ rep }: RepCardProp) {
         styles.repCardContainer,
         "relative flex flex-row cursor-pointer shadow-lg"
       )}
-      initial={{ opacity: 0, y: 10, scale: 0.95}}
-      animate={{opacity: 1, y: 0, scale: 1, }}
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
       whileTap={{ y: 0.5 }}
       viewport={{ once: true }}
       transition={{
@@ -38,16 +40,22 @@ export default function RepCard({ rep }: RepCardProp) {
           styles.repCardImage,
           "absolute w-full h-full"
         )}
-
+      >
+        {showSkeleton ? (
+          <Skeleton
+            className={clsx(styles.skeleton, "rounded-[3rem]")}
+            aria-hidden
+          />
+        ) : (
+          <RepImageContainer portraitSrc={imageUrl} />
+        )}
+        <motion.h3
+          layoutId={`rep-name-${rep.bioguide_id}`}
+          className={styles.repName}
         >
-          {imageUrl ? (
-
-            <RepImageContainer portraitSrc={imageUrl} />
-          ) : (
-            <div className="w-full h-full bg-gray-200 animate-pulse" />
-          )}
-        <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>{rep.full_name}</motion.h3>
-        </motion.div>
+          {rep.full_name}
+        </motion.h3>
+      </motion.div>
     </motion.div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import Address from "@/app/components/address/address";
-import RepFetchWrapper from "@/app/components/repFetchWrapper";
+import RepsWrapper from "@/app/components/repsWrapper/repsWrapper";
 import { SelectedRepProvider } from "@/app/components/selectedRepContext";
 import SelectedRepModal from "@/app/components/selectedRepModal/selectedRepModal";
 import { useParams, useSearchParams } from "next/navigation";
@@ -45,7 +45,7 @@ export default function Page() {
           transition: { duration: 0.2 },
         }}
       >
-        <section className="max-w-6xl mx-auto">
+        <section>
           <header className="text-center">
             <Address address={address} />
             <h2 className="display-d2 font-bold">
@@ -56,7 +56,7 @@ export default function Page() {
               Your voice matters in our democracy.
             </p>
           </header>
-          <RepFetchWrapper address={address} />
+          <RepsWrapper address={address} />
         </section>
       </motion.main>
     </SelectedRepProvider>

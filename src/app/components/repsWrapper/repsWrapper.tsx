@@ -1,11 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { notFound } from "next/navigation";
-import SenateContainer from "./senateContainer";
-import HouseContainer from "./houseContainer";
-import RepCard from "./repCard/repCard";
-import { Rep } from "../lib/definitions";
-// import RepsSkeleton from "./skeletons/repsSkeleton";
+import RepCard from "../repCard/repCard";
+import { Rep } from "../../lib/definitions";
+import styles from "./repsWrapper.module.scss";
 
 type RepsData = {
   state: string;
@@ -14,7 +12,7 @@ type RepsData = {
   senateReps: Rep[];
 };
 
-export default function RepFetchWrapper({
+export default function RepsWrapper({
   address,
 }: {
   address: string;
@@ -72,13 +70,36 @@ export default function RepFetchWrapper({
   }
 
   return (
-    <div>
-      <SenateContainer state={data.state}>
+    <div className={styles.main}>
+      <div className={styles.textContainer}>
+        <div className={styles.congress}>
+          <h1 className={styles.senate}>Senate</h1>
+          <h1 className={styles.house}>House</h1>
+        </div>
+        <div className={styles.names}>
+          {data.senateReps.map((senator) => (
+            <h2
+              key={senator.bioguide_id}
+              className={styles.senateName}
+            >
+              {senator.full_name}
+            </h2>
+          ))}
+          {data.houseReps.map((rep) => (
+            <h2 key={rep.bioguide_id} className={styles.houseName}>
+              {rep.full_name}
+            </h2>
+          ))}
+        </div>
+      </div>
+      <div className={styles.images}>
         {data.senateReps.map((senator) => (
           <RepCard key={senator.bioguide_id} rep={senator} />
         ))}
-      </SenateContainer>
-      <HouseContainer initialReps={data.houseReps} />
+        {data.houseReps.map((rep) => (
+          <RepCard key={rep.bioguide_id} rep={rep} />
+        ))}
+      </div>
     </div>
   );
 }

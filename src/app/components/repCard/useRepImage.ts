@@ -3,11 +3,14 @@ import { Rep } from "../../lib/definitions";
 
 export function useRepImage(rep: Rep) {
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(
+    () => !!rep.wikipedia_id
+  );
 
   useEffect(() => {
     if (!rep.wikipedia_id) {
       setImageUrl(rep.image_url);
+      setLoading(false);
       return;
     }
 

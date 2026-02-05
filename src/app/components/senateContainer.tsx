@@ -7,14 +7,9 @@ export default function SenateContainer({
   state: string;
 }) {
   return (
-    <section
-      aria-labelledby="senate-heading"
-      className="mt-6 sm:mt-8"
-    >
+    <section aria-labelledby="senate-heading">
       <ContainerHeading isSenate={true} />
-      <div className="flex gap-16 justify-center flex-wrap">
-        {children}
-      </div>
+      {children}
     </section>
   );
 }
