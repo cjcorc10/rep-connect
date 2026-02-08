@@ -53,7 +53,7 @@ export default function RepCard({ rep }: RepCardProp) {
           layoutId={`rep-name-${rep.bioguide_id}`}
           className={styles.repName}
         >
-          {rep.full_name}
+          {/* {rep.full_name} */}
         </motion.h3>
       </motion.div>
     </motion.div>

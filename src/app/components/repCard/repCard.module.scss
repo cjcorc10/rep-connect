@@ -1,7 +1,7 @@
 @use "../../styles/typography" as *;
 
 .repCardContainer {
-  height: 50vh;
+  height: min(50vh, 32rem);
   aspect-ratio: 4/3;
   position: relative;
 }
