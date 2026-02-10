@@ -4,6 +4,13 @@
   position: relative;
   height: 100vh;
   width: 100%;
+  display: grid;
+
+  .detailsLeft,
+  .detailsRight {
+    position: absolute;
+    top: 50%;
+  }
 
   .index {
     @include display-d2;
@@ -23,13 +30,30 @@
     bottom: 0;
     right: 0;
     padding: 2rem;
+    text-align: right;
   }
+  .detailsLeft,
+  .detailsRight {
+    position: absolute;
+    top: 50%;
+    width: 7rem;
+  }
+  .detailsLeft {
+    left: 22%;
+    text-align: right;
+  }
+  .detailsRight {
+    right: 22%;
+    display: flex;
+    flex-direction: column;
+  }
+
   .images {
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    padding: 40vh 0;
+    padding: 50vh 0;
     display: flex;
     flex-direction: column;
     align-items: center;

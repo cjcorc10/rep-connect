@@ -4,12 +4,12 @@ import { useRef } from "react";
 import RepCard from "../repCard/repCard";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/all";
+import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import type { RepsData } from "@/app/lib/definitions";
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, SplitText);
 
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
@@ -21,6 +21,8 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
   const imageRefs = useRef<HTMLDivElement[]>([]);
   const namesTextRefs = useRef<HTMLDivElement[]>([]);
   const indexTextRef = useRef<HTMLHeadingElement>(null);
+  const detailsLeftRef = useRef<HTMLParagraphElement>(null);
+  const detailsRightRef = useRef<HTMLDivElement>(null);
 
   // function to add element to given ref array
   const addToRefArray = (
@@ -59,9 +61,29 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       const moveDistanceImages =
         window.innerHeight - imagesContainerHeight;
       const imageActivationThreshold = window.innerHeight / 2;
+      const indexText = SplitText.create(indexRef.current, {
+        type: "lines",
+        mask: "lines",
+      });
+      const contactsText = SplitText.create(detailsRightRef.current, {
+        type: "lines",
+        mask: "lines",
+      });
+      const chamberText = SplitText.create(detailsLeftRef.current, {
+        type: "lines",
+        mask: "lines",
+      });
+      gsap.set(contactsText.lines, {
+        x: " -100%",
+        autoAlpha: 0,
+      });
+      gsap.set(chamberText.lines, {
+        x: "100%",
+        autoAlpha: 0,
+      });
 
-      gsap.from("h1", {
-        y: "100%",
+      gsap.from(indexText.lines, {
+        x: "-100%",
       });
 
       ScrollTrigger.create({
@@ -69,7 +91,34 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         start: "top top",
         end: `+=${window.innerHeight * 3}px`,
         scrub: 1,
+        markers: true,
         pin: true,
+        onEnter: () => {
+          gsap.to(contactsText.lines, {
+            x: "0%",
+            autoAlpha: 1,
+          });
+          gsap.to(chamberText.lines, {
+            x: "0%",
+            autoAlpha: 1,
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(contactsText.lines, {
+            x: "0%",
+          });
+          gsap.to(chamberText.lines, {
+            x: "0%",
+          });
+        },
+        onLeave: () => {
+          gsap.to(contactsText.lines, {
+            x: "-100%",
+          });
+          gsap.to(chamberText.lines, {
+            x: "100%",
+          });
+        },
         onUpdate: (self) => {
           const progress = self.progress;
           const currentIndex = Math.min(
@@ -103,6 +152,13 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                 opacity: 1,
                 duration: 0.5,
                 ease: "power3.out",
+              });
+              gsap.to(chamberText.lines, {
+                autoAlpha: 1,
+                textContent:
+                  currentIndex < data.senateReps.length
+                    ? "Senate"
+                    : "House",
               });
             } else {
               gsap.to(image, {
@@ -166,6 +222,13 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
             {rep.full_name}
           </div>
         ))}
+      </div>
+      <p ref={detailsLeftRef} className={styles.detailsLeft}>
+        Senate
+      </p>
+      <div ref={detailsRightRef} className={styles.detailsRight}>
+        <a>call</a>
+        <a>tweet</a>
       </div>
       <div ref={imagesContainer} className={styles.images}>
         {data.senateReps.map((senator) => (
