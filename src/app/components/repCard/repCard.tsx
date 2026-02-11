@@ -1,6 +1,6 @@
 "use client";
 import { Rep } from "../../lib/definitions";
-import { useSelectedRep } from "../selectedRepContext";
+import { useActiveRep } from "../activeRepContext";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
@@ -13,13 +13,13 @@ type RepCardProp = {
 };
 
 export default function RepCard({ rep }: RepCardProp) {
-  const { setSelectedRep } = useSelectedRep();
+  const { setActiveRep } = useActiveRep();
   const { imageUrl, loading } = useRepImage(rep);
   const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
-      onClick={() => setSelectedRep(rep)}
+      onClick={() => setActiveRep(rep)}
       className={clsx(
         styles.repCardContainer,
         "relative flex flex-row cursor-pointer shadow-lg"

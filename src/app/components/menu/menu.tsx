@@ -1,21 +1,45 @@
-import { useSelectedRep } from "../selectedRepContext";
-import styles from "./menu.module.scss";
 import { useState, useEffect } from "react";
+import { useActiveRep } from "../activeRepContext";
+import styles from "./menu.module.scss";
+import MenuButton from "./menuButton";
 
 export default function Menu() {
-  const { selectedRep } = useSelectedRep();
+  const { activeRep } = useActiveRep();
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  if (!activeRep) return null;
+
   return (
     <div className={styles.menu} data-mounted={isMounted}>
       <div className={styles.menuButtons}>
-        <button className={styles.menuButton}>call</button>
-        <button className={styles.menuButton}>tweet</button>
-        <button className={styles.menuButton}>view donations</button>
-        <button className={styles.menuButton}>view voting</button>
-        <button className={styles.menuButton}>view details</button>
+        <MenuButton variant="phone" phone={activeRep.phone}>
+          call
+        </MenuButton>
+        <MenuButton
+          variant="link"
+          href={`https://twitter.com/${activeRep.twitter}`}
+        >
+          tweet
+        </MenuButton>
+        <MenuButton
+          variant="link"
+          href={`https://www.opensecrets.org/members-of-congress/summary?cid=${activeRep.opensecrets_id}`}
+        >
+          donations
+        </MenuButton>
+        <MenuButton
+          variant="link"
+          href={`https://www.govtrack.us/congress/members/${activeRep.govtrack_id}`}
+        >
+          legislation
+        </MenuButton>
+        <MenuButton variant="button" onClick={() => {}}>
+          details
+        </MenuButton>
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export default function SelectedRepModal() {
 
     setLoading(true);
     fetch(
-      `/api/wikipedia/${encodeURIComponent(selectedRep.wikipedia_id)}`
+      `/api/wikipedia/${encodeURIComponent(selectedRep.wikipedia_id)}`,
     )
       .then((res) => {
         if (!res.ok) return null;

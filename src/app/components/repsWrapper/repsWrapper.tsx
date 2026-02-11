@@ -7,14 +7,14 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import type { RepsData } from "@/app/lib/definitions";
-import { useSelectedRep } from "../selectedRepContext";
+import { useActiveRep } from "../activeRepContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
-  const { setSelectedRep } = useSelectedRep();
+  const { setActiveRep } = useActiveRep();
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
   const namesText = useRef<HTMLDivElement>(null);
@@ -124,6 +124,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         onLeave: () => {
           gsap.to(contactsText.lines, { x: "-100%" });
           gsap.to(chamberText.lines, { x: "100%" });
+          setActiveRep(null);
         },
         onUpdate: (self) => {
           const progress = self.progress;
@@ -151,7 +152,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               imgTop <= imageActivationThreshold &&
               imgBottom >= imageActivationThreshold
             ) {
-              setSelectedRep(returnCurrentRep(currentIndex, data));
+              setActiveRep(returnCurrentRep(currentIndex, data));
               gsap.to(image, {
                 opacity: 1,
                 duration: 0.5,
