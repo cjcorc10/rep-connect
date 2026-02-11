@@ -1,16 +1,20 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import RepCard from "../repCard/repCard";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import type { RepsData } from "@/app/lib/definitions";
+import { useSelectedRep } from "../selectedRepContext";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+}
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
-  gsap.registerPlugin(ScrollTrigger, SplitText);
-
+  const { setSelectedRep } = useSelectedRep();
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
   const namesText = useRef<HTMLDivElement>(null);
@@ -24,13 +28,23 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
   const detailsLeftRef = useRef<HTMLParagraphElement>(null);
   const detailsRightRef = useRef<HTMLDivElement>(null);
 
-  // function to add element to given ref array
-  const addToRefArray = (
-    element: HTMLDivElement | null,
-    array: React.RefObject<HTMLDivElement[]>
-  ) => {
-    if (element && !array.current.includes(element)) {
-      array.current.push(element);
+  const addToRefArray = useCallback(
+    (
+      element: HTMLDivElement | null,
+      array: React.RefObject<HTMLDivElement[]>,
+    ) => {
+      if (element && !array.current.includes(element)) {
+        array.current.push(element);
+      }
+    },
+    [],
+  );
+
+  const returnCurrentRep = (index: number, data: RepsData) => {
+    if (index < data.senateReps.length) {
+      return data.senateReps[index];
+    } else {
+      return data.houseReps[index - data.senateReps.length];
     }
   };
 
@@ -61,6 +75,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       const moveDistanceImages =
         window.innerHeight - imagesContainerHeight;
       const imageActivationThreshold = window.innerHeight / 2;
+
       const indexText = SplitText.create(indexRef.current, {
         type: "lines",
         mask: "lines",
@@ -91,7 +106,6 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         start: "top top",
         end: `+=${window.innerHeight * 3}px`,
         scrub: 1,
-        markers: true,
         pin: true,
         onEnter: () => {
           gsap.to(contactsText.lines, {
@@ -104,41 +118,30 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           });
         },
         onEnterBack: () => {
-          gsap.to(contactsText.lines, {
-            x: "0%",
-          });
-          gsap.to(chamberText.lines, {
-            x: "0%",
-          });
+          gsap.to(contactsText.lines, { x: "0%" });
+          gsap.to(chamberText.lines, { x: "0%" });
         },
         onLeave: () => {
-          gsap.to(contactsText.lines, {
-            x: "-100%",
-          });
-          gsap.to(chamberText.lines, {
-            x: "100%",
-          });
+          gsap.to(contactsText.lines, { x: "-100%" });
+          gsap.to(chamberText.lines, { x: "100%" });
         },
         onUpdate: (self) => {
           const progress = self.progress;
           const currentIndex = Math.min(
             Math.floor(progress * totalReps),
-            totalReps - 1
+            totalReps - 1,
           );
-          // change index depending on progress
+
           gsap.set(indexTextRef.current, {
             textContent: `${currentIndex + 1}`,
           });
-          // move index container
           gsap.set(indexRef.current, {
             y: progress * moveDistanceIndex,
           });
-          // move images container
           gsap.set(imagesContainer.current, {
             y: progress * moveDistanceImages,
           });
 
-          // focus on images that are in the center of the viewport
           imageRefs.current.forEach((image) => {
             const imgRect = image.getBoundingClientRect();
             const imgTop = imgRect.top;
@@ -148,10 +151,22 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               imgTop <= imageActivationThreshold &&
               imgBottom >= imageActivationThreshold
             ) {
+              setSelectedRep(returnCurrentRep(currentIndex, data));
               gsap.to(image, {
                 opacity: 1,
                 duration: 0.5,
                 ease: "power3.out",
+              });
+              gsap.set(contactsText.lines, {
+                autoAlpha: 1,
+                textContent:
+                  currentIndex < data.senateReps.length
+                    ? "Texas"
+                    : `District ${
+                        data.houseReps[
+                          currentIndex - data.senateReps.length
+                        ].district
+                      }`,
               });
               gsap.to(chamberText.lines, {
                 autoAlpha: 1,
@@ -179,8 +194,8 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               Math.min(
                 1,
                 (progress - startProgress) /
-                  (endProgress - startProgress)
-              )
+                  (endProgress - startProgress),
+              ),
             );
 
             gsap.set(name, {
@@ -190,7 +205,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         },
       });
     },
-    { dependencies: [data] }
+    { dependencies: [data] },
   );
 
   return (
@@ -226,10 +241,9 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       <p ref={detailsLeftRef} className={styles.detailsLeft}>
         Senate
       </p>
-      <div ref={detailsRightRef} className={styles.detailsRight}>
-        <a>call</a>
-        <a>tweet</a>
-      </div>
+      <p ref={detailsRightRef} className={styles.detailsRight}>
+        {data.senateReps[0].state}
+      </p>
       <div ref={imagesContainer} className={styles.images}>
         {data.senateReps.map((senator) => (
           <div
