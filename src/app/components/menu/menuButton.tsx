@@ -5,18 +5,21 @@ type MenuButtonLink = {
   variant: "link";
   href: string;
   children: ReactNode;
+  color?: string;
 };
 
 type MenuButtonPhone = {
   variant: "phone";
   phone: string;
   children: ReactNode;
+  color?: string;
 };
 
 type MenuButtonAction = {
   variant: "button";
   onClick: () => void;
   children: ReactNode;
+  color?: string;
 };
 
 export type MenuButtonProps =
@@ -30,13 +33,14 @@ const linkProps = {
 } as const;
 
 export default function MenuButton(props: MenuButtonProps) {
-  const { children } = props;
+  const { children, color } = props;
   const className = styles.menuButton;
+  const style = color ? { backgroundColor: color } : undefined;
 
   switch (props.variant) {
     case "link":
       return (
-        <a className={className} href={props.href} {...linkProps}>
+        <a className={className} href={props.href} style={style} {...linkProps}>
           {children}
         </a>
       );
@@ -45,6 +49,7 @@ export default function MenuButton(props: MenuButtonProps) {
         <a
           className={className}
           href={`tel:${props.phone.replace(/\D/g, "")}`}
+          style={style}
         >
           {children}
         </a>
@@ -55,6 +60,7 @@ export default function MenuButton(props: MenuButtonProps) {
           type="button"
           className={className}
           onClick={props.onClick}
+          style={style}
         >
           {children}
         </button>

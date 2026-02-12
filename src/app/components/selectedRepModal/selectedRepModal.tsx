@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSelectedRep } from "../selectedRepContext";
+import { useActiveRep } from "../activeRepContext";
 import { useEffect, useState } from "react";
 import AnchorAsButton from "../anchorAsButton";
 import RepInfo from "../repInfo";
@@ -18,20 +18,20 @@ type WikiData = {
 };
 
 export default function SelectedRepModal() {
-  const { selectedRep, setSelectedRep } = useSelectedRep();
-  const { imageUrl } = useRepImage(selectedRep as Rep);
+  const { activeRep, setIsOpen } = useActiveRep();
+  const { imageUrl } = useRepImage(activeRep as Rep);
   const [wiki, setWiki] = useState<WikiData | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!selectedRep?.wikipedia_id) {
+    if (!activeRep?.wikipedia_id) {
       setWiki(null);
       return;
     }
 
     setLoading(true);
     fetch(
-      `/api/wikipedia/${encodeURIComponent(selectedRep.wikipedia_id)}`,
+      `/api/wikipedia/${encodeURIComponent(activeRep.wikipedia_id)}`,
     )
       .then((res) => {
         if (!res.ok) return null;
@@ -47,41 +47,41 @@ export default function SelectedRepModal() {
       .finally(() => {
         setLoading(false);
       });
-  }, [selectedRep?.wikipedia_id]);
+  }, [activeRep?.wikipedia_id]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setSelectedRep(null);
+        setIsOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setSelectedRep]);
+  }, [setIsOpen]);
 
-  if (!selectedRep) {
+  if (!activeRep) {
     return null;
   }
 
   const currentYear = new Date().getFullYear();
   const nextMidTermYear =
     currentYear % 2 === 0 ? currentYear : currentYear + 1;
-  const electionYear = new Date(selectedRep.end).getFullYear() - 1;
+  const electionYear = new Date(activeRep.end).getFullYear() - 1;
   const isNextMidTerm = electionYear === nextMidTermYear;
 
-  const expiration = new Date(selectedRep.end);
+  const expiration = new Date(activeRep.end);
 
   return (
     <>
       <motion.div
-        key={`modal-${selectedRep.bioguide_id}`}
+        key={`modal-${activeRep.bioguide_id}`}
         className="fixed inset-0 z-50 flex items-center justify-center"
-        onClick={() => setSelectedRep(null)}
+        onClick={() => setIsOpen(false)}
       >
         <div
           onClick={(e) => {
             e.stopPropagation();
-            setSelectedRep(null);
+            setIsOpen(false);
           }}
           className={styles.closeButton}
           aria-label="Close"
@@ -90,21 +90,21 @@ export default function SelectedRepModal() {
         </div>
         <motion.div
           className={styles.modal}
-          layoutId={`rep-card-${selectedRep.bioguide_id}`}
+          layoutId={`rep-card-${activeRep.bioguide_id}`}
           onClick={(e) => e.stopPropagation()}
         >
           <header className={styles.header}>
             <motion.div
-              layoutId={`rep-image-${selectedRep.bioguide_id}`}
+              layoutId={`rep-image-${activeRep.bioguide_id}`}
               className={styles.imageContainer}
             >
               <RepImageContainer portraitSrc={imageUrl} />
             </motion.div>
             <motion.h3
               className={styles.repName}
-              layoutId={`rep-name-${selectedRep.bioguide_id}`}
+              layoutId={`rep-name-${activeRep.bioguide_id}`}
             >
-              {selectedRep.full_name}
+              {activeRep.full_name}
             </motion.h3>
           </header>
           <aside className={styles.midTerm}>
@@ -126,17 +126,17 @@ export default function SelectedRepModal() {
               className={styles.nav}
             >
               <ul className={styles.navList}>
-                {selectedRep.phone && (
+                {activeRep.phone && (
                   <motion.li initial={{}}>
-                    <AnchorAsButton href={`tel:${selectedRep.phone}`}>
+                    <AnchorAsButton href={`tel:${activeRep.phone}`}>
                       <Phone size={24} color="white" />
                     </AnchorAsButton>
                   </motion.li>
                 )}
-                {selectedRep.twitter && (
+                {activeRep.twitter && (
                   <li>
                     <AnchorAsButton
-                      href={`https://twitter.com/${selectedRep.twitter}`}
+                      href={`https://twitter.com/${activeRep.twitter}`}
                     >
                       <Twitter size={24} color="white" />
                     </AnchorAsButton>
@@ -160,7 +160,7 @@ export default function SelectedRepModal() {
               exit={{ opacity: 0 }}
             >
               <RepInfo
-                rep={selectedRep}
+                rep={activeRep}
                 wiki={wiki}
                 loading={loading}
                 isNextMidTerm={isNextMidTerm}

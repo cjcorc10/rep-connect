@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import RepCard from "../repCard/repCard";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
@@ -15,6 +15,7 @@ if (typeof window !== "undefined") {
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
   const { setActiveRep } = useActiveRep();
+
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
   const namesText = useRef<HTMLDivElement>(null);
@@ -158,6 +159,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                 duration: 0.5,
                 ease: "power3.out",
               });
+
               gsap.set(contactsText.lines, {
                 autoAlpha: 1,
                 textContent:

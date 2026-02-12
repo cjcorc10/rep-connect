@@ -13,16 +13,18 @@ type RepCardProp = {
 };
 
 export default function RepCard({ rep }: RepCardProp) {
-  const { setActiveRep } = useActiveRep();
+  const { setIsOpen } = useActiveRep();
   const { imageUrl, loading } = useRepImage(rep);
   const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
-      onClick={() => setActiveRep(rep)}
+      onClick={() => {
+        setIsOpen(true);
+      }}
       className={clsx(
         styles.repCardContainer,
-        "relative flex flex-row cursor-pointer shadow-lg"
+        "relative flex flex-row cursor-pointer shadow-lg",
       )}
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -38,7 +40,7 @@ export default function RepCard({ rep }: RepCardProp) {
         layoutId={`rep-image-${rep.bioguide_id}`}
         className={clsx(
           styles.repCardImage,
-          "absolute w-full h-full"
+          "absolute w-full h-full",
         )}
       >
         {showSkeleton ? (

@@ -5,6 +5,8 @@ import { Rep } from "../lib/definitions";
 type ActiveRepContextType = {
   activeRep: Rep | null;
   setActiveRep: (rep: Rep | null) => void;
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 };
 
 const ActiveRepContext = createContext<
@@ -15,14 +17,20 @@ export function ActiveRepProvider({
   children,
   activeRep,
   setActiveRep,
+
+  isOpen,
+  setIsOpen,
 }: {
   children: ReactNode;
   activeRep: Rep | null;
   setActiveRep: (rep: Rep | null) => void;
+
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
 }) {
   return (
     <ActiveRepContext.Provider
-      value={{ activeRep, setActiveRep }}
+      value={{ activeRep, setActiveRep, isOpen, setIsOpen }}
     >
       {children}
     </ActiveRepContext.Provider>
@@ -33,7 +41,7 @@ export function useActiveRep() {
   const context = useContext(ActiveRepContext);
   if (context === undefined) {
     throw new Error(
-      "useActiveRep must be used within an ActiveRepProvider"
+      "useActiveRep must be used within an ActiveRepProvider",
     );
   }
   return context;

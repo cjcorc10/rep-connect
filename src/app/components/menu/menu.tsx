@@ -4,7 +4,7 @@ import styles from "./menu.module.scss";
 import MenuButton from "./menuButton";
 
 export default function Menu() {
-  const { activeRep } = useActiveRep();
+  const { activeRep, setSelectedRep, setIsOpen } = useActiveRep();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -16,12 +16,17 @@ export default function Menu() {
   return (
     <div className={styles.menu} data-mounted={isMounted}>
       <div className={styles.menuButtons}>
-        <MenuButton variant="phone" phone={activeRep.phone}>
+        <MenuButton
+          variant="phone"
+          phone={activeRep.phone}
+          color="#4760ff"
+        >
           call
         </MenuButton>
         <MenuButton
           variant="link"
           href={`https://twitter.com/${activeRep.twitter}`}
+          color="#000000"
         >
           tweet
         </MenuButton>
@@ -37,7 +42,12 @@ export default function Menu() {
         >
           legislation
         </MenuButton>
-        <MenuButton variant="button" onClick={() => {}}>
+        <MenuButton
+          variant="button"
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
           details
         </MenuButton>
       </div>
