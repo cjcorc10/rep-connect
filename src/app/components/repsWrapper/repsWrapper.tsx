@@ -1,20 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { useCallback, useRef } from "react";
 import RepCard from "../repCard/repCard";
+import RepDetailCard from "../repDetailCard/repDetailCard";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import gsap from "gsap";
 import type { RepsData } from "@/app/lib/definitions";
 import { useActiveRep } from "../activeRepContext";
+import Refine from "../refine/refine";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 }
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
-  const { setActiveRep } = useActiveRep();
+  const { setActiveRep, setSelectedReps, selectedReps } =
+    useActiveRep();
 
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
@@ -126,6 +130,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           gsap.to(contactsText.lines, { x: "-100%" });
           gsap.to(chamberText.lines, { x: "100%" });
           setActiveRep(null);
+          setSelectedReps([]);
         },
         onUpdate: (self) => {
           const progress = self.progress;
@@ -201,6 +206,15 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               ),
             );
 
+            if (currentIndex === index) {
+              gsap.set(name, {
+                opacity: 1,
+              });
+            } else {
+              gsap.set(name, {
+                opacity: 0.5,
+              });
+            }
             gsap.set(name, {
               y: -projectProgress * moveDistanceNames,
             });
@@ -248,24 +262,45 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         {data.senateReps[0].state}
       </p>
       <div ref={imagesContainer} className={styles.images}>
-        {data.senateReps.map((senator) => (
-          <div
-            className={styles.repCard}
-            key={senator.bioguide_id}
-            ref={(el) => addToRefArray(el, imageRefs)}
-          >
-            <RepCard rep={senator} />
-          </div>
-        ))}
-        {data.houseReps.map((rep) => (
-          <div
-            className={styles.repCard}
-            key={rep.bioguide_id}
-            ref={(el) => addToRefArray(el, imageRefs)}
-          >
-            <RepCard rep={rep} />
-          </div>
-        ))}
+        <>
+          {data.senateReps.map((senator) => (
+            <div
+              className={styles.repCard}
+              key={senator.bioguide_id}
+              ref={(el) => addToRefArray(el, imageRefs)}
+            >
+              {selectedReps.some(
+                (r) => r.bioguide_id === senator.bioguide_id,
+              ) ? (
+                <RepDetailCard
+                  rep={senator}
+                  positionLabel={`${data.state} Senate`}
+                />
+              ) : (
+                <RepCard rep={senator} />
+              )}
+            </div>
+          ))}
+          {/* <Refine /> */}
+          {data.houseReps.map((rep) => (
+            <div
+              className={styles.repCard}
+              key={rep.bioguide_id}
+              ref={(el) => addToRefArray(el, imageRefs)}
+            >
+              {selectedReps.some(
+                (r) => r.bioguide_id === rep.bioguide_id,
+              ) ? (
+                <RepDetailCard
+                  rep={rep}
+                  positionLabel={`District ${rep.district}`}
+                />
+              ) : (
+                <RepCard rep={rep} />
+              )}
+            </div>
+          ))}
+        </>
       </div>
     </div>
   );

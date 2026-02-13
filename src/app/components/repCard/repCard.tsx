@@ -13,14 +13,18 @@ type RepCardProp = {
 };
 
 export default function RepCard({ rep }: RepCardProp) {
-  const { setIsOpen } = useActiveRep();
+  const { setSelectedReps } = useActiveRep();
   const { imageUrl, loading } = useRepImage(rep);
   const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => {
-        setIsOpen(true);
+        setSelectedReps((prev) =>
+          prev.some((r) => r.bioguide_id === rep.bioguide_id)
+            ? prev
+            : [...prev, rep],
+        );
       }}
       className={clsx(
         styles.repCardContainer,

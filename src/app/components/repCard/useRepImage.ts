@@ -4,7 +4,7 @@ import { Rep } from "../../lib/definitions";
 export function useRepImage(rep: Rep) {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(
-    () => !!rep.wikipedia_id
+    () => !!rep.wikipedia_id,
   );
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export function useRepImage(rep: Rep) {
     setLoading(true);
 
     const params = new URLSearchParams(
-      "wikipedia_id=" + rep.wikipedia_id
+      "wikipedia_id=" + rep.wikipedia_id,
     );
 
     fetch(`/api/rep-image?${params.toString()}`, {
