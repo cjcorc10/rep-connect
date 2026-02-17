@@ -62,14 +62,14 @@ export default function Home() {
       {
         y: "100%",
       },
-      ">"
+      ">",
     );
     tl.from(
       logoRef.current,
       {
         y: "110%",
       },
-      "<"
+      "<",
     );
     tl.to(
       titleRef.current,
@@ -79,7 +79,7 @@ export default function Home() {
         width: 250,
         duration: 1,
       },
-      ">+0.5"
+      ">+0.5",
     );
     tl.to(
       containerRef.current,
@@ -88,7 +88,7 @@ export default function Home() {
         width: "100%",
         ease: "power3.out",
       },
-      "<"
+      "<",
     );
     tl.to(
       navItemsRef.current,
@@ -97,26 +97,23 @@ export default function Home() {
         width: "100%",
         ease: "power3.out",
       },
-      "<"
+      "<",
     );
     tl.to(
       heroRef.current,
       {
         opacity: 1,
       },
-      ">+0.5"
+      ">+0.5",
     );
   });
 
   return (
     <main className="flex flex-col flex-1 min-h-0 relative">
-      {/* <div className="absolute right-[-6%]">
-        <JumpingImage />
-      </div> */}
       <div className={styles.navContainer}>
         <div className={styles.navBackground}>
           <Image
-            src="/images/kamran-abdullayev.jpg"
+            src="/images/teemu-paananen-rd5uNIUJCF0-unsplash.jpg"
             alt="kamran-abdullayev"
             fill
             style={{ objectFit: "cover" }}

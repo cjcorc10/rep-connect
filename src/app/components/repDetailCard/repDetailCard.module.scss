@@ -5,7 +5,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   max-width: 70rem;
   height: min(50vh, 32rem);
-  aspect-ratio: 3 / 2;
+  width: min(70vw, 45rem);
+  // aspect-ratio: 3 / 2;
 }
 
 .closeButton {

@@ -35,6 +35,7 @@
   }
   .detailsLeft,
   .detailsRight {
+    @include display-d3;
     position: absolute;
     top: 50%;
     width: 7rem;

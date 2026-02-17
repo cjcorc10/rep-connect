@@ -15,9 +15,17 @@
     transform: translateY(-0.5rem) translateX(-50%);
   }
   .menuButtons {
+    display: flex;
+    flex-wrap: nowrap;
     background-color: #454545;
     border-radius: 0.7rem;
     padding: 0.25rem 0;
+
+    @media (max-width: 640px) {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
     .menuButton {
       display: inline-block;
       background-color: #454545;
@@ -26,10 +34,15 @@
       border: 0.5px solid #646464;
       border-radius: 0.7rem;
       margin: 0 0.2rem;
+      text-align: center;
       transition: border-color 0.2s ease-out;
       text-decoration: none;
       font: inherit;
       cursor: pointer;
+
+      @media (max-width: 640px) {
+        margin: 0.15rem;
+      }
 
       &[aria-disabled="true"] {
         opacity: 0.5;
@@ -43,6 +56,8 @@
   }
 }
 
-.menuButton.active {
-  background-color: #4760ff;
+.detailsButtonWrapper {
+  @media (max-width: 640px) {
+    display: none;
+  }
 }

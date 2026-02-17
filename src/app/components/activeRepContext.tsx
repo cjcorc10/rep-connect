@@ -28,7 +28,12 @@ export function ActiveRepProvider({
 }) {
   return (
     <ActiveRepContext.Provider
-      value={{ activeRep, setActiveRep, selectedReps, setSelectedReps }}
+      value={{
+        activeRep,
+        setActiveRep,
+        selectedReps,
+        setSelectedReps,
+      }}
     >
       {children}
     </ActiveRepContext.Provider>

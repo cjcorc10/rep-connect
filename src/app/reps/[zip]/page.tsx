@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getRepsByAddress } from "@/app/lib/reps";
-import RepsPageClient from "./repsPageClient";
+import RepsPageClient from "@/app/reps/[zip]/repsPageClient";
 
 type Props = {
   params: Promise<{ zip: string }>;

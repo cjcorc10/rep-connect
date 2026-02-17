@@ -102,8 +102,9 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         autoAlpha: 0,
       });
 
-      gsap.from(indexText.lines, {
+      gsap.set(indexText.lines, {
         x: "-100%",
+        autoAlpha: 0,
       });
 
       ScrollTrigger.create({
@@ -118,6 +119,10 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
             autoAlpha: 1,
           });
           gsap.to(chamberText.lines, {
+            x: "0%",
+            autoAlpha: 1,
+          });
+          gsap.to(indexText.lines, {
             x: "0%",
             autoAlpha: 1,
           });

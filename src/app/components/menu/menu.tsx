@@ -42,22 +42,20 @@ export default function Menu() {
         >
           legislation
         </MenuButton>
-        <MenuButton
-          variant="button"
-          onClick={() => {
-            setSelectedReps((prev) =>
-              prev.some(
-                (r) => r.bioguide_id === activeRep.bioguide_id,
-              )
-                ? prev.filter(
-                    (r) => r.bioguide_id !== activeRep.bioguide_id,
-                  )
-                : [...prev, activeRep],
-            );
-          }}
-        >
-          details
-        </MenuButton>
+        <div className={styles.detailsButtonWrapper}>
+          <MenuButton
+            variant="button"
+            onClick={() => {
+              setSelectedReps((prev) =>
+                prev.some((r) => r.bioguide_id === activeRep.bioguide_id)
+                  ? prev.filter((r) => r.bioguide_id !== activeRep.bioguide_id)
+                  : [...prev, activeRep],
+              );
+            }}
+          >
+            details
+          </MenuButton>
+        </div>
       </div>
     </div>
   );
