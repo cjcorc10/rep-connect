@@ -33,6 +33,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
   const imageRefs = useRef<HTMLDivElement[]>([]);
   const namesTextRefs = useRef<HTMLDivElement[]>([]);
   const indexTextRef = useRef<HTMLHeadingElement>(null);
+  const indexTotalRef = useRef<HTMLSpanElement>(null);
   const detailsLeftRef = useRef<HTMLParagraphElement>(null);
   const detailsRightRef = useRef<HTMLDivElement>(null);
 
@@ -154,6 +155,9 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           gsap.set(indexTextRef.current, {
             textContent: `${currentIndex + 1}`,
           });
+          gsap.set(indexTotalRef.current, {
+            textContent: `${totalReps}`,
+          });
           gsap.set(indexRef.current, {
             y: progress * moveDistanceIndex,
           });
@@ -239,12 +243,21 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
 
   return (
     <div ref={scrollSection} className={styles.main}>
+      <div
+        className="h-[80vh] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
+        style={{ backgroundColor: "#aaaaaa" }}
+      />
       <div ref={indexRef} className={styles.index}>
         <h1>
-          <span ref={indexTextRef} className={styles.indexNumber}>
-            1
-          </span>
-          /{totalReps}
+          <span
+            ref={indexTextRef}
+            className={styles.indexNumber}
+          ></span>
+          <span className={styles.indexSeparator}>/</span>
+          <span
+            ref={indexTotalRef}
+            className={styles.indexTotal}
+          ></span>
         </h1>
       </div>
       <div ref={namesText} className={styles.names}>
@@ -288,13 +301,21 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                   positionLabel={`${senator.state} Senate`}
                 />
               ) : (
-                <RepCard rep={senator} />
+                <>
+                  <RepCard rep={senator} />
+                  <div className={styles.nameSection}>
+                    {" "}
+                    {senator.full_name}{" "}
+                  </div>
+                </>
               )}
             </div>
           ))}
           <Refine
             multipleDistricts={data.houseReps.length > 1}
-            onRefineSuccess={(rep) => setRefinedHouseRepId(rep.bioguide_id)}
+            onRefineSuccess={(rep) =>
+              setRefinedHouseRepId(rep.bioguide_id)
+            }
           />
           {data.houseReps.map((rep) => {
             const disabled =

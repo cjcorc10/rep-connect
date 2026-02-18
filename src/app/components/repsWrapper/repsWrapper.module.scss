@@ -5,7 +5,6 @@
   height: 100vh;
   width: 100%;
   display: grid;
-
   .detailsLeft,
   .detailsRight {
     position: absolute;
@@ -22,6 +21,7 @@
     overflow: hidden;
     .indexNumber {
       @include display-d1;
+      display: inline-block;
     }
   }
   .names {
@@ -31,7 +31,10 @@
     right: 0;
     padding: 2rem;
     text-align: right;
-    opacity: 0.5;
+
+    @media (max-width: 1280px) {
+      display: none;
+    }
   }
   .detailsLeft,
   .detailsRight {
@@ -39,6 +42,10 @@
     position: absolute;
     top: 50%;
     width: 7rem;
+
+    @media (max-width: 1280px) {
+      display: none;
+    }
   }
   .detailsLeft {
     left: 22%;
@@ -64,5 +71,15 @@
     .repCard {
       opacity: 0.5;
     }
+  }
+}
+
+.nameSection {
+  width: 100%;
+  text-align: left;
+  @include display-d2;
+
+  @media (min-width: 1280px) {
+    display: none;
   }
 }

@@ -26,7 +26,7 @@ export default function EditButton({ setEditing }: EditButtonProps) {
           animate={{ filter: "blur(0)" }}
           exit={{ filter: "blur(4px)" }}
         >
-          <Pencil size={24} color="white" />
+          <Pencil size={24} color="black" />
         </motion.div>
       </AnimatePresence>
     </motion.button>
