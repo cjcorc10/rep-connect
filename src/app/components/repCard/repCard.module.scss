@@ -1,10 +1,18 @@
 @use "../../styles/typography" as *;
 
 .repCardContainer {
-  height: min(50vh, 32rem);
-  width: min(70vw, 45rem);
+  height: min(40vh, 28rem);
+  width: min(50vw, 35rem);
   // aspect-ratio: 3/2;
   position: relative;
+}
+
+.nonClickable {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.5;
+  filter: blur(10px);
+  border: 5px solid red;
 }
 
 .repCardImage {

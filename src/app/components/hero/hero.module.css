@@ -48,8 +48,11 @@
 }
 
 .title {
-  @include text-d2;
+  font-family: var(--typo-d1-font);
+  font-weight: var(--typo-d1-weight);
   font-size: clamp(1.875rem, 6vw + 1.25rem, 3rem);
+  line-height: var(--typo-d1-line);
+  letter-spacing: var(--typo-d1-spacing);
   color: white;
 }
 

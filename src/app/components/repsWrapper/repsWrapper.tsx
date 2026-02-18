@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import RepCard from "../repCard/repCard";
 import RepDetailCard from "../repDetailCard/repDetailCard";
 import styles from "./repsWrapper.module.scss";
@@ -17,8 +17,11 @@ if (typeof window !== "undefined") {
 }
 
 export default function RepsWrapper({ data }: { data: RepsData }) {
-  const { setActiveRep, setSelectedReps, selectedReps } =
+  const { activeRep, setActiveRep, isOpen, setIsOpen } =
     useActiveRep();
+  const [refinedHouseRepId, setRefinedHouseRepId] = useState<
+    string | null
+  >(null);
 
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
@@ -135,7 +138,11 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           gsap.to(contactsText.lines, { x: "-100%" });
           gsap.to(chamberText.lines, { x: "100%" });
           setActiveRep(null);
-          setSelectedReps([]);
+          setIsOpen(false);
+        },
+        onLeaveBack: () => {
+          setActiveRep(null);
+          setIsOpen(false);
         },
         onUpdate: (self) => {
           const progress = self.progress;
@@ -274,37 +281,44 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               key={senator.bioguide_id}
               ref={(el) => addToRefArray(el, imageRefs)}
             >
-              {selectedReps.some(
-                (r) => r.bioguide_id === senator.bioguide_id,
-              ) ? (
+              {isOpen &&
+              senator.bioguide_id === activeRep?.bioguide_id ? (
                 <RepDetailCard
                   rep={senator}
-                  positionLabel={`${data.state} Senate`}
+                  positionLabel={`${senator.state} Senate`}
                 />
               ) : (
                 <RepCard rep={senator} />
               )}
             </div>
           ))}
-          {/* <Refine /> */}
-          {data.houseReps.map((rep) => (
-            <div
-              className={styles.repCard}
-              key={rep.bioguide_id}
-              ref={(el) => addToRefArray(el, imageRefs)}
-            >
-              {selectedReps.some(
-                (r) => r.bioguide_id === rep.bioguide_id,
-              ) ? (
-                <RepDetailCard
-                  rep={rep}
-                  positionLabel={`District ${rep.district}`}
-                />
-              ) : (
-                <RepCard rep={rep} />
-              )}
-            </div>
-          ))}
+          <Refine
+            multipleDistricts={data.houseReps.length > 1}
+            onRefineSuccess={(rep) => setRefinedHouseRepId(rep.bioguide_id)}
+          />
+          {data.houseReps.map((rep) => {
+            const disabled =
+              refinedHouseRepId != null &&
+              rep.bioguide_id !== refinedHouseRepId;
+            return (
+              <div
+                className={styles.repCard}
+                key={rep.bioguide_id}
+                ref={(el) => addToRefArray(el, imageRefs)}
+              >
+                {isOpen &&
+                !disabled &&
+                rep.bioguide_id === activeRep?.bioguide_id ? (
+                  <RepDetailCard
+                    rep={rep}
+                    positionLabel={`District ${rep.district}`}
+                  />
+                ) : (
+                  <RepCard rep={rep} disabled={disabled} />
+                )}
+              </div>
+            );
+          })}
         </>
       </div>
     </div>

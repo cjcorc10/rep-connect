@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Rep } from "../../lib/definitions";
 import { useRepImage } from "../repCard/useRepImage";
 import RepImageContainer from "../repImageContainer/repImageContainer";
@@ -24,7 +24,7 @@ export default function RepDetailCard({
   positionLabel,
 }: RepDetailCardProps) {
   const { imageUrl } = useRepImage(rep);
-  const { setSelectedReps } = useActiveRep();
+  const { setIsOpen } = useActiveRep();
   const [wiki, setWiki] = useState<WikiData | null>(null);
   const [loading, setLoading] = useState(false);
   const cardContentRef = useRef<HTMLDivElement>(null);
@@ -56,16 +56,15 @@ export default function RepDetailCard({
     <motion.div
       className={styles.card}
       layoutId={`rep-card-${rep.bioguide_id}`}
+      style={{
+        height: `${cardContentRef.current?.offsetHeight + 24}px`,
+      }}
     >
       <div ref={cardContentRef}>
         <button
           type="button"
           className={styles.closeButton}
-          onClick={() =>
-            setSelectedReps((prev) =>
-              prev.filter((r) => r.bioguide_id !== rep.bioguide_id),
-            )
-          }
+          onClick={() => setIsOpen(false)}
           aria-label="Close"
         >
           <X size={20} />
@@ -83,26 +82,28 @@ export default function RepDetailCard({
             {rep.party && (
               <p className={styles.party}>Party: {rep.party}</p>
             )}
-            <p className={styles.termExpiry}>
-              Term Expires:{" "}
-              <span
-                className={styles.termDate}
-                data-next-midterm={isNextMidTerm}
-              >
-                {expiration.toLocaleDateString()}
-              </span>
-            </p>
+            <div className={styles.termRow}>
+              <p className={styles.termExpiry}>
+                Term Expires:{" "}
+                <span
+                  className={styles.termDate}
+                  data-next-midterm={isNextMidTerm}
+                >
+                  {expiration.toLocaleDateString()}
+                </span>
+              </p>
+              {isNextMidTerm && rep.phone && (
+                <a
+                  href={`tel:${rep.phone.replace(/\D/g, "")}`}
+                  className={styles.midTermAlert}
+                  title="Up for re-election — call now"
+                >
+                  Up for re-election · Call
+                </a>
+              )}
+            </div>
           </div>
         </div>
-        {isNextMidTerm && rep.phone && (
-          <div className={styles.midTermAlert}>
-            <p className={styles.midTermAlertTitle}>
-              This candidate is up for re-election in the next
-              mid-term. Candidates up for re-election are more likely
-              to be responsive to constituents. Call today!
-            </p>
-          </div>
-        )}
         <div className={styles.overviewSection}>
           <h3 className={styles.overviewTitle}>Overview</h3>
           <p className={styles.overviewText}>
@@ -112,6 +113,26 @@ export default function RepDetailCard({
                 "No additional information available."}
           </p>
         </div>
+        {(rep.address || rep.phone) && (
+          <div className={styles.contactSection}>
+            <h3 className={styles.sectionTitle}>Contact</h3>
+            <address className={styles.contactAddress}>
+              {rep.address && (
+                <p className={styles.contactLine}>{rep.address}</p>
+              )}
+              {rep.phone && (
+                <p className={styles.contactLine}>
+                  <a
+                    href={`tel:${rep.phone.replace(/\D/g, "")}`}
+                    className={styles.contactLink}
+                  >
+                    {rep.phone}
+                  </a>
+                </p>
+              )}
+            </address>
+          </div>
+        )}
       </div>
     </motion.div>
   );

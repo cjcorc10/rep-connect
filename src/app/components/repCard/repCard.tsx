@@ -10,28 +10,31 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 type RepCardProp = {
   rep: Rep;
+  disabled?: boolean;
 };
 
-export default function RepCard({ rep }: RepCardProp) {
-  const { setSelectedReps } = useActiveRep();
+export default function RepCard({ rep, disabled }: RepCardProp) {
+  const { setIsOpen, activeRep } = useActiveRep();
   const { imageUrl, loading } = useRepImage(rep);
   const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => {
-        setSelectedReps((prev) =>
-          prev.some((r) => r.bioguide_id === rep.bioguide_id)
-            ? prev
-            : [...prev, rep],
-        );
+        if (!disabled && activeRep?.bioguide_id === rep.bioguide_id)
+          setIsOpen(true);
       }}
       className={clsx(
         styles.repCardContainer,
-        "relative flex flex-row cursor-pointer shadow-lg",
+        "relative flex flex-row shadow-lg",
       )}
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: disabled ? "blur(10px)" : "blur(0px)",
+      }}
       whileTap={{ y: 0.5 }}
       viewport={{ once: true }}
       transition={{

@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import SplitText from "gsap/all";
 import Menu from "@/app/components/menu/menu";
+import { ArrowDownIcon } from "lucide-react";
 
 type Props = {
   address: string;
@@ -18,14 +19,14 @@ type Props = {
 export default function RepsPageClient({ address, data }: Props) {
   gsap.registerPlugin(SplitText);
   const [activeRep, setActiveRep] = useState<Rep | null>(null);
-  const [selectedReps, setSelectedReps] = useState<Rep[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <ActiveRepProvider
       activeRep={activeRep}
       setActiveRep={setActiveRep}
-      selectedReps={selectedReps}
-      setSelectedReps={setSelectedReps}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
     >
       {activeRep ? <Menu /> : null}
       <motion.main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -40,6 +41,18 @@ export default function RepsPageClient({ address, data }: Props) {
           </motion.header>
         </section>
       </motion.main>
+      <motion.div
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        transition={{
+          duration: 1,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        className="flex justify-center items-center h-52 opacity-70"
+      >
+        <ArrowDownIcon size={62} />
+      </motion.div>
       <div className="px-4 sm:px-6 lg:px-8">
         <RepsWrapper data={data} />
       </div>

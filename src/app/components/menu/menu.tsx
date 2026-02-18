@@ -4,7 +4,7 @@ import styles from "./menu.module.scss";
 import MenuButton from "./menuButton";
 
 export default function Menu() {
-  const { activeRep, setSelectedReps } = useActiveRep();
+  const { activeRep, isOpen, setIsOpen } = useActiveRep();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -46,14 +46,10 @@ export default function Menu() {
           <MenuButton
             variant="button"
             onClick={() => {
-              setSelectedReps((prev) =>
-                prev.some((r) => r.bioguide_id === activeRep.bioguide_id)
-                  ? prev.filter((r) => r.bioguide_id !== activeRep.bioguide_id)
-                  : [...prev, activeRep],
-              );
+              setIsOpen(!isOpen);
             }}
           >
-            details
+            {isOpen ? "close" : "details"}
           </MenuButton>
         </div>
       </div>
