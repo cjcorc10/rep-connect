@@ -5,7 +5,11 @@ import z from "zod";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function SearchForm() {
+export default function SearchForm({
+  setReady,
+}: {
+  setReady: () => void;
+}) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const FormSchema = z.object({
@@ -28,6 +32,8 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
+    setReady();
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     router.push(`/reps/${zip}`);
   };
 

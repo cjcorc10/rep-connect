@@ -1,17 +1,32 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import SearchForm from "../searchForm";
 import styles from "./hero.module.css";
-import { motion } from "framer-motion";
+import { motion, useSpring, useMotionTemplate } from "framer-motion";
 
 export default function Hero() {
   const heroTitle =
     "Make your voice heard, contact your representatives ";
   const heroLast = "Today.";
 
+  const [ready, setReady] = useState(false);
+  const clipValue = useSpring(0, { damping: 18 });
+  const clipPath = useMotionTemplate`inset(0% ${clipValue}% 0% 0%)`;
+  useEffect(() => {
+    if (ready) {
+      clipValue.set(100);
+    }
+  }, [ready]);
+
   return (
-    <section className={styles.container}>
+    <motion.section
+      className={styles.container}
+      style={{
+        clipPath,
+      }}
+    >
       <motion.div className={styles.imageWrap}>
         <Image
           src="/images/kamran-abdullayev.jpg"
@@ -37,9 +52,9 @@ export default function Hero() {
           className={styles.formWrapper}
           aria-label="Find your representatives by location"
         >
-          <SearchForm />
+          <SearchForm setReady={() => setReady(true)} />
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
