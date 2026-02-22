@@ -1,29 +1,40 @@
 "use client";
 import { Rep } from "../../lib/definitions";
-import { useSelectedRep } from "../selectedRepContext";
+import { useActiveRep } from "../activeRepContext";
 import { motion } from "framer-motion";
 import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type RepCardProp = {
   rep: Rep;
+  disabled?: boolean;
 };
 
-export default function RepCard({ rep }: RepCardProp) {
-  const { setSelectedRep } = useSelectedRep();
-  const { imageUrl } = useRepImage(rep);
+export default function RepCard({ rep, disabled }: RepCardProp) {
+  const { setIsOpen, activeRep } = useActiveRep();
+  const { imageUrl, loading } = useRepImage(rep);
+  const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
-      onClick={() => setSelectedRep(rep)}
+      onClick={() => {
+        if (!disabled && activeRep?.bioguide_id === rep.bioguide_id)
+          setIsOpen(true);
+      }}
       className={clsx(
         styles.repCardContainer,
-        "relative flex flex-row cursor-pointer shadow-lg"
+        "relative flex flex-row shadow-lg",
       )}
-      initial={{ opacity: 0, y: 10, scale: 0.95}}
-      animate={{opacity: 1, y: 0, scale: 1, }}
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        filter: disabled ? "blur(10px)" : "blur(0px)",
+      }}
       whileTap={{ y: 0.5 }}
       viewport={{ once: true }}
       transition={{
@@ -36,18 +47,18 @@ export default function RepCard({ rep }: RepCardProp) {
         layoutId={`rep-image-${rep.bioguide_id}`}
         className={clsx(
           styles.repCardImage,
-          "absolute w-full h-full"
+          "absolute w-full h-full",
         )}
-
-        >
-          {imageUrl ? (
-
-            <RepImageContainer portraitSrc={imageUrl} />
-          ) : (
-            <div className="w-full h-full bg-gray-200 animate-pulse" />
-          )}
-        <motion.h3 layoutId={`rep-name-${rep.bioguide_id}`} className={styles.repName}>{rep.full_name}</motion.h3>
-        </motion.div>
+      >
+        {showSkeleton ? (
+          <Skeleton
+            className={clsx(styles.skeleton, "rounded-[3rem]")}
+            aria-hidden
+          />
+        ) : (
+          <RepImageContainer portraitSrc={imageUrl} />
+        )}
+      </motion.div>
     </motion.div>
   );
 }

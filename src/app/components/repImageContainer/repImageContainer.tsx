@@ -26,7 +26,7 @@ export default function RepImageContainer({
             src={portraitSrc}
             alt="portrait"
             fill
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full object-[50%_25%]"
           />
         ) : (
           <div className="absolute inset-0 w-full h-full bg-gray-200 animate-pulse" />

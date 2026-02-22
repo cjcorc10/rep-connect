@@ -3,11 +3,8 @@
   width: 100%;
   overflow: hidden;
   border-radius: 1.5rem;
-  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   max-width: min(50rem, 92vw);
-  /* Taller on small screens so title + form don’t get cut off */
   height: clamp(24rem, 55vh, 38rem);
-  min-height: 24rem;
   opacity: 0;
   animation: fade-in-up 0.5s ease-out forwards;
 }
@@ -48,8 +45,11 @@
 }
 
 .title {
-  @include text-d2;
+  font-family: var(--typo-d1-font);
+  font-weight: var(--typo-d1-weight);
   font-size: clamp(1.875rem, 6vw + 1.25rem, 3rem);
+  line-height: var(--typo-d1-line);
+  letter-spacing: var(--typo-d1-spacing);
   color: white;
 }
 

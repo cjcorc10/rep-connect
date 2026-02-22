@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/header/header";
 import Container from "./components/container";
+import { ReactLenis } from "lenis/react";
 
 export const metadata: Metadata = {
   title: "RepConnect",
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="overflow-y-scroll">
+        <ReactLenis root />
         <Container>
           <Header />
           {children}

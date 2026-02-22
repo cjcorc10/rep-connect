@@ -11,29 +11,8 @@ export default function HouseContainer({
 }: {
   initialReps: Rep[];
 }) {
-  const [reps, setReps] = useState<Rep[]>(initialReps);
+  const [reps] = useState<Rep[]>(initialReps);
   const [refining] = useState(reps.length > 1);
-  // fetch house reps based on street and zip entered
-  const fetchReps = async (street: string, zip: string) => {
-    const res = await fetch("/api/house", {
-      method: "POST",
-      body: JSON.stringify({ street, zip }),
-    });
-    const data = await res.json();
-    return data.reps;
-  };
-
-  // decide to change state based on if refine was successful
-  const refineReps = async (street: string, zip: string) => {
-    const newReps = await fetchReps(street, zip);
-    if (newReps.length !== reps.length) {
-      setReps(newReps);
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   const districts = Array.from(
     new Set(reps.map((rep) => rep.district))
   );
@@ -59,10 +38,7 @@ export default function HouseContainer({
       </ContainerHeading>
 
       {refining && (
-        <Refine
-          refineReps={refineReps}
-          multipleDistricts={multipleDistricts}
-        />
+        <Refine multipleDistricts={multipleDistricts} />
       )}
 
       <motion.div

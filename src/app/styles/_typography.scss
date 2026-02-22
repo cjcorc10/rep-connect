@@ -1,47 +1,51 @@
-// Typography System Mixins - Type Guide
+// Typography System Mixins
+// Uses CSS variables from globals.css - works with both .scss and .css
 // Usage: @include display-d1; or @include text-t1;
 
-// Display/D1: IBM Plex Sans, SemiBold, 64px
 @mixin display-d1 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 600; // SemiBold
-  font-size: 64px;
-  line-height: normal;
-  letter-spacing: normal;
+  font-family: var(--typo-d1-font);
+  font-weight: var(--typo-d1-weight);
+  font-size: var(--typo-d1-size);
+  line-height: var(--typo-d1-line);
+  letter-spacing: var(--typo-d1-spacing);
 }
 
-// Display/D2: IBM Plex Sans, SemiBold, 32px
 @mixin display-d2 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 600; // SemiBold
-  font-size: 32px;
-  line-height: normal;
-  letter-spacing: normal;
+  font-family: var(--typo-d2-font);
+  font-weight: var(--typo-d2-weight);
+  font-size: var(--typo-d2-size);
+  line-height: var(--typo-d2-line);
+  letter-spacing: var(--typo-d2-spacing);
 }
 
-// Display/D3: IBM Plex Sans, SemiBold, 16px
 @mixin display-d3 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 600; // SemiBold
-  font-size: 24px;
-  line-height: normal;
-  letter-spacing: normal;
+  font-family: var(--typo-d3-font);
+  font-weight: var(--typo-d3-weight);
+  font-size: var(--typo-d3-size);
+  line-height: var(--typo-d3-line);
+  letter-spacing: var(--typo-d3-spacing);
 }
 
-// Text/T1: IBM Plex Serif, Regular, 16px
 @mixin text-t1 {
-  font-family: "IBM Plex Serif", serif;
-  font-weight: 400; // Regular
-  font-size: 16px;
-  line-height: normal;
-  letter-spacing: normal;
+  font-family: var(--typo-t1-font);
+  font-weight: var(--typo-t1-weight);
+  font-size: var(--typo-t1-size);
+  line-height: var(--typo-t1-line);
+  letter-spacing: var(--typo-t1-spacing);
 }
 
-// Text/T2: IBM Plex Serif, Light, 12px
 @mixin text-t2 {
-  font-family: "IBM Plex Serif", serif;
-  font-weight: 300; // Light
-  font-size: 12px;
-  line-height: normal;
-  letter-spacing: normal;
+  font-family: var(--typo-t2-font);
+  font-weight: var(--typo-t2-weight);
+  font-size: var(--typo-t2-size);
+  line-height: var(--typo-t2-line);
+  letter-spacing: var(--typo-t2-spacing);
+}
+
+@mixin accent-indigo {
+  color: var(--accent-indigo);
+}
+
+@mixin accent-green {
+  color: var(--accent-green);
 }

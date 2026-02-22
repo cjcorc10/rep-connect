@@ -1,4 +1,4 @@
-import { Coordinates, fipsToState } from './definitions';
+import { Coordinates, fipsToState } from "./definitions";
 
 type GeocodeData = {
   status: string;
@@ -15,14 +15,14 @@ type GeocodeData = {
 export const getCoordinates = async (
   zipcode: string
 ): Promise<GeocodeData | null> => {
-    const response = await fetch(
-      `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
-    );
-    if (!response.ok) {
-      throw new Error('Failed to fetch district data');
-    }
+  const response = await fetch(
+    `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch district data");
+  }
 
-    return await response.json();
+  return await response.json();
 };
 
 type DistrictFeature = {
@@ -32,7 +32,7 @@ export const getDistricts = async (coordinates: Coordinates) => {
   const url = constructDistrictUrl(coordinates);
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('Failed to fetch district data');
+    throw new Error("Failed to fetch district data");
   }
   const data = await response.json();
 
@@ -41,7 +41,7 @@ export const getDistricts = async (coordinates: Coordinates) => {
 
   const districts = features.map(
     (feature: DistrictFeature) =>
-      feature.attributes.NAME.split(' ')[2]
+      feature.attributes.NAME.split(" ")[2]
   );
 
   const state = fipsToState[stateCode];
@@ -52,7 +52,7 @@ export const getDistricts = async (coordinates: Coordinates) => {
 const constructDistrictUrl = (coordinates: Coordinates) => {
   const baseURL = process.env.DISTRICT_API_URL;
   if (!baseURL) {
-    throw new Error('District API URL is not defined');
+    throw new Error("District API URL is not defined");
   }
   const { northeast, southwest } = coordinates;
 
@@ -60,12 +60,12 @@ const constructDistrictUrl = (coordinates: Coordinates) => {
 
   const queryParams = new URLSearchParams({
     geometry,
-    geometryType: 'esriGeometryEnvelope',
-    inSR: '4326',
-    spatialRel: 'esriSpatialRelIntersects',
-    outFields: '*',
-    returnGeometry: 'false',
-    f: 'json',
+    geometryType: "esriGeometryEnvelope",
+    inSR: "4326",
+    spatialRel: "esriSpatialRelIntersects",
+    outFields: "*",
+    returnGeometry: "false",
+    f: "json",
   });
   return `${baseURL}?${queryParams.toString()}`;
 };

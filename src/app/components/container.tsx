@@ -3,6 +3,12 @@ type ContainerProps = {
 };
 export default function Container({ children }: ContainerProps) {
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden" style={{backgroundColor: '#dfdfdf'  }}>{children}</div>
+    <div
+      className="flex flex-col min-h-screen overflow-hidden"
+      // style={{ backgroundColor: "#fffad1" }}
+      style={{ backgroundColor: "#fbfae6" }}
+    >
+      {children}
+    </div>
   );
 }
