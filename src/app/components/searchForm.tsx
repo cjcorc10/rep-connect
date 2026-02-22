@@ -33,7 +33,7 @@ export default function SearchForm({
 
     const { zip } = parsedData.data;
     setReady();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push(`/reps/${zip}`);
   };
 

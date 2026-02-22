@@ -58,12 +58,6 @@ export default function RepCard({ rep, disabled }: RepCardProp) {
         ) : (
           <RepImageContainer portraitSrc={imageUrl} />
         )}
-        <motion.h3
-          layoutId={`rep-name-${rep.bioguide_id}`}
-          className={styles.repName}
-        >
-          {/* {rep.full_name} */}
-        </motion.h3>
       </motion.div>
     </motion.div>
   );

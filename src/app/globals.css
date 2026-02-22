@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -7,31 +7,31 @@
   --accent-green: #d3ff87;
 
   /* Typography - single source of truth for both .css and .scss */
-  --typo-d1-font: "IBM Plex Sans", sans-serif;
+  --typo-d1-font: "Montserrat", sans-serif;
   --typo-d1-weight: 600;
-  --typo-d1-size: 64px;
+  --typo-d1-size: 124px;
   --typo-d1-line: normal;
   --typo-d1-spacing: normal;
 
-  --typo-d2-font: "IBM Plex Sans", sans-serif;
+  --typo-d2-font: "Montserrat", sans-serif;
   --typo-d2-weight: 600;
   --typo-d2-size: 32px;
   --typo-d2-line: normal;
   --typo-d2-spacing: normal;
 
-  --typo-d3-font: "IBM Plex Sans", sans-serif;
+  --typo-d3-font: "Montserrat", sans-serif;
   --typo-d3-weight: 600;
   --typo-d3-size: 24px;
   --typo-d3-line: normal;
   --typo-d3-spacing: normal;
 
-  --typo-t1-font: "IBM Plex Serif", serif;
+  --typo-t1-font: "Merriweather Sans", serif;
   --typo-t1-weight: 400;
   --typo-t1-size: 16px;
   --typo-t1-line: normal;
   --typo-t1-spacing: normal;
 
-  --typo-t2-font: "IBM Plex Serif", serif;
+  --typo-t2-font: "Merriweather Sans", serif;
   --typo-t2-weight: 300;
   --typo-t2-size: 12px;
   --typo-t2-line: normal;
@@ -39,7 +39,7 @@
 }
 
 body {
-  font-family: "IBM Plex Serif", serif;
+  font-family: "Merriweather Sans", serif;
 }
 
 /* Typography System - utility classes use CSS variables */

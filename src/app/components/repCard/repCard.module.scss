@@ -2,8 +2,7 @@
 
 .repCardContainer {
   height: min(40vh, 28rem);
-  width: min(50vw, 35rem);
-  // aspect-ratio: 3/2;
+  width: min(75vw, 35rem);
   position: relative;
 }
 
@@ -18,6 +17,7 @@
 .repCardImage {
   overflow: hidden;
   will-change: transform;
+  border-radius: 1rem;
 }
 
 .skeleton {

@@ -23,6 +23,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
     string | null
   >(null);
 
+  const refine = useRef(data.houseReps.length > 1);
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
   const namesText = useRef<HTMLDivElement>(null);
@@ -149,7 +150,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           const progress = self.progress;
           const currentIndex = Math.min(
             Math.floor(progress * totalReps),
-            totalReps - 1,
+            totalReps,
           );
 
           gsap.set(indexTextRef.current, {
@@ -209,9 +210,10 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           });
 
           namesTextRefs.current.forEach((name, index) => {
+            const totalNames = totalReps + (refine.current ? 1 : 0);
             // when should this name start and end moving
-            const startProgress = index / totalReps;
-            const endProgress = (index + 1) / totalReps;
+            const startProgress = index / totalNames;
+            const endProgress = (index + 1) / totalNames;
 
             const projectProgress = Math.max(
               0,
@@ -222,15 +224,6 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               ),
             );
 
-            if (currentIndex === index) {
-              gsap.set(name, {
-                opacity: 1,
-              });
-            } else {
-              gsap.set(name, {
-                opacity: 0.5,
-              });
-            }
             gsap.set(name, {
               y: -projectProgress * moveDistanceNames,
             });
@@ -245,7 +238,10 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
     <div ref={scrollSection} className={styles.main}>
       <div
         className="h-[80vh] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
-        style={{ backgroundColor: "#aaaaaa" }}
+        style={{
+          backgroundColor: "#4d6ef0",
+          width: "min(90vw, 80rem)",
+        }}
       />
       <div ref={indexRef} className={styles.index}>
         <h1>
@@ -270,6 +266,15 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
             {senator.full_name}
           </div>
         ))}
+        {refine.current && (
+          <div
+            key="refine"
+            ref={(el) => addToRefArray(el, namesTextRefs)}
+            className={styles.repName}
+          >
+            Refine?
+          </div>
+        )}
         {data.houseReps.map((rep) => (
           <div
             key={rep.bioguide_id}
@@ -311,12 +316,14 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               )}
             </div>
           ))}
-          <Refine
-            multipleDistricts={data.houseReps.length > 1}
-            onRefineSuccess={(rep) =>
-              setRefinedHouseRepId(rep.bioguide_id)
-            }
-          />
+          {refine.current && (
+            <Refine
+              multipleDistricts={data.houseReps.length > 1}
+              onRefineSuccess={(rep) =>
+                setRefinedHouseRepId(rep.bioguide_id)
+              }
+            />
+          )}
           {data.houseReps.map((rep) => {
             const disabled =
               refinedHouseRepId != null &&
@@ -335,7 +342,13 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                     positionLabel={`District ${rep.district}`}
                   />
                 ) : (
-                  <RepCard rep={rep} disabled={disabled} />
+                  <>
+                    <RepCard rep={rep} disabled={disabled} />
+                    <div className={styles.nameSection}>
+                      {" "}
+                      {rep.full_name}{" "}
+                    </div>
+                  </>
                 )}
               </div>
             );

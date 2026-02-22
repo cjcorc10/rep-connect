@@ -43,4 +43,3 @@ export default function Address({ address }: { address: string }) {
     </div>
   );
 }
-

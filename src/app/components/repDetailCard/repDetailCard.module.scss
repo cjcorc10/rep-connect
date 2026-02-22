@@ -1,10 +1,10 @@
 .card {
   position: relative;
-  background-color: #f0f0f0;
+  background-color: white;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   max-width: 70rem;
-  width: min(70vw, 45rem);
+  width: min(90vw, 45rem);
 }
 
 .closeButton {
@@ -45,6 +45,9 @@
   overflow: hidden;
   position: relative;
   z-index: 10;
+  @media (max-width: 1280px) {
+    display: none;
+  }
 }
 
 .details {
@@ -72,7 +75,6 @@
 
 .party {
   font-size: 0.9rem;
-  color: #555;
   margin: 0;
 }
 
@@ -85,7 +87,6 @@
 
 .termExpiry {
   font-size: 0.9rem;
-  color: #333;
   margin: 0;
 }
 

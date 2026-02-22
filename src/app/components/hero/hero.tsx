@@ -12,13 +12,17 @@ export default function Hero() {
   const heroLast = "Today.";
 
   const [ready, setReady] = useState(false);
-  const clipValue = useSpring(0, { damping: 18 });
+  const clipValue = useSpring(0, {
+    stiffness: 80,
+    damping: 16,
+    mass: 1,
+  });
   const clipPath = useMotionTemplate`inset(0% ${clipValue}% 0% 0%)`;
   useEffect(() => {
     if (ready) {
       clipValue.set(100);
     }
-  }, [ready]);
+  });
 
   return (
     <motion.section

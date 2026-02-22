@@ -29,34 +29,55 @@ export default function RepsPageClient({ address, data }: Props) {
       setIsOpen={setIsOpen}
     >
       {activeRep ? <Menu /> : null}
-      <motion.main className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 h-[94vh]">
+      <main className="py-4 sm:py-6 h-[100vh] relative flex flex-col">
         <section>
           <header>
             <Address address={address} />
-            <div className="md:pl-12 ">
-              <h2 className="text-center md:text-left display-d1">
-                Your Representatives
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1 }}
+              className="overflow-clip h-full w-[100vw] relative"
+            >
+              <h2
+                className="text-center uppercase display-d1 overflow-clip"
+                style={{
+                  fontSize: "clamp(1.25rem, 5vw + 0.75rem, 10rem)",
+                  color: "#1a1500",
+                }}
+              >
+                Representatives
               </h2>
-              <p className="display-d3 text-gray-700 mt-4">
+              <p
+                className="display-d2 text-gray-700 mt-2 text-center "
+                style={{
+                  fontSize: "clamp(0.875rem, 1.5vw + 1rem, 2rem)",
+                  color: "#1a1500",
+                }}
+              >
                 Find and contact your elected officials in Congress.
                 Your voice matters in our democracy.
               </p>
-            </div>
+            </motion.div>
           </header>
         </section>
         <motion.div
-          initial={{ y: -20 }}
-          animate={{ y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, -12, 0] }}
           transition={{
-            duration: 1,
-            repeat: Infinity,
-            repeatType: "reverse",
+            opacity: { duration: 0.5, delay: 2 },
+            y: {
+              duration: 2,
+              delay: 2,
+              repeat: Infinity,
+              repeatType: "reverse",
+            },
           }}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2 justify-center items-center"
         >
-          <ArrowDownIcon size={148} color="var(--accent-indigo)" />
+          <ArrowDownIcon size={148} color="#ff6969" />
         </motion.div>
-      </motion.main>
+      </main>
       <div className="px-4 sm:px-6 lg:px-8">
         <RepsWrapper data={data} />
       </div>

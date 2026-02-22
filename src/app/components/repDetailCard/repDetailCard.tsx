@@ -104,7 +104,12 @@ export default function RepDetailCard({
             </div>
           </div>
         </div>
-        <div className={styles.overviewSection}>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className={styles.overviewSection}
+        >
           <h3 className={styles.overviewTitle}>Overview</h3>
           <p className={styles.overviewText}>
             {loading
@@ -112,9 +117,14 @@ export default function RepDetailCard({
               : wiki?.extract ||
                 "No additional information available."}
           </p>
-        </div>
+        </motion.div>
         {(rep.address || rep.phone) && (
-          <div className={styles.contactSection}>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className={styles.contactSection}
+          >
             <h3 className={styles.sectionTitle}>Contact</h3>
             <address className={styles.contactAddress}>
               {rep.address && (
@@ -131,7 +141,7 @@ export default function RepDetailCard({
                 </p>
               )}
             </address>
-          </div>
+          </motion.div>
         )}
       </div>
     </motion.div>

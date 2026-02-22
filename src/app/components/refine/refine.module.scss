@@ -1,11 +1,10 @@
 @use "../../styles/typography" as *;
 
 .main {
-  height: 10rem;
+  height: min(40vh, 28rem);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 4rem 0;
 }
 
 .button {
