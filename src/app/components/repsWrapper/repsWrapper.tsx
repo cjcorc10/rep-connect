@@ -82,9 +82,6 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       // distance between top of scroll section and top of chamber text
       const moveDistanceIndex = scrollSectionHeight - indexHeight;
       const moveDistanceNames = scrollSectionHeight - namesHeight;
-      const moveDistanceImages =
-        window.innerHeight - imagesContainerHeight;
-      const imageActivationThreshold = window.innerHeight / 2;
 
       const indexText = SplitText.create(indexRef.current, {
         type: "lines",
@@ -110,6 +107,10 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       gsap.set(indexText.lines, {
         x: "-100%",
         autoAlpha: 0,
+      });
+
+      gsap.set(imageRefs.current, {
+        translateY: (i: number) => (i ? "70vh" : "0vh"),
       });
 
       ScrollTrigger.create({
@@ -162,60 +163,20 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           gsap.set(indexRef.current, {
             y: progress * moveDistanceIndex,
           });
-          gsap.set(imagesContainer.current, {
-            y: progress * moveDistanceImages,
-          });
 
-          imageRefs.current.forEach((image) => {
-            const imgRect = image.getBoundingClientRect();
-            const imgTop = imgRect.top;
-            const imgBottom = imgRect.bottom;
-
-            if (
-              imgTop <= imageActivationThreshold &&
-              imgBottom >= imageActivationThreshold
-            ) {
-              setActiveRep(returnCurrentRep(currentIndex, data));
-              gsap.to(image, {
-                opacity: 1,
-                duration: 0.5,
-                ease: "power3.out",
-              });
-
-              gsap.set(contactsText.lines, {
-                autoAlpha: 1,
-                textContent:
-                  currentIndex < data.senateReps.length
-                    ? "Texas"
-                    : `District ${
-                        data.houseReps[
-                          currentIndex - data.senateReps.length
-                        ].district
-                      }`,
-              });
-              gsap.to(chamberText.lines, {
-                autoAlpha: 1,
-                textContent:
-                  currentIndex < data.senateReps.length
-                    ? "Senate"
-                    : "House",
-              });
-            } else {
-              gsap.to(image, {
-                opacity: 0.5,
-                duration: 0.5,
-                ease: "power3.out",
-              });
-            }
-          });
-
-          namesTextRefs.current.forEach((name, index) => {
-            const totalNames = totalReps + (refine.current ? 1 : 0);
-            // when should this name start and end moving
-            const startProgress = index / totalNames;
-            const endProgress = (index + 1) / totalNames;
-
+          imageRefs.current.forEach((image, index) => {
+            const startProgress = index / totalReps;
+            const endProgress = (index + 1) / totalReps;
+            const pauseThreshold = 0.1;
             const projectProgress = Math.max(
+              0,
+              Math.min(
+                1,
+                (progress - startProgress - pauseThreshold) /
+                  (endProgress - startProgress - pauseThreshold),
+              ),
+            );
+            const otherProgress = Math.max(
               0,
               Math.min(
                 1,
@@ -223,9 +184,24 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                   (endProgress - startProgress),
               ),
             );
+            const nextImage = imageRefs.current[index + 1];
+            if (!nextImage) return;
 
-            gsap.set(name, {
-              y: -projectProgress * moveDistanceNames,
+            if (
+              progress >= startProgress &&
+              progress <= endProgress
+            ) {
+              setActiveRep(returnCurrentRep(currentIndex, data));
+              gsap.set(image, { y: `${projectProgress * -70}vh` });
+              gsap.set(nextImage, {
+                y: `${(1 - projectProgress) * 70}vh`,
+              });
+              gsap.to(namesTextRefs.current[index], {
+                opacity: 1,
+              });
+            }
+            gsap.set(namesTextRefs.current[index], {
+              y: -otherProgress * moveDistanceNames,
             });
           });
         },
@@ -236,13 +212,6 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
 
   return (
     <div ref={scrollSection} className={styles.main}>
-      <div
-        className="h-[80vh] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
-        style={{
-          backgroundColor: "#4d6ef0",
-          width: "min(90vw, 80rem)",
-        }}
-      />
       <div ref={indexRef} className={styles.index}>
         <h1>
           <span
@@ -266,7 +235,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
             {senator.full_name}
           </div>
         ))}
-        {refine.current && (
+        {/* {refine.current && (
           <div
             key="refine"
             ref={(el) => addToRefArray(el, namesTextRefs)}
@@ -274,7 +243,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           >
             Refine?
           </div>
-        )}
+        )} */}
         {data.houseReps.map((rep) => (
           <div
             key={rep.bioguide_id}
@@ -291,69 +260,79 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       <p ref={detailsRightRef} className={styles.detailsRight}>
         {data.senateReps[0].state}
       </p>
-      <div ref={imagesContainer} className={styles.images}>
-        <>
-          {data.senateReps.map((senator) => (
-            <div
-              className={styles.repCard}
-              key={senator.bioguide_id}
-              ref={(el) => addToRefArray(el, imageRefs)}
-            >
-              {isOpen &&
-              senator.bioguide_id === activeRep?.bioguide_id ? (
-                <RepDetailCard
-                  rep={senator}
-                  positionLabel={`${senator.state} Senate`}
-                />
-              ) : (
-                <>
-                  <RepCard rep={senator} />
-                  <div className={styles.nameSection}>
-                    {" "}
-                    {senator.full_name}{" "}
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-          {refine.current && (
-            <Refine
-              multipleDistricts={data.houseReps.length > 1}
-              onRefineSuccess={(rep) =>
-                setRefinedHouseRepId(rep.bioguide_id)
-              }
-            />
-          )}
-          {data.houseReps.map((rep) => {
-            const disabled =
-              refinedHouseRepId != null &&
-              rep.bioguide_id !== refinedHouseRepId;
-            return (
+      <div
+        className="h-[80vh] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
+        style={{
+          backgroundColor: "#4d6ef0",
+          width: "min(90vw, 80rem)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div ref={imagesContainer} className={styles.images}>
+          <>
+            {data.senateReps.map((senator) => (
               <div
                 className={styles.repCard}
-                key={rep.bioguide_id}
+                key={senator.bioguide_id}
                 ref={(el) => addToRefArray(el, imageRefs)}
               >
                 {isOpen &&
-                !disabled &&
-                rep.bioguide_id === activeRep?.bioguide_id ? (
+                senator.bioguide_id === activeRep?.bioguide_id ? (
                   <RepDetailCard
-                    rep={rep}
-                    positionLabel={`District ${rep.district}`}
+                    rep={senator}
+                    positionLabel={`${senator.state} Senate`}
                   />
                 ) : (
                   <>
-                    <RepCard rep={rep} disabled={disabled} />
+                    <RepCard rep={senator} />
                     <div className={styles.nameSection}>
                       {" "}
-                      {rep.full_name}{" "}
+                      {senator.full_name}{" "}
                     </div>
                   </>
                 )}
               </div>
-            );
-          })}
-        </>
+            ))}
+            {/* {refine.current && (
+              <Refine
+                multipleDistricts={data.houseReps.length > 1}
+                onRefineSuccess={(rep) =>
+                  setRefinedHouseRepId(rep.bioguide_id)
+                }
+              />
+            )} */}
+            {data.houseReps.map((rep) => {
+              const disabled =
+                refinedHouseRepId != null &&
+                rep.bioguide_id !== refinedHouseRepId;
+              return (
+                <div
+                  className={styles.repCard}
+                  key={rep.bioguide_id}
+                  ref={(el) => addToRefArray(el, imageRefs)}
+                >
+                  {isOpen &&
+                  !disabled &&
+                  rep.bioguide_id === activeRep?.bioguide_id ? (
+                    <RepDetailCard
+                      rep={rep}
+                      positionLabel={`District ${rep.district}`}
+                    />
+                  ) : (
+                    <>
+                      <RepCard rep={rep} disabled={disabled} />
+                      <div className={styles.nameSection}>
+                        {" "}
+                        {rep.full_name}{" "}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </>
+        </div>
       </div>
     </div>
   );

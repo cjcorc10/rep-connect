@@ -4,6 +4,7 @@
   height: min(40vh, 28rem);
   width: min(75vw, 35rem);
   position: relative;
+  border-radius: 999rem;
 }
 
 .nonClickable {
@@ -17,7 +18,7 @@
 .repCardImage {
   overflow: hidden;
   will-change: transform;
-  border-radius: 1rem;
+  border-radius: 999rem;
 }
 
 .skeleton {
