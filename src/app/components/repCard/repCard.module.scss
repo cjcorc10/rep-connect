@@ -1,10 +1,15 @@
 @use "../../styles/typography" as *;
 
 .repCardContainer {
-  height: min(40vh, 28rem);
-  width: min(75vw, 35rem);
   position: relative;
-  border-radius: 999rem;
+  border-radius: 1rem;
+  background-color: white;
+  width: min(80vw, 48rem);
+  height: min(30vh, 28rem);
+  display: flex;
+  // flex-direction: row-reverse;
+  align-items: center;
+  padding: 1rem;
 }
 
 .nonClickable {
@@ -17,8 +22,10 @@
 
 .repCardImage {
   overflow: hidden;
+  height: 17rem;
+  width: min(40vw, 28rem);
   will-change: transform;
-  border-radius: 999rem;
+  border-radius: 1rem;
 }
 
 .skeleton {
@@ -27,12 +34,21 @@
   min-height: 100%;
 }
 
-.repName {
-  @include display-d2;
-  color: white;
-  position: absolute;
-  bottom: 0.5rem;
-  text-align: center;
-  z-index: 2;
-  width: 100%;
+.repCardContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  justify-content: space-between;
+  padding: 1rem;
+  .repName {
+    @include display-d2;
+  }
+  .repParty {
+    @include display-d3;
+  }
+
+  .repDistrict {
+    @include display-d3;
+  }
 }

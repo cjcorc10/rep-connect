@@ -1,12 +1,11 @@
 "use client";
 import { Rep } from "../../lib/definitions";
 import { useActiveRep } from "../activeRepContext";
-import { motion } from "framer-motion";
 import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
-import { Skeleton } from "@/components/ui/skeleton";
+import { motion, AnimatePresence } from "framer-motion";
 
 type RepCardProp = {
   rep: Rep;
@@ -16,7 +15,6 @@ type RepCardProp = {
 export default function RepCard({ rep, disabled }: RepCardProp) {
   const { setIsOpen, activeRep } = useActiveRep();
   const { imageUrl, loading } = useRepImage(rep);
-  const showSkeleton = loading || !imageUrl;
   return (
     <motion.div
       layoutId={`rep-card-${rep.bioguide_id}`}
@@ -24,41 +22,26 @@ export default function RepCard({ rep, disabled }: RepCardProp) {
         if (!disabled && activeRep?.bioguide_id === rep.bioguide_id)
           setIsOpen(true);
       }}
-      className={clsx(
-        styles.repCardContainer,
-        "relative flex flex-row shadow-lg",
-      )}
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        filter: disabled ? "blur(10px)" : "blur(0px)",
-      }}
-      whileTap={{ y: 0.5 }}
-      viewport={{ once: true }}
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      }}
+      className={styles.repCardContainer}
     >
       <motion.div
         layoutId={`rep-image-${rep.bioguide_id}`}
-        className={clsx(
-          styles.repCardImage,
-          "absolute w-full h-full",
-        )}
+        className={styles.repCardImage}
       >
-        {showSkeleton ? (
-          <Skeleton
-            className={clsx(styles.skeleton, "rounded-[3rem]")}
-            aria-hidden
-          />
-        ) : (
-          <RepImageContainer portraitSrc={imageUrl} />
-        )}
+        <RepImageContainer portraitSrc={imageUrl} />
       </motion.div>
+      <AnimatePresence>
+        <motion.div className={styles.repCardContent}>
+          <h3 className={styles.repParty}>{rep.party}</h3>
+          <h1 className={styles.repName}>{rep.full_name}</h1>
+          <h3 className={styles.repDistrict}>
+            {rep.state}{" "}
+            {rep.type === "sen"
+              ? `Senator`
+              : `District ${rep.district}`}
+          </h3>
+        </motion.div>
+      </AnimatePresence>
     </motion.div>
   );
 }
