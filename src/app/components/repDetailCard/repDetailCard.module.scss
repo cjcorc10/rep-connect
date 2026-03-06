@@ -1,3 +1,4 @@
+@use "../../styles/typography" as *;
 .card {
   position: relative;
   background-color: white;
@@ -67,10 +68,7 @@
 }
 
 .repName {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  line-height: 1.2;
+  @include display-d2;
 }
 
 .position {
@@ -103,7 +101,7 @@
 }
 
 .overviewSection {
-  background-color: white;
+  // background-color: white;
   border-radius: 1rem;
   padding: 1.25rem 1.5rem;
   margin: 0 1.5rem 1.5rem;
@@ -137,7 +135,7 @@
 .detailsSection,
 .contactSection,
 .transparencySection {
-  background-color: white;
+  // background-color: white;
   border-radius: 1rem;
   padding: 1.25rem 1.5rem;
   margin: 0 1.5rem 1rem;

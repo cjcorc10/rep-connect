@@ -276,7 +276,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                 senator.bioguide_id === activeRep?.bioguide_id ? (
                   <RepDetailCard
                     rep={senator}
-                    positionLabel={`${senator.state} Senate`}
+                    positionLabel={`${senator.state} Senator`}
                   />
                 ) : (
                   <RepCard rep={senator} />
@@ -306,7 +306,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                   rep.bioguide_id === activeRep?.bioguide_id ? (
                     <RepDetailCard
                       rep={rep}
-                      positionLabel={`District ${rep.district}`}
+                      positionLabel={`TX District ${rep.district}`}
                     />
                   ) : (
                     <RepCard rep={rep} disabled={disabled} />
