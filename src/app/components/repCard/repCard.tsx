@@ -1,13 +1,12 @@
 "use client";
 import { Rep } from "../../lib/definitions";
-import { useActiveRep } from "../activeRepContext";
-import clsx from "clsx";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion, MotionConfig } from "framer-motion";
+import { useState } from "react";
 import RepCardBottom from "../repCardBottom/repCardBottom";
+import useMeasure from "react-use-measure";
 
 type RepCardProp = {
   rep: Rep;
@@ -15,23 +14,17 @@ type RepCardProp = {
 };
 
 export default function RepCard({ rep, disabled }: RepCardProp) {
-  // const { setIsOpen, activeRep } = useActiveRep();
-  const { imageUrl, loading } = useRepImage(rep);
+  const { imageUrl } = useRepImage(rep);
   const [isOpen, setIsOpen] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [ref, bounds] = useMeasure();
 
-  useEffect(() => {
-    if (bottomRef.current) {
-      console.log(bottomRef.current.offsetHeight);
-    }
-  }, [isOpen]);
+  const height =
+    isOpen && bounds.height > 0 ? bounds.height : "min(31vh, 20rem)";
 
   return (
     <motion.div
       layout
-      animate={{
-        height: isOpen ? `min(60vh, 40rem)` : "min(31vh, 20rem)",
-      }}
+      animate={{ height }}
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => setIsOpen(!isOpen)}
       // onClick={() => {
@@ -40,25 +33,27 @@ export default function RepCard({ rep, disabled }: RepCardProp) {
       // }}
       className={styles.repCardContainer}
     >
-      <div className={styles.topSection}>
-        <motion.div
-          layoutId={`rep-image-${rep.bioguide_id}`}
-          className={styles.repCardImage}
-        >
-          <RepImageContainer portraitSrc={imageUrl} />
-        </motion.div>
-        <div className={styles.repCardContent}>
-          <h3 className={styles.repParty}>{rep.party}</h3>
-          <h1 className={styles.repName}>{rep.full_name}</h1>
-          <h3 className={styles.repDistrict}>
-            {rep.state}{" "}
-            {rep.type === "sen"
-              ? `Senator`
-              : `District ${rep.district}`}
-          </h3>
+      <div ref={ref} className={styles.contentWrapper}>
+        <div className={styles.topSection}>
+          <motion.div
+            layoutId={`rep-image-${rep.bioguide_id}`}
+            className={styles.repCardImage}
+          >
+            <RepImageContainer portraitSrc={imageUrl} />
+          </motion.div>
+          <div className={styles.repCardContent}>
+            <h3 className={styles.repParty}>{rep.party}</h3>
+            <h1 className={styles.repName}>{rep.full_name}</h1>
+            <h3 className={styles.repDistrict}>
+              {rep.state}{" "}
+              {rep.type === "sen"
+                ? `Senator`
+                : `District ${rep.district}`}
+            </h3>
+          </div>
         </div>
+        {isOpen && <RepCardBottom rep={rep} />}
       </div>
-      {isOpen && <RepCardBottom rep={rep} />}
     </motion.div>
   );
 }

@@ -5,10 +5,13 @@
   border-radius: 1rem;
   background-color: white;
   width: min(80vw, 48rem);
-  // padding: 1rem;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
 }
 
 .topSection {

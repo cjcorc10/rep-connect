@@ -1,7 +1,6 @@
 import { Rep } from "../../lib/definitions";
 import styles from "./repCardBottom.module.scss";
 import { useWikipedia } from "@/app/hooks/useWikipedia";
-import { motion } from "framer-motion";
 
 type RepCardBottomProps = {
   rep: Rep;
@@ -18,7 +17,7 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
   const isNextMidTerm = electionYear === nextMidTermYear;
 
   return (
-    <motion.div className={styles.bottomSection}>
+    <div className={styles.bottomSection}>
       <div className={styles.bottomExpiry}>
         Term Expires: {expiration.toLocaleDateString()}
         {isNextMidTerm && (
@@ -47,7 +46,7 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
           </p>
         </address>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
