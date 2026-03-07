@@ -1,6 +1,7 @@
 import { Rep } from "../../lib/definitions";
 import styles from "./repCardBottom.module.scss";
 import { useWikipedia } from "@/app/hooks/useWikipedia";
+import { BlockText } from "../blockText/blockText";
 
 type RepCardBottomProps = {
   rep: Rep;
@@ -19,32 +20,40 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
   return (
     <div className={styles.bottomSection}>
       <div className={styles.bottomExpiry}>
-        Term Expires: {expiration.toLocaleDateString()}
-        {isNextMidTerm && (
-          <div className={styles.bottomMidTerm}>
-            This candidate is up for re-election in the next mid-term.
-          </div>
-        )}
+        <BlockText delay={0.25} animateOnScroll={false} stagger={0}>
+          <p className={styles.bottomExpiryText}>
+            {" "}
+            Term Expires: {expiration.toLocaleDateString()}
+          </p>
+
+          {isNextMidTerm && (
+            <div className={styles.bottomMidTerm}>
+              This candidate is up for re-election in the next
+              mid-term.
+            </div>
+          )}
+        </BlockText>
       </div>
       <div className={styles.overviewSection}>
-        <h3 className={styles.sectionTitle}>Overview</h3>
-        {loading && (
-          <div className={styles.bottomLoading}>Loading...</div>
-        )}
-        {!loading && wiki?.extract && (
-          <p className={styles.sectionText}>{wiki.extract}</p>
+        {wiki && (
+          <BlockText delay={0.25} animateOnScroll={false} stagger={0}>
+            <h3 className={styles.sectionTitle}>Overview</h3>
+            <p className={styles.sectionText}>{wiki.extract}</p>
+          </BlockText>
         )}
       </div>
       <div className={styles.contactSection}>
-        <h3 className={styles.sectionTitle}>Contact</h3>
-        <address className={styles.contactAddress}>
-          <p className={styles.contactLine}>{rep.address}</p>
-          <p className={styles.contactLine}>
-            <a href={`tel:${rep.phone.replace(/\D/g, "")}`}>
-              {rep.phone}
-            </a>
-          </p>
-        </address>
+        <BlockText delay={0.3} animateOnScroll={false} stagger={0}>
+          <h3 className={styles.sectionTitle}>Contact</h3>
+          <address className={styles.contactAddress}>
+            <p className={styles.contactLine}>{rep.address}</p>
+            <p className={styles.contactLine}>
+              <a href={`tel:${rep.phone.replace(/\D/g, "")}`}>
+                {rep.phone}
+              </a>
+            </p>
+          </address>
+        </BlockText>
       </div>
     </div>
   );

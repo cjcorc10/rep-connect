@@ -3,7 +3,7 @@ import { Rep } from "../../lib/definitions";
 import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
-import { motion, MotionConfig } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import useMeasure from "react-use-measure";
@@ -19,7 +19,7 @@ export default function RepCard({ rep, disabled }: RepCardProp) {
   const [ref, bounds] = useMeasure();
 
   const height =
-    isOpen && bounds.height > 0 ? bounds.height : "min(31vh, 20rem)";
+    isOpen && bounds.height > 0 ? bounds.height : "19rem";
 
   return (
     <motion.div

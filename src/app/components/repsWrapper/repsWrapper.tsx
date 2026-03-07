@@ -241,7 +241,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         ))}
       </div>
       <div
-        className="h-[80vh] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
+        className="h-[50rem] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
         style={{
           backgroundColor: "#4d6ef0",
           width: "min(90vw, 80rem)",

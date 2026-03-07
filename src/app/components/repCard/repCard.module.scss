@@ -17,9 +17,12 @@
 .topSection {
   display: flex;
   width: 100%;
-  height: min(31vh, 20rem);
+  height: 19rem;
   flex-direction: row;
   padding: 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .nonClickable {
@@ -36,6 +39,10 @@
   width: min(40vw, 28rem);
   will-change: transform;
   border-radius: 1rem;
+  @media (max-width: 768px) {
+    height: 10rem;
+    width: 100%;
+  }
 }
 
 .skeleton {
@@ -59,5 +66,10 @@
 
   .repDistrict {
     @include display-d3;
+  }
+
+  @media (max-width: 768px) {
+    align-items: center;
+    padding: 0rem;
   }
 }
