@@ -54,11 +54,8 @@ export default function RepDetailCard({
 
   return (
     <motion.div
-      className={styles.card}
       layoutId={`rep-card-${rep.bioguide_id}`}
-      style={{
-        height: `${cardContentRef.current?.offsetHeight + 24}px`,
-      }}
+      className={styles.card}
     >
       <div ref={cardContentRef}>
         <button

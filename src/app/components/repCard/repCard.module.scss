@@ -1,9 +1,28 @@
 @use "../../styles/typography" as *;
 
 .repCardContainer {
-  height: min(40vh, 28rem);
-  width: min(75vw, 35rem);
   position: relative;
+  border-radius: 1rem;
+  background-color: white;
+  width: min(80vw, 48rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.topSection {
+  display: flex;
+  width: 100%;
+  height: 19rem;
+  flex-direction: row;
+  padding: 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .nonClickable {
@@ -16,8 +35,14 @@
 
 .repCardImage {
   overflow: hidden;
+  height: 17rem;
+  width: min(40vw, 28rem);
   will-change: transform;
   border-radius: 1rem;
+  @media (max-width: 768px) {
+    height: 10rem;
+    width: 100%;
+  }
 }
 
 .skeleton {
@@ -26,12 +51,25 @@
   min-height: 100%;
 }
 
-.repName {
-  @include display-d2;
-  color: white;
-  position: absolute;
-  bottom: 0.5rem;
-  text-align: center;
-  z-index: 2;
-  width: 100%;
+.repCardContent {
+  display: flex;
+  flex-direction: column;
+  // flex: 1;
+  justify-content: space-between;
+  padding: 1rem;
+  .repName {
+    @include display-d2;
+  }
+  .repParty {
+    @include display-d3;
+  }
+
+  .repDistrict {
+    @include display-d3;
+  }
+
+  @media (max-width: 768px) {
+    align-items: center;
+    padding: 0rem;
+  }
 }

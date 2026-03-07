@@ -1,0 +1,28 @@
+@use "../../styles/typography" as *;
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 2rem 2rem 2rem;
+
+  .bottomExpiry {
+    display: flex;
+    flex-direction: column;
+
+    .bottomMidTerm {
+      color: #dc3545;
+      font-weight: 600;
+    }
+  }
+  .overviewSection {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.sectionTitle {
+  @include text-t1;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
