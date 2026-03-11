@@ -12,6 +12,8 @@
     left: 0;
     padding: 2rem 2rem 0 2rem;
     overflow: hidden;
+    z-index: 200;
+
     .indexNumber {
       @include display-d1;
       display: inline-block;
@@ -23,16 +25,7 @@
     bottom: 0;
     right: 0;
     opacity: 0.7;
-    transform-origin: center right;
     padding: 2rem;
-    text-align: right;
-
-    // .repName:first-child {
-    //   position: fixed;
-    //   top: 50%;
-    //   right: 0;
-    //   padding: 2rem;
-    // }
 
     @media (max-width: 1280px) {
       display: none;

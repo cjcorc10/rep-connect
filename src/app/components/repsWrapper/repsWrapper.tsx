@@ -1,31 +1,34 @@
 "use client";
 
-import { motion, px } from "framer-motion";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import RepCard from "../repCard/repCard";
-import RepDetailCard from "../repDetailCard/repDetailCard";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
 import gsap from "gsap";
-import type { RepsData } from "@/app/lib/definitions";
-import { useActiveRep } from "../activeRepContext";
+import type { Rep, RepsData } from "@/app/lib/definitions";
 import Refine from "../refine/refine";
 import { MaskText } from "../maskText/maskText";
+import { useRepStore } from "@/app/store/useRepStore";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-export default function RepsWrapper({ data }: { data: RepsData }) {
-  const { activeRep, setActiveRep, isOpen, setIsOpen } =
-    useActiveRep();
+const SENATE_COUNT = 2;
+
+export default function RepsWrapper({
+  repsData,
+}: {
+  repsData: RepsData;
+}) {
+  const { setActiveRep, openRepIds } = useRepStore();
   const [refinedHouseRepId, setRefinedHouseRepId] = useState<
     string | null
   >(null);
   const [index, setIndex] = useState(0);
 
-  const refine = useRef(data.houseReps.length > 1);
+  const refine = useRef(repsData.houseReps.length > 1);
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
   const namesText = useRef<HTMLDivElement>(null);
@@ -40,32 +43,42 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
   const detailsLeftRef = useRef<HTMLParagraphElement>(null);
   const detailsRightRef = useRef<HTMLParagraphElement>(null);
 
-  const addToRefArray = useCallback(
-    (
-      element: HTMLDivElement | null,
-      array: React.RefObject<HTMLDivElement[]>,
-    ) => {
-      if (element && !array.current.includes(element)) {
-        array.current.push(element);
-      }
-    },
-    [],
-  );
-
-  const returnCurrentRep = (index: number, data: RepsData) => {
-    if (index < data.senateReps.length) {
-      return data.senateReps[index];
-    } else {
-      return data.houseReps[index - data.senateReps.length];
+  const addToRefArray = (
+    element: HTMLDivElement | null,
+    array: React.RefObject<HTMLDivElement[]>,
+  ) => {
+    if (element && !array.current.includes(element)) {
+      array.current.push(element);
     }
   };
 
-  const totalReps = data.senateReps.length + data.houseReps.length;
+  const returnCurrentRep = (
+    index: number,
+    reps: Rep[],
+    refine: boolean = false,
+  ) => {
+    if (index < SENATE_COUNT) return reps[index];
+
+    if (refine) {
+      if (index === SENATE_COUNT) {
+        return null;
+      } else {
+        return reps[index - 1];
+      }
+    } else {
+      return reps[index];
+    }
+  };
+
+  const totalReps =
+    repsData.senateReps.length +
+    repsData.houseReps.length +
+    (refine.current ? 1 : 0);
 
   useGSAP(
     () => {
       if (
-        !data ||
+        !repsData ||
         !scrollSection.current ||
         !indexRef.current ||
         !namesText.current ||
@@ -75,14 +88,10 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
 
       // get heights of containers
       const scrollSectionHeight = scrollSection.current?.offsetHeight;
-      const indexHeight = indexRef.current?.offsetHeight;
       const namesHeight = namesText.current?.offsetHeight;
-      const imagesContainerHeight =
-        imagesContainer.current?.offsetHeight;
 
       // Calculate how far each container or element need to move when selected
       // distance between top of scroll section and top of chamber text
-      const moveDistanceIndex = scrollSectionHeight - indexHeight;
       const moveDistanceNames = scrollSectionHeight - namesHeight;
 
       gsap.set(indexRef.current, {
@@ -99,7 +108,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
 
       gsap.set(imageRefs.current, {
         rotationX: (i: number) => (i ? "-80deg" : "0deg"),
-        transformOrigin: (i: number) => `center center -800px`,
+        transformOrigin: `center center -800px`,
       });
 
       ScrollTrigger.create({
@@ -125,11 +134,8 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         onEnterBack: () => {},
         onLeave: () => {
           setActiveRep(null);
-          setIsOpen(false);
         },
-        onLeaveBack: () => {
-          setIsOpen(false);
-        },
+        onLeaveBack: () => {},
         onUpdate: (self) => {
           const progress = self.progress;
           const currentIndex = Math.min(
@@ -143,9 +149,6 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
           gsap.set(indexTotalRef.current, {
             textContent: `${totalReps}`,
           });
-          // gsap.set(indexRef.current, {
-          //   y: progress * moveDistanceIndex,
-          // });
 
           imageRefs.current.forEach((image, index) => {
             const startProgress = index / totalReps;
@@ -174,7 +177,13 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
               progress >= startProgress &&
               progress <= endProgress
             ) {
-              const rep = returnCurrentRep(currentIndex, data);
+              const rep = returnCurrentRep(
+                currentIndex,
+                repsData.senateReps.concat(
+                  repsData.houseReps,
+                ) as Rep[],
+                refine.current,
+              );
               setActiveRep(rep);
               setIndex(currentIndex);
               gsap.set(image, {
@@ -192,7 +201,7 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         },
       });
     },
-    { dependencies: [data.senateReps, data.houseReps] },
+    { dependencies: [repsData] },
   );
 
   return (
@@ -211,33 +220,48 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
         </h1>
       </div>
       <div ref={namesText} className={styles.names}>
-        {data.senateReps.map((senator) => (
+        {repsData.senateReps.map((senator) => (
           <div
             key={senator.bioguide_id}
             ref={(el) => addToRefArray(el, namesTextRefs)}
             className={styles.repName}
           >
-            {senator.full_name}
+            <svg width="30" height="30" viewBox="0 0 120 120">
+              <circle
+                cx="60"
+                cy="60"
+                r="30"
+                fill={`${senator.party === "Republican" ? "red" : "blue"}`}
+              />
+            </svg>
           </div>
         ))}
-        {/* {refine.current && (
+        {refine.current && (
           <div
             key="refine"
             ref={(el) => addToRefArray(el, namesTextRefs)}
             className={styles.repName}
           >
-            Refine?
+            <svg width="30" height="30" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="30" fill="black" />
+            </svg>
           </div>
-        )} */}
-        {data.houseReps.map((rep) => (
-          <motion.div
-            layoutId={`rep-name-${rep.bioguide_id}`}
+        )}
+        {repsData.houseReps.map((rep) => (
+          <div
             key={rep.bioguide_id}
             ref={(el) => addToRefArray(el, namesTextRefs)}
             className={styles.repName}
           >
-            {rep.full_name}
-          </motion.div>
+            <svg width="30" height="30" viewBox="0 0 120 120">
+              <circle
+                cx="60"
+                cy="60"
+                r="30"
+                fill={`${rep.party === "Republican" ? "red" : "blue"}`}
+              />
+            </svg>
+          </div>
         ))}
       </div>
       <div
@@ -251,12 +275,17 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
       >
         <div className={styles.maskTextContainer}>
           <MaskText index={index}>
-            {data.senateReps.map((rep) => (
+            {repsData.senateReps.map((rep) => (
               <p key={rep.bioguide_id} className={styles.maskDetail}>
                 Senate
               </p>
             ))}
-            {data.houseReps.map((rep) => (
+            {refine.current && (
+              <p key="refine" className={styles.maskDetail}>
+                Refine search
+              </p>
+            )}
+            {repsData.houseReps.map((rep) => (
               <p key={rep.bioguide_id} className={styles.maskDetail}>
                 House of Representatives
               </p>
@@ -266,32 +295,33 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
 
         <div ref={imagesContainer} className={styles.images}>
           <>
-            {data.senateReps.map((senator) => (
+            {repsData.senateReps.map((senator) => (
               <div
                 className={styles.repCard}
                 key={senator.bioguide_id}
                 ref={(el) => addToRefArray(el, imageRefs)}
               >
-                {isOpen &&
-                senator.bioguide_id === activeRep?.bioguide_id ? (
-                  <RepDetailCard
-                    rep={senator}
-                    positionLabel={`${senator.state} Senator`}
-                  />
-                ) : (
-                  <RepCard rep={senator} />
-                )}
+                <RepCard
+                  rep={senator}
+                  isOpen={openRepIds.has(senator.bioguide_id)}
+                />
               </div>
             ))}
-            {/* {refine.current && (
-              <Refine
-                multipleDistricts={data.houseReps.length > 1}
-                onRefineSuccess={(rep) =>
-                  setRefinedHouseRepId(rep.bioguide_id)
-                }
-              />
-            )} */}
-            {data.houseReps.map((rep) => {
+            {refine.current && (
+              <div
+                className={styles.repCard}
+                key="refine"
+                ref={(el) => addToRefArray(el, imageRefs)}
+              >
+                <Refine
+                  multipleDistricts={repsData.houseReps.length > 1}
+                  onRefineSuccess={(rep) =>
+                    setRefinedHouseRepId(rep.bioguide_id)
+                  }
+                />
+              </div>
+            )}
+            {repsData.houseReps.map((rep) => {
               const disabled =
                 refinedHouseRepId != null &&
                 rep.bioguide_id !== refinedHouseRepId;
@@ -301,16 +331,11 @@ export default function RepsWrapper({ data }: { data: RepsData }) {
                   key={rep.bioguide_id}
                   ref={(el) => addToRefArray(el, imageRefs)}
                 >
-                  {isOpen &&
-                  !disabled &&
-                  rep.bioguide_id === activeRep?.bioguide_id ? (
-                    <RepDetailCard
-                      rep={rep}
-                      positionLabel={`TX District ${rep.district}`}
-                    />
-                  ) : (
-                    <RepCard rep={rep} disabled={disabled} />
-                  )}
+                  <RepCard
+                    rep={rep}
+                    disabled={disabled}
+                    isOpen={openRepIds.has(rep.bioguide_id)}
+                  />
                 </div>
               );
             })}

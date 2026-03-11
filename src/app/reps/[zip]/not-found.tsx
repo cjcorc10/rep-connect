@@ -1,4 +1,4 @@
-import SearchForm from '@/app/components/searchForm';
+import SearchForm from "@/app/components/searchForm";
 
 export default function NotFound() {
   return (
@@ -9,7 +9,7 @@ export default function NotFound() {
       <p className="text-lg mb-4">
         Please check the ZIP code and try again.
       </p>
-      <SearchForm />
+      <SearchForm setReady={() => {}} />
     </div>
   );
 }
