@@ -17,7 +17,7 @@ export default function RepsPageClient({ address, data }: Props) {
   const { activeRep, setReps } = useRepStore();
   useEffect(() => {
     setReps(data.senateReps.concat(data.houseReps) as Rep[]);
-  }, [data]);
+  }, []);
 
   return (
     <>
@@ -72,7 +72,7 @@ export default function RepsPageClient({ address, data }: Props) {
         </motion.div>
       </main>
       <div className="px-4 sm:px-6 lg:px-8">
-        <RepsWrapper data={data} />
+        <RepsWrapper repsData={data} />
       </div>
     </>
   );

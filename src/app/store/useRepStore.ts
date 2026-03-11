@@ -9,6 +9,7 @@ type State = {
 
 type Action = {
   setReps: (newReps: State["reps"]) => void;
+  getReps: () => Rep[];
   setActiveRep: (newActiveRep: Rep | null) => void;
   toggleRepOpen: (bioguide: string) => void;
   isRepOpen: (bioguide: string) => boolean;
@@ -19,6 +20,7 @@ export const useRepStore = create<State & Action>((set, get) => ({
   activeRep: null,
   openRepIds: new Set<string>(),
   setReps: (newReps) => set(() => ({ reps: newReps })),
+  getReps: () => get().reps,
   setActiveRep: (newActiveRep) =>
     set(() => ({ activeRep: newActiveRep })),
   toggleRepOpen: (bioguide) =>

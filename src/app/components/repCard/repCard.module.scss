@@ -25,12 +25,11 @@
   }
 }
 
-.nonClickable {
+.disabled {
   pointer-events: none;
   cursor: default;
-  opacity: 0.5;
-  filter: blur(10px);
-  border: 5px solid red;
+  // filter: blur(10px);
+  filter: opacity(0.2);
 }
 
 .repCardImage {

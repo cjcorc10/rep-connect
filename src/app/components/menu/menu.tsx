@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useActiveRep } from "../activeRepContext";
 import styles from "./menu.module.scss";
 import MenuButton from "./menuButton";
 import { useRepStore } from "@/app/store/useRepStore";

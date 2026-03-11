@@ -8,7 +8,7 @@ type RepCardBottomProps = {
 };
 
 const RepCardBottom = ({ rep }: RepCardBottomProps) => {
-  const { wiki, loading } = useWikipedia(rep.wikipedia_id);
+  const { wiki } = useWikipedia(rep.wikipedia_id);
 
   const expiration = new Date(rep.end);
   const currentYear = new Date().getFullYear();

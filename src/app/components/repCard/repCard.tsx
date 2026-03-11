@@ -4,10 +4,10 @@ import { useRepImage } from "./useRepImage";
 import styles from "./repCard.module.scss";
 import RepImageContainer from "../repImageContainer/repImageContainer";
 import { motion } from "framer-motion";
-import { useState } from "react";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import useMeasure from "react-use-measure";
 import { useRepStore } from "@/app/store/useRepStore";
+import clsx from "clsx";
 
 type RepCardProp = {
   rep: Rep;
@@ -32,7 +32,10 @@ export default function RepCard({
       animate={{ height }}
       layoutId={`rep-card-${rep.bioguide_id}`}
       onClick={() => toggleRepOpen(rep.bioguide_id)}
-      className={styles.repCardContainer}
+      className={clsx(
+        styles.repCardContainer,
+        disabled && styles.disabled,
+      )}
     >
       <div ref={ref} className={styles.contentWrapper}>
         <div className={styles.topSection}>
