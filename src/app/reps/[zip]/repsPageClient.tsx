@@ -2,32 +2,25 @@
 
 import Address from "@/app/components/address/address";
 import RepsWrapper from "@/app/components/repsWrapper/repsWrapper";
-import { ActiveRepProvider } from "@/app/components/activeRepContext";
-import { useState } from "react";
 import type { Rep, RepsData } from "@/app/lib/definitions";
 import { motion } from "framer-motion";
-import gsap from "gsap";
-import SplitText from "gsap/all";
 import Menu from "@/app/components/menu/menu";
 import { ArrowDownIcon } from "lucide-react";
-
+import { useRepStore } from "@/app/store/useRepStore";
+import { useEffect } from "react";
 type Props = {
   address: string;
   data: RepsData;
 };
 
 export default function RepsPageClient({ address, data }: Props) {
-  gsap.registerPlugin(SplitText);
-  const [activeRep, setActiveRep] = useState<Rep | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const { activeRep, setReps } = useRepStore();
+  useEffect(() => {
+    setReps(data.senateReps.concat(data.houseReps) as Rep[]);
+  }, [data]);
 
   return (
-    <ActiveRepProvider
-      activeRep={activeRep}
-      setActiveRep={setActiveRep}
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-    >
+    <>
       {activeRep ? <Menu /> : null}
       <main className="py-4 sm:py-6 h-[100vh] relative flex flex-col">
         <section>
@@ -81,6 +74,6 @@ export default function RepsPageClient({ address, data }: Props) {
       <div className="px-4 sm:px-6 lg:px-8">
         <RepsWrapper data={data} />
       </div>
-    </ActiveRepProvider>
+    </>
   );
 }

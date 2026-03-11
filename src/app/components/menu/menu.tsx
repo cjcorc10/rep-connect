@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useActiveRep } from "../activeRepContext";
 import styles from "./menu.module.scss";
 import MenuButton from "./menuButton";
+import { useRepStore } from "@/app/store/useRepStore";
 
 export default function Menu() {
-  const { activeRep, isOpen, setIsOpen } = useActiveRep();
+  const { activeRep, openRepIds, toggleRepOpen } = useRepStore();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -46,10 +47,12 @@ export default function Menu() {
           <MenuButton
             variant="button"
             onClick={() => {
-              setIsOpen(!isOpen);
+              toggleRepOpen(activeRep.bioguide_id);
             }}
           >
-            {isOpen ? "close" : "details"}
+            {openRepIds.has(activeRep.bioguide_id)
+              ? "close"
+              : "details"}
           </MenuButton>
         </div>
       </div>

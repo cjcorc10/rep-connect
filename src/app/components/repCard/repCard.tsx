@@ -7,17 +7,22 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import useMeasure from "react-use-measure";
+import { useRepStore } from "@/app/store/useRepStore";
 
 type RepCardProp = {
   rep: Rep;
   disabled?: boolean;
+  isOpen: boolean;
 };
 
-export default function RepCard({ rep, disabled }: RepCardProp) {
+export default function RepCard({
+  rep,
+  disabled,
+  isOpen,
+}: RepCardProp) {
   const { imageUrl } = useRepImage(rep);
-  const [isOpen, setIsOpen] = useState(false);
   const [ref, bounds] = useMeasure();
-
+  const { toggleRepOpen } = useRepStore();
   const height =
     isOpen && bounds.height > 0 ? bounds.height : "19rem";
 
@@ -26,11 +31,7 @@ export default function RepCard({ rep, disabled }: RepCardProp) {
       layout
       animate={{ height }}
       layoutId={`rep-card-${rep.bioguide_id}`}
-      onClick={() => setIsOpen(!isOpen)}
-      // onClick={() => {
-      //   if (!disabled && activeRep?.bioguide_id === rep.bioguide_id)
-      //     setIsOpen(true);
-      // }}
+      onClick={() => toggleRepOpen(rep.bioguide_id)}
       className={styles.repCardContainer}
     >
       <div ref={ref} className={styles.contentWrapper}>
