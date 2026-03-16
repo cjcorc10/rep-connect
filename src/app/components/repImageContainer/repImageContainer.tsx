@@ -21,7 +21,7 @@ export default function RepImageContainer({
 
       {
         // if the portraitSrc is not empty, show the image
-        portraitSrc.trim() !== "" ? (
+        portraitSrc?.trim() !== "" ? (
           <Image
             src={portraitSrc}
             alt="portrait"

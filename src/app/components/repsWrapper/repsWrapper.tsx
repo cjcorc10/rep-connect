@@ -40,12 +40,7 @@ export default function RepsWrapper({
   const namesTextRefs = useRef<HTMLDivElement[]>([]);
   const indexTextRef = useRef<HTMLSpanElement>(null);
   const indexTotalRef = useRef<HTMLSpanElement>(null);
-  const detailsLeftRef = useRef<HTMLParagraphElement>(null);
-  const detailsRightRef = useRef<HTMLParagraphElement>(null);
-
-  const pauseThreshold = () => {
-    return window.innerWidth < 768 ? 0 : 0.1;
-  };
+  const currentIndexRef = useRef<number>(0);
 
   const addToRefArray = (
     element: HTMLDivElement | null,
@@ -92,6 +87,7 @@ export default function RepsWrapper({
 
       const images = imageRefs.current;
       const totalImages = images.length;
+      currentIndexRef.current = -1;
 
       // get heights of containers
       const scrollSectionHeight = scrollSection.current?.offsetHeight;
@@ -105,8 +101,6 @@ export default function RepsWrapper({
         x: "-100%",
         autoAlpha: 0,
       });
-      gsap.set(detailsLeftRef.current, { y: "100%", autoAlpha: 0 });
-      gsap.set(detailsRightRef.current, { y: "100%", autoAlpha: 0 });
 
       gsap.set(indexTextRef.current, { textContent: "1" });
       gsap.set(indexTotalRef.current, {
@@ -141,15 +135,24 @@ export default function RepsWrapper({
           },
           onUpdate: (self) => {
             const progress = self.progress;
-            const index = Math.round(progress * (totalImages - 1));
-            setActiveRep(
-              returnCurrentRep(
-                index,
-                repsData.senateReps.concat(repsData.houseReps),
-                refine.current,
-              ),
+            const index = Math.min(
+              Math.floor(progress * totalImages),
+              totalImages - 1,
             );
-            setIndex(index);
+            if (index !== currentIndexRef.current) {
+              currentIndexRef.current = index;
+              setActiveRep(
+                returnCurrentRep(
+                  index,
+                  repsData.senateReps.concat(repsData.houseReps),
+                  refine.current,
+                ),
+              );
+              setIndex(index);
+              gsap.set(indexTextRef.current, {
+                textContent: `${index + 1}`,
+              });
+            }
           },
         },
       });
@@ -161,13 +164,6 @@ export default function RepsWrapper({
           y: "-200%",
           ease: "none",
         });
-        tl.set(
-          indexTextRef.current,
-          {
-            textContent: `${i + 1}`,
-          },
-          "<",
-        );
         tl.to(
           namesTextRefs.current[i],
           {
