@@ -22,7 +22,7 @@ export default function RepsWrapper({
 }: {
   repsData: RepsData;
 }) {
-  const { setActiveRep, openRepIds } = useRepStore();
+  const { setActiveRep, openRepIds, getReps } = useRepStore();
   const [refinedHouseRepId, setRefinedHouseRepId] = useState<
     string | null
   >(null);
@@ -42,6 +42,10 @@ export default function RepsWrapper({
   const indexTotalRef = useRef<HTMLSpanElement>(null);
   const detailsLeftRef = useRef<HTMLParagraphElement>(null);
   const detailsRightRef = useRef<HTMLParagraphElement>(null);
+
+  const pauseThreshold = () => {
+    return window.innerWidth < 768 ? 0 : 0.1;
+  };
 
   const addToRefArray = (
     element: HTMLDivElement | null,
@@ -86,6 +90,9 @@ export default function RepsWrapper({
       )
         return;
 
+      const images = imageRefs.current;
+      const totalImages = images.length;
+
       // get heights of containers
       const scrollSectionHeight = scrollSection.current?.offsetHeight;
       const namesHeight = namesText.current?.offsetHeight;
@@ -107,98 +114,80 @@ export default function RepsWrapper({
       });
 
       gsap.set(imageRefs.current, {
-        rotationX: (i: number) => (i ? "-80deg" : "0deg"),
-        transformOrigin: `center center -800px`,
+        y: (i: number) => (i ? "200%" : "0%"),
       });
 
-      ScrollTrigger.create({
-        trigger: scrollSection.current,
-        start: "top top",
-        end: `+=${window.innerHeight * 3}px`,
-        scrub: 1,
-        pin: true,
-        onEnter: () => {
-          gsap.to(indexRef.current, {
-            x: "0%",
-            autoAlpha: 1,
-          });
-          gsap.to(detailsLeftRef.current, {
-            y: "0%",
-            autoAlpha: 1,
-          });
-          gsap.to(detailsRightRef.current, {
-            y: "0%",
-            autoAlpha: 1,
-          });
-        },
-        onEnterBack: () => {},
-        onLeave: () => {
-          setActiveRep(null);
-        },
-        onLeaveBack: () => {},
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const currentIndex = Math.min(
-            Math.floor(progress * totalReps),
-            totalReps - 1,
-          );
-
-          gsap.set(indexTextRef.current, {
-            textContent: `${currentIndex + 1}`,
-          });
-          gsap.set(indexTotalRef.current, {
-            textContent: `${totalReps}`,
-          });
-
-          imageRefs.current.forEach((image, index) => {
-            const startProgress = index / totalReps;
-            const endProgress = (index + 1) / totalReps;
-            const pauseThreshold = 0.1;
-            const projectProgress = Math.max(
-              0,
-              Math.min(
-                1,
-                (progress - startProgress - pauseThreshold) /
-                  (endProgress - startProgress - pauseThreshold),
-              ),
-            );
-            const otherProgress = Math.max(
-              0,
-              Math.min(
-                1,
-                (progress - startProgress) /
-                  (endProgress - startProgress),
-              ),
-            );
-            const nextImage = imageRefs.current[index + 1];
-            // if (!nextImage) return;
-
-            if (
-              progress >= startProgress &&
-              progress <= endProgress
-            ) {
-              const rep = returnCurrentRep(
-                currentIndex,
-                repsData.senateReps.concat(
-                  repsData.houseReps,
-                ) as Rep[],
-                refine.current,
-              );
-              setActiveRep(rep);
-              setIndex(currentIndex);
-              gsap.set(image, {
-                rotationX: `${projectProgress * 80}deg`,
-              });
-              gsap.set(nextImage, {
-                rotationX: `${(1 - projectProgress) * -60}deg`,
-              });
-            }
-
-            gsap.set(namesTextRefs.current[index], {
-              y: -otherProgress * moveDistanceNames,
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: scrollSection.current,
+          start: "top top",
+          end: `+=${window.innerHeight * totalImages}px`,
+          scrub: 1,
+          pin: true,
+          snap: {
+            snapTo: 1 / (totalImages - 1),
+            duration: 0.7,
+            directional: false,
+            delay: 0.1,
+            ease: "power3.out",
+          },
+          onEnter: () => {
+            gsap.to(indexRef.current, {
+              x: "0%",
+              autoAlpha: 1,
+              duration: 0.7,
+              ease: "power3.out",
             });
-          });
+          },
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const index = Math.round(progress * (totalImages - 1));
+            setActiveRep(
+              returnCurrentRep(
+                index,
+                repsData.senateReps.concat(repsData.houseReps),
+                refine.current,
+              ),
+            );
+            setIndex(index);
+          },
         },
+      });
+
+      images.forEach((image, i) => {
+        const nextImage = images[i + 1];
+        if (!nextImage) return;
+        tl.to(image, {
+          y: "-200%",
+          ease: "none",
+        });
+        tl.set(
+          indexTextRef.current,
+          {
+            textContent: `${i + 1}`,
+          },
+          "<",
+        );
+        tl.to(
+          namesTextRefs.current[i],
+          {
+            y: `-${moveDistanceNames}`,
+            ease: "none",
+          },
+          "<",
+        );
+        tl.to(nextImage, {
+          y: "0%",
+          ease: "none",
+        });
+        tl.to(
+          namesTextRefs.current[i + 1],
+          {
+            y: `-${moveDistanceNames / 2}`,
+            ease: "none",
+          },
+          "<",
+        );
       });
     },
     { dependencies: [repsData] },
