@@ -39,12 +39,9 @@ export default function RepCard({
     >
       <div ref={ref} className={styles.contentWrapper}>
         <div className={styles.topSection}>
-          <motion.div
-            layoutId={`rep-image-${rep.bioguide_id}`}
-            className={styles.repCardImage}
-          >
+          <div className={styles.repCardImage}>
             <RepImageContainer portraitSrc={imageUrl} />
-          </motion.div>
+          </div>
           <div className={styles.repCardContent}>
             <h3 className={styles.repParty}>{rep.party}</h3>
             <h1 className={styles.repName}>{rep.full_name}</h1>
