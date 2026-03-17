@@ -13,6 +13,8 @@ export default function SubmitButton() {
         onClick={(e) => e.stopPropagation()}
       >
         <AnimatePresence>
+          <div className={styles.buttonShadow}></div>
+          <div className={styles.buttonEdge}></div>
           <motion.div
             initial={{ filter: "blur(4px)" }}
             animate={{ filter: "blur(0)" }}
