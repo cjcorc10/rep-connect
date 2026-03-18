@@ -172,10 +172,14 @@ export default function RepsWrapper({
           },
           "<",
         );
-        tl.to(nextImage, {
-          y: "0%",
-          ease: "none",
-        });
+        tl.to(
+          nextImage,
+          {
+            y: "0%",
+            ease: "none",
+          },
+          "<",
+        );
         tl.to(
           namesTextRefs.current[i + 1],
           {
