@@ -1,0 +1,47 @@
+.button {
+    position: relative;
+    display: grid;
+    color: white;
+
+    span {
+        padding: 0.5rem 1rem;
+        grid-area: 1/1;
+        border-radius: 0.5rem;
+        transition: transform 300ms ease-out;
+    }
+    .shadow {
+        background-color: rgba(0, 0, 0, .5);
+        transform: translateY(4px);
+        z-index: 1;
+        will-change: transform;
+    }
+    
+    .edge {
+        background-color: #001edf;
+        z-index: 5;
+        
+    }
+    .top {
+        background-color: var(--blue-accent);
+        transform: translateY(-4px);
+        z-index: 10;
+        will-change: transform;
+    }
+}
+
+.button:hover .top {
+    transform: translateY(-6px);
+    transition: transform 300ms ease-out;
+}
+.button:hover .shadow {
+    transform: translateY(6px);
+    transition: transform 300ms ease-out;
+}
+.button:active .top {
+    transform: translateY(-2px);
+    transition: transform 50ms ease-out;
+}
+.button:active .shadow {
+    transform: translateY(2px);
+    transition: transform 50ms ease-out;
+}

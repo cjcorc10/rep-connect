@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import z from "zod";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import SubmitButton from "./button/submitButton";
+import { BeautifulButton } from "./button/beautifulButton";
 
 export default function SearchForm() {
   const router = useRouter();
@@ -52,7 +54,7 @@ export default function SearchForm() {
               w-full
                 block
                 rounded-md
-                px-4 py-3
+                px-4 py-1
                 text-2xl
                 bg-white text-gray-900 placeholder:text-gray-500
                 outline-none
@@ -60,9 +62,7 @@ export default function SearchForm() {
               "
           />
           <input type="hidden" id="street" name="street" value="" />
-          <button className="right-2 bg-black rounded-full p-2 px-4 active:scale-95">
-            <ArrowRight color="white" />
-          </button>
+          <BeautifulButton />
         </div>
       </form>
 
