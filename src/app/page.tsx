@@ -63,8 +63,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col flex-1 min-h-0 relative">
-      <div className={styles.navContainer}>
-        <div className={styles.navBackground}>
+        <div className={styles.background}>
           <Image
             src="/images/protest.jpg"
             alt="kamran-abdullayev"
@@ -72,7 +71,6 @@ export default function Home() {
             style={{ objectFit: "cover" }}
           />
         </div>
-      </div>
         <div ref={navItemsRef} className={styles.navItems}>
          <div className={styles.navList}>
             <Link
