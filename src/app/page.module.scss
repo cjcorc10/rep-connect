@@ -1,6 +1,6 @@
 .navContainer {
   position: relative;
-
+  background-color: var(--primary-color);
   .navBackground {
     position: fixed;
     top: 0;
@@ -8,104 +8,84 @@
     width: 100%;
     height: 100%;
   }
-  @media (max-width: 768px) {
-    .navBackground {
-      display: none;
-    }
-  }
-}
-
-.navBackdrop {
-  z-index: 0;
-  will-change: width;
-  overflow: hidden;
-  clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%);
-  background-color: var(--background-color);
-}
-
-.navBackdrop,
-.navItems {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 35vw;
-  aspect-ratio: 16/9;
-  will-change: width, height;
 }
 
 .navItems {
   display: flex;
   justify-content: space-between;
   z-index: 2;
-  .navBackColor {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4rem;
-    background-color: var(--primary-color);
-    will-change: transform;
-  }
-  .navList {
-    color: var(--blue-accent);
-    display: flex;
-    padding: 1rem 4rem;
-    .navLink {
-      height: min-content;
-    }
+  background-color: var(--primary-color);
+    .navList {
+      color: var(--blue-accent);
+      display: flex;
+      padding: 1rem 4rem;
+      .navLink {
+        height: min-content;
+      }
+    
   }
 
-  .logo {
-    position: absolute;
-    bottom: 1.2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    width: 100%;
-    height: 8rem;
-    padding: 2rem;
-    will-change: transform;
-    overflow: hidden;
-  }
+}
+.logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  width: 100%;
+  height: 8rem;
+  padding: 2rem;
+  will-change: transform;
+
 }
 
 .heroContainer {
-  // height: 80vh;
-  padding-top: 12rem;
   display: flex;
+  padding: 2rem;
   justify-content: center;
-  align-items: center;
-  opacity: 0;
+  will-change: transform;
 }
 
 .bottomSection {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  background-color: var(--background-color);
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8rem;
-  padding: 2rem;
+  padding: 3rem;
   .textSection {
     position: relative;
-    width: 26rem;
-    height: 20rem;
+    width: 22rem;
+    height: 16rem;
     .textContent {
       position: absolute;
       width: 100%;
       height: 100%;
-      top: -2.5rem;
-      left: -2.5rem;
+      bottom: 1rem;
+      right: 1.25rem;
       background-color: white;
       z-index: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      .textHeading {
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+      }
+      .textBody {
+        font-size: 18px;
+        color: var(--blue-accent)
+      }
     }
     .textBackground {
       position: relative;
       width: 100%;
       height: 100%;
+      top: 1rem;
+      left: 1.25rem;
     }
   }
 }

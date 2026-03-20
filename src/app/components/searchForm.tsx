@@ -5,11 +5,7 @@ import z from "zod";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function SearchForm({
-  setReady,
-}: {
-  setReady: () => void;
-}) {
+export default function SearchForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const FormSchema = z.object({
@@ -32,7 +28,6 @@ export default function SearchForm({
     }
 
     const { zip } = parsedData.data;
-    setReady();
     await new Promise((resolve) => setTimeout(resolve, 500));
     router.push(`/reps/${zip}`);
   };
@@ -56,7 +51,7 @@ export default function SearchForm({
             className="
               w-full
                 block
-                rounded-full
+                rounded-md
                 px-4 py-3
                 text-2xl
                 bg-white text-gray-900 placeholder:text-gray-500
@@ -65,7 +60,7 @@ export default function SearchForm({
               "
           />
           <input type="hidden" id="street" name="street" value="" />
-          <button className="absolute right-2 bg-black rounded-full p-2 px-4 active:scale-95">
+          <button className="right-2 bg-black rounded-full p-2 px-4 active:scale-95">
             <ArrowRight color="white" />
           </button>
         </div>

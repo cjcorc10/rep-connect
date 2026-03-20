@@ -5,8 +5,7 @@
   border-radius: 1.5rem;
   max-width: min(50rem, 92vw);
   height: clamp(24rem, 55vh, 38rem);
-  opacity: 0;
-  animation: fade-in-up 0.5s ease-out forwards;
+  
 }
 
 .imageWrap {
@@ -61,16 +60,6 @@
 .formWrapper {
   width: 100%;
   max-width: 50rem;
-}
-
-@keyframes fade-in-up {
-  from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
 }
 
 @media (min-width: 640px) {

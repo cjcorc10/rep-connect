@@ -7,6 +7,7 @@
   --primary-color: #001392;
   --secondary-color: #e50000;
   --blue-accent: #4e9bff;
+  --red-accent: #ff4e4e;
 
   /* Typography - single source of truth for both .css and .scss */
   --typo-d1-font: "Montserrat", sans-serif;
