@@ -22,12 +22,11 @@ export default function Home() {
    
     const tl = gsap.timeline();
     
-    tl.to(
+    tl.from(
       titleRef.current,
       {
-        top: "0",
-        bottom: "unset",
-        width: 400,
+        top: '25%',
+        width: '100%',
         duration: 1,
         delay: 0.5,
       },
@@ -71,7 +70,7 @@ export default function Home() {
             style={{ objectFit: "cover" }}
           />
         </div>
-        <div ref={navItemsRef} className={styles.navItems}>
+        <div ref={navItemsRef} className={styles.navBar}>
          <div className={styles.navList}>
             <Link
               className={styles.navLink}

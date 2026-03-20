@@ -2,9 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import SubmitButton from "./button/submitButton";
 import { BeautifulButton } from "./button/beautifulButton";
 
 export default function SearchForm() {
@@ -30,7 +28,6 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push(`/reps/${zip}`);
   };
 

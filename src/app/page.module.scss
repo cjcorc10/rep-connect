@@ -6,11 +6,12 @@
     height: 100%;
   }
 
-.navItems {
+.navBar {
   display: flex;
   justify-content: space-between;
   z-index: 2;
   background-color: var(--primary-color);
+  width: 100%;
     .navList {
       color: var(--blue-accent);
       display: flex;
@@ -23,16 +24,15 @@
 
 }
 .logo {
-  position: fixed;
-  top: 50%;
+  position: absolute;
+  top: 0%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
-  width: 100%;
+  width: clamp(10rem, 50vw, 20rem);
   height: 8rem;
   padding: 2rem;
   will-change: transform;
-
 }
 
 .heroContainer {
@@ -47,6 +47,7 @@
   position: relative;
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   gap: 8rem;
