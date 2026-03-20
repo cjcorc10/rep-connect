@@ -16,6 +16,7 @@ export default function Home() {
   const maskList = useRef<HTMLAnchorElement[]>([]);
   const logoRef = useRef<HTMLImageElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
+  const navBackColorRef = useRef<HTMLDivElement>(null);
 
   const addToMaskList = (element: HTMLAnchorElement) => {
     if (element && !maskList.current.includes(element)) {
@@ -58,11 +59,20 @@ export default function Home() {
       ease: "power3.out",
     });
     tl.from(
+      navBackColorRef.current,
+      {
+        transform: "translateY(-100%)",
+        duration: 1,
+        ease: "power3.out",
+      },
+      ">",
+    );
+    tl.from(
       maskText.words,
       {
         y: "100%",
       },
-      ">",
+      "<",
     );
     tl.from(
       logoRef.current,
@@ -74,9 +84,9 @@ export default function Home() {
     tl.to(
       titleRef.current,
       {
-        top: "2rem",
+        top: "0",
         bottom: "unset",
-        width: 250,
+        width: 400,
         duration: 1,
       },
       ">+0.5",
@@ -99,13 +109,13 @@ export default function Home() {
       },
       "<",
     );
-    tl.to(
-      heroRef.current,
-      {
-        opacity: 1,
-      },
-      ">+0.5",
-    );
+    // tl.to(
+    //   heroRef.current,
+    //   {
+    //     opacity: 1,
+    //   },
+    //   ">+0.5",
+    // );
   });
 
   return (
@@ -113,7 +123,9 @@ export default function Home() {
       <div className={styles.navContainer}>
         <div className={styles.navBackground}>
           <Image
-            src="/images/teemu-paananen-rd5uNIUJCF0-unsplash.jpg"
+            // src="/images/teemu-paananen-rd5uNIUJCF0-unsplash.jpg"
+            // src="/images/edwin-andrade-4V1dC_eoCwg-unsplash.jpg"
+            src="/images/protest.jpg"
             alt="kamran-abdullayev"
             fill
             style={{ objectFit: "cover" }}
@@ -122,6 +134,10 @@ export default function Home() {
       </div>
       <div ref={containerRef} className={styles.navBackdrop}>
         <div ref={navItemsRef} className={styles.navItems}>
+          <div
+            className={styles.navBackColor}
+            ref={navBackColorRef}
+          />
           <div className={styles.navList}>
             <Link
               ref={addToMaskList}
@@ -144,7 +160,8 @@ export default function Home() {
           <div ref={titleRef} className={styles.logo}>
             <Image
               ref={logoRef}
-              src="/images/REPCONNECT (1).svg"
+              // src="/images/REPCONNECT (1).svg"
+              src="/images/logo.svg"
               alt="repconnect logo"
               fill
               style={{ objectFit: "contain" }}
@@ -152,9 +169,33 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div ref={heroRef} className={styles.heroContainer}>
+      {/* <div ref={heroRef} className={styles.heroContainer}>
         <Hero />
-      </div>
+      </div> */}
+      <section className={styles.bottomSection}>
+        <div className={styles.textSection}>
+          <div className={styles.textContent}></div>
+          <div className={styles.textBackground}>
+            <Image
+              src="/images/text-background.svg"
+              alt="text background"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </div>
+        <div className={styles.textSection}>
+          <div className={styles.textContent}></div>
+          <div className={styles.textBackground}>
+            <Image
+              src="/images/text-background.svg"
+              alt="text background"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

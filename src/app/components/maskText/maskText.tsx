@@ -25,16 +25,19 @@ export const MaskText = ({
         gsap.to(repRefs.current[index - 1], {
           y: "-100%",
           ease: "power2.inOut",
+          duration: 1,
         });
       } else {
         gsap.to(repRefs.current[index + 1], {
           y: "100%",
           ease: "power2.inOut",
+          duration: 1,
         });
       }
       gsap.to(repRefs.current[index], {
         y: "0%",
         ease: "power2.inOut",
+        duration: 1,
       });
       lastIndex.current = index;
     },

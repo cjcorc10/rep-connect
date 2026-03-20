@@ -3,8 +3,10 @@
 @import "tw-animate-css";
 
 :root {
-  --accent-indigo: #b387ff;
-  --accent-green: #d3ff87;
+  --background-color: #f3f0e0;
+  --primary-color: #001392;
+  --secondary-color: #e50000;
+  --blue-accent: #4e9bff;
 
   /* Typography - single source of truth for both .css and .scss */
   --typo-d1-font: "Montserrat", sans-serif;

@@ -26,7 +26,8 @@ export default function Header() {
       </div>
       <Link href="/" className={styles.logo}>
         <Image
-          src="/images/REPCONNECT (1).svg"
+          // src="/images/REPCONNECT (1).svg"
+          src="/images/logo.svg"
           alt="Repconnect logo"
           fill
           style={{ objectFit: "contain" }}
