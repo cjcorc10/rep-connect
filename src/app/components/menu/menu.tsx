@@ -15,6 +15,7 @@ export default function Menu() {
 
   return (
     <div className={styles.menu} data-mounted={isMounted}>
+      <div className={styles.menuBackground} />
       <div className={styles.menuButtons}>
         <MenuButton
           variant="phone"
