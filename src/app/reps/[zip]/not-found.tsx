@@ -9,7 +9,7 @@ export default function NotFound() {
       <p className="text-lg mb-4">
         Please check the ZIP code and try again.
       </p>
-      <SearchForm setReady={() => {}} />
+      <SearchForm />
     </div>
   );
 }

@@ -120,7 +120,7 @@ export default function RepsWrapper({
           pin: true,
           snap: {
             snapTo: 1 / (totalImages - 1),
-            duration: 0.7,
+            duration: 0.5,
             directional: false,
             delay: 0.1,
             ease: "power3.out",

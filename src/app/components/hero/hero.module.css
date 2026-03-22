@@ -3,28 +3,9 @@
   width: 100%;
   overflow: hidden;
   border-radius: 1.5rem;
-  max-width: min(50rem, 92vw);
+  width: 100%;
+  max-width: min(70rem, 92vw);
   height: clamp(24rem, 55vh, 38rem);
-  
-}
-
-.imageWrap {
-  position: absolute;
-  inset: 0;
-}
-
-.cover {
-  object-fit: cover;
-}
-
-.cover img {
-  object-fit: cover;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .content {
@@ -47,8 +28,6 @@
   font-family: var(--typo-d1-font);
   font-weight: var(--typo-d1-weight);
   font-size: clamp(1.875rem, 6vw + 1.25rem, 3rem);
-  line-height: var(--typo-d1-line);
-  letter-spacing: var(--typo-d1-spacing);
   color: white;
 }
 
@@ -74,7 +53,7 @@
   }
 
   .title {
-    font-size: clamp(2rem, 4vw + 1.25rem, 2.75rem);
+    font-size: clamp(2rem, 4vw + 1.25rem, 3.5rem);
   }
 }
 

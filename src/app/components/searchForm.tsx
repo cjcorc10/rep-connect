@@ -59,7 +59,7 @@ export default function SearchForm() {
               "
           />
           <input type="hidden" id="street" name="street" value="" />
-          <BeautifulButton />
+          <BeautifulButton content={"SEARCH"} />
         </div>
       </form>
 

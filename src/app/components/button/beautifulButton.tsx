@@ -1,12 +1,11 @@
-import styles from './beautifulButton.module.scss'
+import styles from "./beautifulButton.module.scss";
 
-export const BeautifulButton = () => {
-
-    return (
-        <button className={styles.button}>
-            <span className={styles.shadow} />
-            <span className={styles.edge} />
-            <span className={styles.top}>SEARCH</span>
-        </button>
-    )
-}
+export const BeautifulButton = ({ content }: { content: string }) => {
+  return (
+    <button className={styles.button}>
+      <span className={styles.shadow} />
+      <span className={styles.edge} />
+      <span className={styles.top}>{content}</span>
+    </button>
+  );
+};
