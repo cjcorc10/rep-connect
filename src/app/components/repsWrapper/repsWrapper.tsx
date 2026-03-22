@@ -254,9 +254,10 @@ export default function RepsWrapper({
         ))}
       </div>
       <div
-        className="h-[50rem] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
+        // className="h-[50rem] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
+        className={styles.display}
         style={{
-          backgroundColor: "#4d6ef0",
+          backgroundColor: "var(--primary-color)",
           width: "min(90vw, 80rem)",
           position: "relative",
           overflow: "hidden",

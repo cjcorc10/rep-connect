@@ -58,7 +58,7 @@ export const BlockText = ({
       });
       gsap.set(blockRefs.current, {
         backgroundColor: (index: number) =>
-          index % 2 === 0 ? blockColor : "#ff2e2e",
+          index % 2 === 0 ? "var(--red-accent)" : blockColor,
       });
 
       const createAnimation = (

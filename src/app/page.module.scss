@@ -16,11 +16,12 @@
     color: var(--blue-accent);
     display: flex;
     padding: 1rem 4rem;
-    .navLink {
-      height: min-content;
+    .navLink:hover {
+      color: #c0e2ff;
     }
   }
 }
+
 .logo {
   position: absolute;
   top: 0%;
@@ -49,14 +50,15 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 12rem;
-  padding: 3rem;
+  column-gap: 12rem;
+  row-gap: 6rem;
+  padding: 6rem;
   .textSection {
     position: relative;
     width: 24rem;
     aspect-ratio: 4/3;
     .textContent {
-      font-family: var(--typo-t1-font);
+      // font-family: merriweatherSans;
       position: absolute;
       width: 100%;
       height: 100%;
@@ -70,7 +72,8 @@
       gap: 1.5rem;
       .textHeading {
         font-size: 1.5rem;
-        color: var(--secondary-color);
+        font-weight: 600;
+        color: var(--red-accent);
       }
       .textBody {
         font-size: 18px;

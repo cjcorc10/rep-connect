@@ -45,7 +45,7 @@ export default function RepsPageClient({ address, data }: Props) {
                 className="display-d2 text-gray-700 mt-2 text-center "
                 style={{
                   fontSize: "clamp(0.875rem, 1.5vw + 1rem, 2rem)",
-                  color: "#1a1500",
+                  color: "var(--red-accent)",
                 }}
               >
                 Find and contact your elected officials in Congress.
@@ -68,7 +68,7 @@ export default function RepsPageClient({ address, data }: Props) {
           }}
           className="absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-1/2 justify-center items-center"
         >
-          <ArrowDownIcon size={148} color="#ff6969" />
+          <ArrowDownIcon size={148} color="var(--blue-accent)" />
         </motion.div>
       </main>
       <div className="px-4 sm:px-6 lg:px-8">

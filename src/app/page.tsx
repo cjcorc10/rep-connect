@@ -4,7 +4,6 @@ import styles from "./page.module.scss";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { SplitText } from "gsap/all";
 import { useRef } from "react";
 import Hero from "./components/hero/hero";
 

@@ -58,3 +58,13 @@
     }
   }
 }
+
+.display {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(90vw, 80rem);
+  height: min(90vh, 80rem);
+  border-radius: 9999;
+}

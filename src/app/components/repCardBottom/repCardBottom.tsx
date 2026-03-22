@@ -20,7 +20,12 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
   return (
     <div className={styles.bottomSection}>
       <div className={styles.bottomExpiry}>
-        <BlockText delay={0.25} animateOnScroll={false} stagger={0}>
+        <BlockText
+          delay={0.25}
+          animateOnScroll={false}
+          stagger={0.05}
+          blockColor="var(--red-accent)"
+        >
           <p className={styles.bottomExpiryText}>
             {" "}
             Term Expires: {expiration.toLocaleDateString()}
@@ -36,14 +41,24 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
       </div>
       <div className={styles.overviewSection}>
         {wiki && (
-          <BlockText delay={0.25} animateOnScroll={false} stagger={0}>
+          <BlockText
+            // delay={0.25}
+            animateOnScroll={false}
+            stagger={0.05}
+            blockColor="var(--red-accent)"
+          >
             <h3 className={styles.sectionTitle}>Overview</h3>
             <p className={styles.sectionText}>{wiki.extract}</p>
           </BlockText>
         )}
       </div>
       <div className={styles.contactSection}>
-        <BlockText delay={0.3} animateOnScroll={false} stagger={0}>
+        <BlockText
+          delay={0.3}
+          animateOnScroll={false}
+          stagger={0.05}
+          blockColor="var(--red-accent)"
+        >
           <h3 className={styles.sectionTitle}>Contact</h3>
           <address className={styles.contactAddress}>
             <p className={styles.contactLine}>{rep.address}</p>
