@@ -96,12 +96,13 @@ export default function Home() {
         <div className={styles.textSection}>
           <div className={styles.textContent}>
             <h2 className={styles.textHeading}>
-              Why contacting your representatives matters
+              Demand accountability
             </h2>
             <p className={styles.textBody}>
               Politicians depend on voter support to get elected and
-              re-elected. By calling them, you can increase the
-              pressure they feel to represent your interests.
+              re-elected. By calling them, you increase the{" "}
+              <b>pressure</b> that they feel when voting on
+              legislation.
             </p>
           </div>
           <div className={styles.textBackground}>

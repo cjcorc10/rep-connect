@@ -20,7 +20,7 @@ export default function Menu() {
         <MenuButton
           variant="phone"
           phone={activeRep.phone}
-          color="#4760ff"
+          color={`var(--primary-color)`}
         >
           call
         </MenuButton>
