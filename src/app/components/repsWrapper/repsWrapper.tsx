@@ -41,6 +41,10 @@ export default function RepsWrapper({
   const indexTextRef = useRef<HTMLSpanElement>(null);
   const indexTotalRef = useRef<HTMLSpanElement>(null);
   const currentIndexRef = useRef<number>(0);
+  const progressBarOverlayRef = useRef<HTMLDivElement>(null);
+  const prepareReps = (repsData: RepsData) => {
+    return repsData.senateReps.concat(repsData.houseReps);
+  };
 
   const addToRefArray = (
     element: HTMLDivElement | null,
@@ -51,28 +55,68 @@ export default function RepsWrapper({
     }
   };
 
-  const returnCurrentRep = (
-    index: number,
-    reps: Rep[],
-    refine: boolean = false,
-  ) => {
-    if (index < SENATE_COUNT) return reps[index];
+  const updateIndex = (index: number) => {
+    setIndex(index);
+    setActiveRep(reps[index]);
+    gsap.set(indexTextRef.current, {
+      textContent: `${index + 1}`,
+    });
+    currentIndexRef.current = index;
+  };
 
-    if (refine) {
-      if (index === SENATE_COUNT) {
-        return null;
-      } else {
-        return reps[index - 1];
+  const getPrimaryCards = (
+    index: number,
+    images: HTMLDivElement[],
+  ) => [images[index], images[index + 1] || images[0]];
+  const getBackgroundCards = (
+    index: number,
+    images: HTMLDivElement[],
+  ) => {
+    if (index === images.length - 1) return images.slice(1, index);
+    return [...images.slice(index + 2), ...images.slice(0, index)];
+  };
+
+  const animateImages = (
+    images: HTMLDivElement[],
+    progress: number,
+    imageContainer: HTMLDivElement | null,
+  ) => {
+    images.forEach((image, i) => {
+      const numImages = images.length;
+      const primaryCards = getPrimaryCards(i, images);
+      const backgroundCards = getBackgroundCards(i, images);
+
+      // get start and end of each segment
+      const segmentLength = 1 / images.length;
+      const startProgress = i * segmentLength;
+      const endProgress = startProgress + segmentLength;
+      const localProgress =
+        (progress - startProgress) / segmentLength;
+
+      if (progress > startProgress && progress < endProgress) {
+        gsap.to(primaryCards, {
+          translateY: (k) => (k === 0 ? `0%` : `${30}%`),
+          translateZ: (k) => (k ? `${numImages * -30}px` : "0px"),
+        });
+        gsap.to(backgroundCards, {
+          translateY: (k) => `${(numImages - 2 - k) * -15}%`,
+          translateZ: (k) => `${(numImages - 2 - k) * -30}px`,
+        });
+        if (!imageContainer) return;
+        gsap.to(imageContainer, {
+          yPercent: localProgress * -10,
+          ease: "power3.out",
+        });
       }
-    } else {
-      return reps[index];
-    }
+    });
   };
 
   const totalReps =
     repsData.senateReps.length +
     repsData.houseReps.length +
     (refine.current ? 1 : 0);
+
+  const reps = prepareReps(repsData);
 
   useGSAP(
     () => {
@@ -86,16 +130,7 @@ export default function RepsWrapper({
         return;
 
       const images = imageRefs.current;
-      const totalImages = images.length;
-      currentIndexRef.current = -1;
-
-      // get heights of containers
-      const scrollSectionHeight = scrollSection.current?.offsetHeight;
-      const namesHeight = namesText.current?.offsetHeight;
-
-      // Calculate how far each container or element need to move when selected
-      // distance between top of scroll section and top of chamber text
-      const moveDistanceNames = scrollSectionHeight - namesHeight;
+      const numImages = images.length;
 
       gsap.set(indexRef.current, {
         x: "-100%",
@@ -106,25 +141,17 @@ export default function RepsWrapper({
       gsap.set(indexTotalRef.current, {
         textContent: `${totalReps}`,
       });
-
-      gsap.set(imageRefs.current, {
-        y: (i: number) => (i ? "200%" : "0%"),
+      gsap.set(images, {
+        translateZ: (i) => (i ? "-1px" : "0px"),
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: scrollSection.current,
           start: "top top",
-          end: `+=${window.innerHeight * totalImages}px`,
+          end: `+=${window.innerHeight * numImages}px`,
           scrub: 1,
           pin: true,
-          snap: {
-            snapTo: 1 / (totalImages - 1),
-            duration: 0.5,
-            directional: false,
-            delay: 0.1,
-            ease: "power3.out",
-          },
           onEnter: () => {
             gsap.to(indexRef.current, {
               x: "0%",
@@ -135,59 +162,26 @@ export default function RepsWrapper({
           },
           onUpdate: (self) => {
             const progress = self.progress;
+
+            // animate images
+            animateImages(images, progress, imagesContainer.current);
+
+            // fill in names as scroll progresses
+            gsap.set(namesText.current, {
+              clipPath: `inset(0 0 ${100 - progress * 100}% 0)`,
+            });
+            gsap.set(progressBarOverlayRef.current, {
+              clipPath: `inset(0 0 ${100 - progress * 100}% 0)`,
+            });
+
+            // update index
             const index = Math.min(
-              Math.floor(progress * totalImages),
-              totalImages - 1,
+              Math.floor(progress * numImages),
+              numImages - 1,
             );
-            if (index !== currentIndexRef.current) {
-              currentIndexRef.current = index;
-              setActiveRep(
-                returnCurrentRep(
-                  index,
-                  repsData.senateReps.concat(repsData.houseReps),
-                  refine.current,
-                ),
-              );
-              setIndex(index);
-              gsap.set(indexTextRef.current, {
-                textContent: `${index + 1}`,
-              });
-            }
+            if (index !== currentIndexRef.current) updateIndex(index);
           },
         },
-      });
-
-      images.forEach((image, i) => {
-        const nextImage = images[i + 1];
-        if (!nextImage) return;
-        tl.to(image, {
-          y: "-200%",
-          ease: "none",
-        });
-        tl.to(
-          namesTextRefs.current[i],
-          {
-            y: `-${moveDistanceNames}`,
-            ease: "none",
-          },
-          "<",
-        );
-        tl.to(
-          nextImage,
-          {
-            y: "0%",
-            ease: "none",
-          },
-          "<",
-        );
-        tl.to(
-          namesTextRefs.current[i + 1],
-          {
-            y: `-${moveDistanceNames / 2}`,
-            ease: "none",
-          },
-          "<",
-        );
       });
     },
     { dependencies: [repsData] },
@@ -196,7 +190,7 @@ export default function RepsWrapper({
   return (
     <div ref={scrollSection} className={styles.main}>
       <div ref={indexRef} className={styles.index}>
-        <h1>
+        {/* <h1>
           <span
             ref={indexTextRef}
             className={styles.indexNumber}
@@ -206,131 +200,79 @@ export default function RepsWrapper({
             ref={indexTotalRef}
             className={styles.indexTotal}
           ></span>
-        </h1>
+        </h1> */}
       </div>
-      <div ref={namesText} className={styles.names}>
-        {repsData.senateReps.map((senator) => (
-          <div
-            key={senator.bioguide_id}
-            ref={(el) => addToRefArray(el, namesTextRefs)}
-            className={styles.repName}
-          >
-            <svg width="30" height="30" viewBox="0 0 120 120">
-              <circle
-                cx="60"
-                cy="60"
-                r="30"
-                fill={`${senator.party === "Republican" ? "red" : "blue"}`}
-              />
-            </svg>
-          </div>
-        ))}
-        {refine.current && (
-          <div
-            key="refine"
-            ref={(el) => addToRefArray(el, namesTextRefs)}
-            className={styles.repName}
-          >
-            <svg width="30" height="30" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="30" fill="black" />
-            </svg>
-          </div>
-        )}
-        {repsData.houseReps.map((rep) => (
-          <div
-            key={rep.bioguide_id}
-            ref={(el) => addToRefArray(el, namesTextRefs)}
-            className={styles.repName}
-          >
-            <svg width="30" height="30" viewBox="0 0 120 120">
-              <circle
-                cx="60"
-                cy="60"
-                r="30"
-                fill={`${rep.party === "Republican" ? "red" : "blue"}`}
-              />
-            </svg>
-          </div>
-        ))}
-      </div>
-      <div
-        // className="h-[50rem] w-[65vw] rounded-full -translate-x-1/2 -translate-y-1/2 absolute left-1/2 top-1/2"
-        className={styles.display}
-        style={{
-          backgroundColor: "var(--primary-color)",
-          width: "min(90vw, 80rem)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div className={styles.maskTextContainer}>
-          <MaskText index={index}>
-            {repsData.senateReps.map((rep) => (
-              <p key={rep.bioguide_id} className={styles.maskDetail}>
-                Senate
-              </p>
-            ))}
-            {refine.current && (
-              <p key="refine" className={styles.maskDetail}>
-                Refine search
-              </p>
-            )}
-            {repsData.houseReps.map((rep) => (
-              <p key={rep.bioguide_id} className={styles.maskDetail}>
-                House of Representatives
-              </p>
-            ))}
-          </MaskText>
-        </div>
+      <div className={styles.maskTextContainer}>
+        <MaskText index={index}>
+          {repsData.senateReps.map((rep) => (
+            <p key={rep.bioguide_id} className={styles.maskDetail}>
+              Senate
+            </p>
+          ))}
 
-        <div ref={imagesContainer} className={styles.images}>
-          <>
-            {repsData.senateReps.map((senator) => (
+          {repsData.houseReps.map((rep) => (
+            <p key={rep.bioguide_id} className={styles.maskDetail}>
+              House of Representatives
+            </p>
+          ))}
+        </MaskText>
+      </div>
+      <section className={styles.namesSection}>
+        <div className={styles.progressBarContainer}>
+          <div className={styles.progressBar} />
+          <div
+            ref={progressBarOverlayRef}
+            className={styles.progressBarOverlay}
+          />
+        </div>
+        <div className={styles.namesContainer}>
+          <div className={styles.names}>
+            {reps.map((rep, i) => (
               <div
-                className={styles.repCard}
-                key={senator.bioguide_id}
-                ref={(el) => addToRefArray(el, imageRefs)}
+                key={rep.bioguide_id}
+                style={{
+                  borderBottom:
+                    i === reps.length - 1
+                      ? "none"
+                      : "2px solid var(--background-color)",
+                }}
+                className={styles.repName}
               >
-                <RepCard
-                  rep={senator}
-                  isOpen={openRepIds.has(senator.bioguide_id)}
-                />
+                {rep.first_name[0]}. {rep.last_name}
               </div>
             ))}
-            {refine.current && (
+          </div>
+          <div ref={namesText} className={styles.namesOverlay}>
+            {reps.map((rep, i) => (
               <div
-                className={styles.repCard}
-                key="refine"
-                ref={(el) => addToRefArray(el, imageRefs)}
+                key={rep.bioguide_id}
+                style={{
+                  borderBottom:
+                    i === reps.length - 1
+                      ? "none"
+                      : "2px solid var(--background-color)",
+                }}
+                className={styles.repName}
               >
-                <Refine
-                  multipleDistricts={repsData.houseReps.length > 1}
-                  onRefineSuccess={(rep) =>
-                    setRefinedHouseRepId(rep.bioguide_id)
-                  }
-                />
+                {rep.first_name[0]}. {rep.last_name}
               </div>
-            )}
-            {repsData.houseReps.map((rep) => {
-              const disabled =
-                refinedHouseRepId != null &&
-                rep.bioguide_id !== refinedHouseRepId;
-              return (
-                <div
-                  className={styles.repCard}
-                  key={rep.bioguide_id}
-                  ref={(el) => addToRefArray(el, imageRefs)}
-                >
-                  <RepCard
-                    rep={rep}
-                    disabled={disabled}
-                    isOpen={openRepIds.has(rep.bioguide_id)}
-                  />
-                </div>
-              );
-            })}
-          </>
+            ))}
+          </div>
         </div>
+      </section>
+      <div ref={imagesContainer} className={styles.images}>
+        {reps.map((rep) => (
+          <div
+            className={styles.repCard}
+            key={rep.bioguide_id}
+            ref={(el) => addToRefArray(el, imageRefs)}
+          >
+            <RepCard
+              rep={rep}
+              isOpen={openRepIds.has(rep.bioguide_id)}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

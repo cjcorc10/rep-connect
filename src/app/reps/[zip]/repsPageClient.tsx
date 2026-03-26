@@ -71,7 +71,7 @@ export default function RepsPageClient({ address, data }: Props) {
           <ArrowDownIcon size={148} color="var(--blue-accent)" />
         </motion.div>
       </main>
-      <div className="px-4 sm:px-6 lg:px-8">
+      <div>
         <RepsWrapper repsData={data} />
       </div>
     </>
