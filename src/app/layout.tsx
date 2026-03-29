@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { ReactLenis } from "lenis/react";
 import "./globals.css";
 import Header from "./components/header/header";
 import Container from "./components/container";
-import { ReactLenis } from "lenis/react";
 import { Montserrat, Merriweather_Sans } from "next/font/google";
 
 const montserrat = Montserrat({
@@ -25,11 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={merriweatherSans.className}>
       <body className="overflow-y-scroll">
-        <ReactLenis root />
-        <Container>
-          <Header />
-          {children}
-        </Container>
+        <ReactLenis root>
+          <Container>
+            <Header />
+            {children}
+          </Container>
+        </ReactLenis>
       </body>
     </html>
   );
