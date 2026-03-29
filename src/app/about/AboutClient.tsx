@@ -153,6 +153,12 @@ export default function AboutClient() {
       "<0.2",
     );
 
+    // ── Pre-hide all scroll-animated elements to prevent flash of visible content
+    gsap.set([missionIntroRef.current, ...missionCardsRef.current], { opacity: 0, y: 20 });
+    gsap.set([howHeaderRef.current, ...howCardsRef.current], { opacity: 0, y: 24 });
+    gsap.set([founderIntroRef.current, founderProfileRef.current], { opacity: 0, y: 20 });
+    gsap.set([faqHeaderRef.current, ...faqItemsRef.current], { opacity: 0, y: 16 });
+
     // ── Mission section
     ScrollTrigger.create({
       trigger: missionSectionRef.current,
@@ -160,17 +166,17 @@ export default function AboutClient() {
       once: true,
       onEnter: () => {
         const tl = gsap.timeline();
-        tl.from(missionIntroRef.current, {
-          y: 20,
-          opacity: 0,
+        tl.to(missionIntroRef.current, {
+          y: 0,
+          opacity: 1,
           duration: 0.7,
           ease: "power3.out",
         });
-        tl.from(
+        tl.to(
           missionCardsRef.current,
           {
-            y: 24,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             duration: 0.7,
             stagger: 0.08,
             ease: "power3.out",
@@ -187,17 +193,17 @@ export default function AboutClient() {
       once: true,
       onEnter: () => {
         const tl = gsap.timeline();
-        tl.from(howHeaderRef.current, {
-          y: 20,
-          opacity: 0,
+        tl.to(howHeaderRef.current, {
+          y: 0,
+          opacity: 1,
           duration: 0.7,
           ease: "power3.out",
         });
-        tl.from(
+        tl.to(
           howCardsRef.current,
           {
-            y: 24,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             duration: 0.7,
             stagger: 0.08,
             ease: "power3.out",
@@ -214,15 +220,15 @@ export default function AboutClient() {
       once: true,
       onEnter: () => {
         const tl = gsap.timeline();
-        tl.from(founderIntroRef.current, {
-          y: 20,
-          opacity: 0,
+        tl.to(founderIntroRef.current, {
+          y: 0,
+          opacity: 1,
           duration: 0.7,
           ease: "power3.out",
         });
-        tl.from(
+        tl.to(
           founderProfileRef.current,
-          { y: 24, opacity: 0, duration: 0.8, ease: "power3.out" },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
           ">-0.3",
         );
       },
@@ -235,17 +241,17 @@ export default function AboutClient() {
       once: true,
       onEnter: () => {
         const tl = gsap.timeline();
-        tl.from(faqHeaderRef.current, {
-          y: 20,
-          opacity: 0,
+        tl.to(faqHeaderRef.current, {
+          y: 0,
+          opacity: 1,
           duration: 0.7,
           ease: "power3.out",
         });
-        tl.from(
+        tl.to(
           faqItemsRef.current,
           {
-            y: 16,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             duration: 0.6,
             stagger: 0.06,
             ease: "power3.out",
