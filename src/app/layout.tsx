@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ReactLenis } from "lenis/react";
 import "./globals.css";
 import Header from "./components/header/header";
 import Container from "./components/container";
@@ -24,10 +25,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={merriweatherSans.className}>
       <body className="overflow-y-scroll">
-        <Container>
-          <Header />
-          {children}
-        </Container>
+        <ReactLenis root>
+          <Container>
+            <Header />
+            {children}
+          </Container>
+        </ReactLenis>
       </body>
     </html>
   );

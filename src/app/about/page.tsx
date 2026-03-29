@@ -203,7 +203,7 @@ export default function Page() {
             <div className={styles.founderImageWrap}>
               <img
                 className={styles.founderImage}
-                src="/images/founder.png"
+                src="/images/founder_mogal.png"
                 alt="Founder portrait"
               />
             </div>
