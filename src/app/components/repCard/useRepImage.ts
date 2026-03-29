@@ -2,23 +2,22 @@ import { useState, useEffect } from "react";
 import { Rep } from "../../lib/definitions";
 
 export function useRepImage(rep: Rep) {
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(
-    () => !!rep.wikipedia_id,
+  const [imageUrl, setImageUrl] = useState<string>(() =>
+    rep.image_url?.trim() ? rep.image_url : "",
   );
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!rep.wikipedia_id) {
-      setImageUrl(rep.image_url);
-      setLoading(false);
-      return;
-    }
-
     setLoading(true);
 
-    const params = new URLSearchParams(
-      "wikipedia_id=" + rep.wikipedia_id,
-    );
+    const params = new URLSearchParams();
+    if (rep.wikipedia_id) {
+      params.set("wikipedia_id", rep.wikipedia_id);
+    }
+    params.set("bioguide_id", rep.bioguide_id);
+    if (rep.image_url?.trim()) {
+      params.set("fallback", rep.image_url.trim());
+    }
 
     fetch(`/api/rep-image?${params.toString()}`, {
       method: "GET",
@@ -26,13 +25,23 @@ export function useRepImage(rep: Rep) {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        setImageUrl(data.imageUrl);
+      .then(async (res) => {
+        if (!res.ok) {
+          const fallback = rep.image_url?.trim() ?? "";
+          setImageUrl(fallback);
+          return;
+        }
+        const data = (await res.json()) as { imageUrl?: string };
+        const url = data.imageUrl?.trim();
+        setImageUrl(
+          url && url.length > 0
+            ? url
+            : (rep.image_url?.trim() ?? ""),
+        );
       })
       .catch((err) => {
-        console.error("Error fetching high-quality image:", err);
-        setImageUrl(rep.image_url);
+        console.error("Error fetching rep portrait:", err);
+        setImageUrl(rep.image_url?.trim() ?? "");
       })
       .finally(() => {
         setLoading(false);

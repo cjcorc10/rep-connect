@@ -4,7 +4,8 @@ import MenuButton from "./menuButton";
 import { useRepStore } from "@/app/store/useRepStore";
 
 export default function Menu() {
-  const { activeRep, openRepIds, toggleRepOpen } = useRepStore();
+  const { activeRep, detailBioguideId, toggleRepDetail } =
+    useRepStore();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -47,10 +48,10 @@ export default function Menu() {
           <MenuButton
             variant="button"
             onClick={() => {
-              toggleRepOpen(activeRep.bioguide_id);
+              toggleRepDetail(activeRep.bioguide_id);
             }}
           >
-            {openRepIds.has(activeRep.bioguide_id)
+            {detailBioguideId === activeRep.bioguide_id
               ? "close"
               : "details"}
           </MenuButton>

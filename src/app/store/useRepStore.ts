@@ -4,31 +4,29 @@ import { Rep } from "../lib/definitions";
 type State = {
   reps: Rep[];
   activeRep: Rep | null;
-  openRepIds: Set<string>;
+  detailBioguideId: string | null;
 };
 
 type Action = {
   setReps: (newReps: State["reps"]) => void;
   getReps: () => Rep[];
   setActiveRep: (newActiveRep: Rep | null) => void;
-  toggleRepOpen: (bioguide: string) => void;
-  isRepOpen: (bioguide: string) => boolean;
+  toggleRepDetail: (bioguide: string) => void;
+  closeRepDetail: () => void;
 };
 
 export const useRepStore = create<State & Action>((set, get) => ({
   reps: [],
   activeRep: null,
-  openRepIds: new Set<string>(),
+  detailBioguideId: null,
   setReps: (newReps) => set(() => ({ reps: newReps })),
   getReps: () => get().reps,
   setActiveRep: (newActiveRep) =>
     set(() => ({ activeRep: newActiveRep })),
-  toggleRepOpen: (bioguide) =>
-    set((state) => {
-      const next = new Set(state.openRepIds);
-      if (next.has(bioguide)) next.delete(bioguide);
-      else next.add(bioguide);
-      return { openRepIds: next };
-    }),
-  isRepOpen: (bioguide) => get().openRepIds.has(bioguide),
+  toggleRepDetail: (bioguide) =>
+    set((state) => ({
+      detailBioguideId:
+        state.detailBioguideId === bioguide ? null : bioguide,
+    })),
+  closeRepDetail: () => set(() => ({ detailBioguideId: null })),
 }));

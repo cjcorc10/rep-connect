@@ -66,6 +66,9 @@
       text-transform: uppercase;
       white-space: nowrap;
       display: inline-grid;
+      width: max-content;
+      min-width: max-content;
+      grid-template-columns: max-content;
 
       .namesOverlay {
         color: var(--red-accent);
@@ -76,6 +79,21 @@
       .names {
         grid-area: 1/1;
         color: var(--background-color);
+      }
+
+      .repNameNav {
+        cursor: pointer;
+        outline: none;
+        transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+        &:hover {
+          opacity: 0.85;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--red-accent);
+          outline-offset: 4px;
+        }
       }
     }
   }

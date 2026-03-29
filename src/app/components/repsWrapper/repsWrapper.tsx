@@ -1,7 +1,13 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import RepCard from "../repCard/repCard";
+import RepDetailDrawer from "../repDetailDrawer/repDetailDrawer";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
@@ -10,6 +16,7 @@ import type { Rep, RepsData } from "@/app/lib/definitions";
 import Refine from "../refine/refine";
 import { MaskText } from "../maskText/maskText";
 import { useRepStore } from "@/app/store/useRepStore";
+import clsx from "clsx";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -22,7 +29,8 @@ export default function RepsWrapper({
 }: {
   repsData: RepsData;
 }) {
-  const { setActiveRep, openRepIds, getReps } = useRepStore();
+  const { setActiveRep, detailBioguideId, closeRepDetail } =
+    useRepStore();
   const [refinedHouseRepId, setRefinedHouseRepId] = useState<
     string | null
   >(null);
@@ -42,6 +50,11 @@ export default function RepsWrapper({
   const indexTotalRef = useRef<HTMLSpanElement>(null);
   const currentIndexRef = useRef<number>(0);
   const progressBarOverlayRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const scrollPositionRef = useRef<number>(0);
+  const detailDrawerOpenRef = useRef(false);
+  const repsListRef = useRef<Rep[]>([]);
   const prepareReps = (repsData: RepsData) => {
     return repsData.senateReps.concat(repsData.houseReps);
   };
@@ -117,6 +130,41 @@ export default function RepsWrapper({
     (refine.current ? 1 : 0);
 
   const reps = prepareReps(repsData);
+  repsListRef.current = reps;
+
+  const detailRep =
+    detailBioguideId === null
+      ? null
+      : (reps.find((r) => r.bioguide_id === detailBioguideId) ??
+        null);
+
+  const detailDrawerOpen =
+    detailBioguideId !== null && detailRep !== null;
+
+  detailDrawerOpenRef.current = detailDrawerOpen;
+
+  const scrollToRepByIndex = useCallback(
+    (i: number) => {
+      if (detailDrawerOpen) return;
+      const list = repsListRef.current;
+      const st = scrollTriggerRef.current;
+      const tl = timelineRef.current;
+      if (!st || !tl || i < 0 || i >= list.length) return;
+
+      const label = `rep-${list[i]!.bioguide_id}`;
+      const labelTime = tl.labels[label];
+      const segmentStart =
+        typeof labelTime === "number" ? labelTime : i;
+      const dur = tl.duration();
+      if (!(dur > 0)) return;
+
+      const progress = segmentStart / dur;
+      const y = st.start + progress * (st.end - st.start);
+      st.scroll(y);
+      ScrollTrigger.update();
+    },
+    [detailDrawerOpen],
+  );
 
   useGSAP(
     () => {
@@ -183,9 +231,38 @@ export default function RepsWrapper({
           },
         },
       });
+
+      const repsList = repsData.senateReps.concat(repsData.houseReps);
+      repsList.forEach((rep, i) => {
+        tl.addLabel(`rep-${rep.bioguide_id}`, i);
+      });
+      tl.to({}, { duration: numImages });
+
+      const st = tl.scrollTrigger ?? null;
+      if (st && detailDrawerOpenRef.current) {
+        scrollPositionRef.current = st.scroll();
+        st.disable(false);
+      }
+      return () => {
+        scrollTriggerRef.current = null;
+        st?.enable();
+        st?.scroll(scrollPositionRef.current);
+      };
     },
     { dependencies: [repsData] },
   );
+
+  useEffect(() => {
+    const st = scrollTriggerRef.current;
+    if (!st) return;
+    if (detailDrawerOpen) {
+      scrollPositionRef.current = st.scroll();
+      st.disable(false);
+    } else {
+      st.enable();
+      st.scroll(scrollPositionRef.current);
+    }
+  }, [detailDrawerOpen]);
 
   return (
     <div ref={scrollSection} className={styles.main}>
@@ -230,13 +307,23 @@ export default function RepsWrapper({
             {reps.map((rep, i) => (
               <div
                 key={rep.bioguide_id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Scroll to ${rep.full_name}`}
                 style={{
                   borderBottom:
                     i === reps.length - 1
                       ? "none"
                       : "2px solid var(--background-color)",
                 }}
-                className={styles.repName}
+                className={clsx(styles.repNameNav)}
+                onClick={() => scrollToRepByIndex(i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    scrollToRepByIndex(i);
+                  }
+                }}
               >
                 {rep.first_name[0]}. {rep.last_name}
               </div>
@@ -246,13 +333,23 @@ export default function RepsWrapper({
             {reps.map((rep, i) => (
               <div
                 key={rep.bioguide_id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Scroll to ${rep.full_name}`}
                 style={{
                   borderBottom:
                     i === reps.length - 1
                       ? "none"
                       : "2px solid var(--background-color)",
                 }}
-                className={styles.repName}
+                className={clsx(styles.repNameNav)}
+                onClick={() => scrollToRepByIndex(i)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    scrollToRepByIndex(i);
+                  }
+                }}
               >
                 {rep.first_name[0]}. {rep.last_name}
               </div>
@@ -267,13 +364,17 @@ export default function RepsWrapper({
             key={rep.bioguide_id}
             ref={(el) => addToRefArray(el, imageRefs)}
           >
-            <RepCard
-              rep={rep}
-              isOpen={openRepIds.has(rep.bioguide_id)}
-            />
+            <RepCard rep={rep} />
           </div>
         ))}
       </div>
+      <RepDetailDrawer
+        rep={detailRep}
+        open={detailBioguideId !== null && detailRep !== null}
+        onOpenChange={(next) => {
+          if (!next) closeRepDetail();
+        }}
+      />
     </div>
   );
 }

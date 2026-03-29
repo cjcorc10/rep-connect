@@ -26,6 +26,8 @@ export default function RepImageContainer({
             src={portraitSrc}
             alt="portrait"
             fill
+            sizes="(max-width: 768px) 100vw, 28rem"
+            quality={92}
             className="object-cover w-full h-full object-[50%_25%]"
           />
         ) : (

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchWikipediaData } from "@/app/lib/wikipedia";
+import { fetchWikipediaBestImageUrl } from "@/app/lib/wikipedia";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,12 +14,12 @@ export async function GET(request: Request) {
     );
   }
 
-  // Try Wikipedia first (highest quality)
+  // Try Wikipedia first (original / page media / thumbnail)
   if (wikipediaId) {
-    const wikiData = await fetchWikipediaData(wikipediaId);
-    if (wikiData?.originalimage?.source) {
+    const wikiImage = await fetchWikipediaBestImageUrl(wikipediaId);
+    if (wikiImage) {
       return NextResponse.json({
-        imageUrl: wikiData.originalimage.source,
+        imageUrl: wikiImage,
         source: "wikipedia",
       });
     }
