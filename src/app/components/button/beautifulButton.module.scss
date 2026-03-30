@@ -47,3 +47,34 @@
   transform: translateY(2px);
   transition: transform 50ms ease-out;
 }
+
+.button.compact span {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.25;
+  border-radius: 0.375rem;
+}
+
+.button.compact .shadow {
+  transform: translateY(2px);
+}
+
+.button.compact .top {
+  transform: translateY(-2px);
+}
+
+.button.compact:hover .top {
+  transform: translateY(-3px);
+}
+
+.button.compact:hover .shadow {
+  transform: translateY(3px);
+}
+
+.button.compact:active .top {
+  transform: translateY(-1px);
+}
+
+.button.compact:active .shadow {
+  transform: translateY(1px);
+}

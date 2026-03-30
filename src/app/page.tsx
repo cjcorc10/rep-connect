@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useRef } from "react";
 import Hero from "./components/hero/hero";
+import SearchForm from "./components/searchForm/searchForm";
 
 export default function Home() {
   gsap.registerPlugin(useGSAP);
@@ -61,6 +62,7 @@ export default function Home() {
   return (
     <main className="flex flex-col flex-1 min-h-0 relative">
       <div className={styles.background}>
+        <div className={styles.backgroundOverlay} />
         <Image
           src="/images/protest.jpg"
           alt="kamran-abdullayev"
@@ -89,10 +91,24 @@ export default function Home() {
           style={{ objectFit: "contain" }}
         />
       </div>
-      <div ref={heroRef} className={styles.heroContainer}>
-        <Hero />
+      <div className={styles.heroContainer}>
+        <h1 className={styles.heroTitle}>
+          Get loud, contact your representatives today.
+        </h1>
+        <p className={styles.heroSubtitle}>
+          Candidates run on a promise to represent their constituents.
+          Don&apos;t let them forget that promise once they get into
+          office. Call them today and pressure them to vote for your
+          community&apos;s interests.
+        </p>
+        <div className={styles.searchForm}>
+          <SearchForm />
+        </div>
       </div>
-      <div ref={bottomSectionRef} className={styles.bottomSection}>
+      {/* <div ref={heroRef} className={styles.heroContainer}>
+        <Hero />
+      </div> */}
+      {/* <div ref={bottomSectionRef} className={styles.bottomSection}>
         <div className={styles.textSection}>
           <div className={styles.textContent}>
             <h2 className={styles.textHeading}>
@@ -105,14 +121,7 @@ export default function Home() {
               legislation.
             </p>
           </div>
-          <div className={styles.textBackground}>
-            <Image
-              src="/images/text-background.svg"
-              alt="text background"
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </div>
+          <div className={styles.textBackground} />
         </div>
         <div className={styles.textSection}>
           <div className={styles.textContent}>
@@ -125,16 +134,9 @@ export default function Home() {
               are voting for.
             </p>
           </div>
-          <div className={styles.textBackground}>
-            <Image
-              src="/images/text-background.svg"
-              alt="text background"
-              fill
-              style={{ objectFit: "contain" }}
-            />
-          </div>
+          <div className={styles.textBackground} />
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }

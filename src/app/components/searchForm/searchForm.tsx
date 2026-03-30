@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { motion } from "framer-motion";
-import { BeautifulButton } from "./button/beautifulButton";
+import { BeautifulButton } from "../button/beautifulButton";
+import styles from "./searchForm.module.scss";
 
 export default function SearchForm() {
   const router = useRouter();
@@ -32,47 +33,42 @@ export default function SearchForm() {
   };
 
   return (
-    <>
-      <form onSubmit={onSubmit} className="w-full mx-auto px-8">
-        <div className="flex gap-2 relative items-center">
-          <label htmlFor="zip" className="sr-only">
-            ZIP code
-          </label>
+    <div className={styles.root}>
+      <form onSubmit={onSubmit} className={styles.form}>
+        <label htmlFor="zip" className={styles.srOnly}>
+          ZIP code
+        </label>
+        <div className={styles.inputShell}>
           <input
             type="text"
             id="zip"
             name="zip"
             inputMode="numeric"
             autoComplete="postal-code"
-            placeholder="Enter your ZIP code"
+            placeholder="Enter your ZIP code or street address"
             required
             aria-invalid={error ? "true" : "false"}
-            className="
-              w-full
-                block
-                rounded-md
-                px-4 py-1
-                text-2xl
-                bg-white text-gray-900 placeholder:text-gray-500
-                outline-none
-                ring-1 ring-gray-300 
-              "
+            className={styles.input}
           />
-          <input type="hidden" id="street" name="street" value="" />
-          <BeautifulButton content={"SEARCH"} />
+          <BeautifulButton
+            content="SEARCH"
+            compact
+            className={styles.shellButton}
+          />
         </div>
+        <input type="hidden" id="street" name="street" value="" />
       </form>
 
       {error && (
         <motion.div
           role="alert"
-          className="text-sm sm:text-base text-center font-medium text-red-700 w-fit mx-auto absolute  bg-red-100/90 rounded-lg p-2"
+          className={styles.error}
           initial={{ opacity: 0, y: -10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
         >
           {error}
         </motion.div>
       )}
-    </>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import SearchForm from "@/app/components/searchForm";
+import SearchForm from "@/app/components/searchForm/searchForm";
 
 export default function NotFound() {
   return (

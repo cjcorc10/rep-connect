@@ -4,9 +4,19 @@
   position: relative;
   height: 100vh;
   width: 100vw;
-  background-color: var(--primary-color);
   display: flex;
   align-items: center;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 0%,
+    var(--blue-accent) 16%,
+    color-mix(in srgb, var(--primary-color) 12%, var(--blue-accent) 88%) 32%,
+    color-mix(in srgb, var(--primary-color) 35%, var(--blue-accent) 65%) 48%,
+    color-mix(in srgb, var(--primary-color) 58%, var(--blue-accent) 42%) 64%,
+    color-mix(in srgb, var(--primary-color) 78%, var(--blue-accent) 22%) 80%,
+    color-mix(in srgb, var(--primary-color) 92%, var(--blue-accent) 8%) 92%,
+    var(--primary-color) 100%
+  );
   .index {
     @include display-d2;
     position: absolute;
