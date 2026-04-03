@@ -1,0 +1,17 @@
+.main {
+  width: 100%;
+  background-color: #e9e5cf;
+  display: flex;
+  align-items: center;
+  height: clamp(5rem, 10vw, 10rem);
+  font-family: montserrat;
+  font-size: clamp(2rem, 5vw, 8rem);
+  font-weight: 600;
+  gap: 1rem;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.starsMark {
+  width: clamp(4rem, 15vw, 8rem);
+}

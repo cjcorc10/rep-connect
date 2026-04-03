@@ -1,0 +1,51 @@
+.headerSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 70vw;
+  width: 100%;
+  gap: 0.5rem;
+  .header {
+    display: flex;
+    color: #fff;
+    justify-content: center;
+    padding-top: 5rem;
+    font-size: 3rem;
+    gap: 2px;
+    font-weight: 600;
+    width: 100%;
+    .addressContainer {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--blue-accent);
+      .addressText {
+        font-style: italic;
+        font-weight: 200;
+        font-size: 7rem;
+        line-height: 1;
+        letter-spacing: 0.3em;
+        font-family: montserrat;
+      }
+    }
+    .cityContainer {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--primary-color);
+      border-radius: 9999rem;
+    }
+  }
+  .mapContainer {
+    width: 100%;
+    height: 100%;
+    background-color: #e9e5cf;
+  }
+}

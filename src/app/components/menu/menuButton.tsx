@@ -6,6 +6,7 @@ type MenuButtonLink = {
   href: string;
   children: ReactNode;
   color?: string;
+  background?: boolean;
 };
 
 type MenuButtonPhone = {
@@ -13,6 +14,7 @@ type MenuButtonPhone = {
   phone: string;
   children: ReactNode;
   color?: string;
+  background?: boolean;
 };
 
 type MenuButtonAction = {
@@ -20,6 +22,7 @@ type MenuButtonAction = {
   onClick: () => void;
   children: ReactNode;
   color?: string;
+  background?: boolean;
 };
 
 export type MenuButtonProps =
@@ -40,7 +43,12 @@ export default function MenuButton(props: MenuButtonProps) {
   switch (props.variant) {
     case "link":
       return (
-        <a className={className} href={props.href} style={style} {...linkProps}>
+        <a
+          className={className}
+          href={props.href}
+          style={style}
+          {...linkProps}
+        >
           {children}
         </a>
       );

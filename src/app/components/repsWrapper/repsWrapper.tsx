@@ -17,6 +17,7 @@ import Refine from "../refine/refine";
 import { MaskText } from "../maskText/maskText";
 import { useRepStore } from "@/app/store/useRepStore";
 import clsx from "clsx";
+import Banner from "../banner/banner";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -266,18 +267,21 @@ export default function RepsWrapper({
 
   return (
     <div ref={scrollSection} className={styles.main}>
+      {/* <div className={styles.bannerContainer}>
+        <Banner />
+      </div> */}
       <div ref={indexRef} className={styles.index}>
         {/* <h1>
           <span
-            ref={indexTextRef}
-            className={styles.indexNumber}
+          ref={indexTextRef}
+          className={styles.indexNumber}
           ></span>
           <span className={styles.indexSeparator}>/</span>
           <span
-            ref={indexTotalRef}
-            className={styles.indexTotal}
+          ref={indexTotalRef}
+          className={styles.indexTotal}
           ></span>
-        </h1> */}
+          </h1> */}
       </div>
       <div className={styles.maskTextContainer}>
         <MaskText index={index}>
