@@ -2,14 +2,28 @@
 import StreetForm from "../streetForm";
 import RefineContainer from "./container/refineContainer";
 import styles from "./refine.module.scss";
+import clsx from "clsx";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
-import type { Rep } from "../../lib/definitions";
+import type {
+  Coordinates,
+  DistrictMapFeatureCollection,
+  Rep,
+  RepsData,
+} from "../../lib/definitions";
 
 type RefineProps = {
   multipleDistricts: boolean;
-  onRefineSuccess?: (matchedRep: Rep) => void;
+  onRefineSuccess?: (payload: {
+    data: RepsData;
+    cityStateLabel: string;
+    districtGeoJson: DistrictMapFeatureCollection | null;
+    mapFallback: {
+      bounds?: Coordinates;
+      location?: { lat: number; lng: number };
+    };
+  }) => void;
 };
 
 export default function Refine({
@@ -46,14 +60,32 @@ export default function Refine({
       return false;
     }
     const data = (await res.json()) as {
+      state: string;
+      districts: string[];
       houseReps?: Rep[];
+      senateReps?: Rep[];
+      cityStateLabel?: string;
+      districtGeoJson?: DistrictMapFeatureCollection | null;
+      mapFallback?: {
+        bounds?: Coordinates;
+        location?: { lat: number; lng: number };
+      };
     };
     const success =
       Array.isArray(data.houseReps) && data.houseReps.length === 1;
-    const matchedRep = data.houseReps?.[0];
-    if (success && matchedRep) {
+    if (success) {
       setRefined(true);
-      onRefineSuccess?.(matchedRep);
+      onRefineSuccess?.({
+        data: {
+          state: data.state,
+          districts: data.districts,
+          houseReps: data.houseReps ?? [],
+          senateReps: data.senateReps ?? [],
+        },
+        cityStateLabel: data.cityStateLabel ?? zipCode,
+        districtGeoJson: data.districtGeoJson ?? null,
+        mapFallback: data.mapFallback ?? {},
+      });
     } else {
       setRefined(false);
     }
@@ -63,85 +95,95 @@ export default function Refine({
   if (!multipleDistricts) return null;
 
   return (
-    <div className={styles.main}>
-      <RefineContainer>
-        <AnimatePresence mode="popLayout">
-          {!isOpen ? (
-            <motion.div key="popup" className={styles.contentWrapper}>
-              <motion.p
-                style={{ position: "relative" }}
-                exit={{ y: -80, opacity: 0 }}
-                className="text-md"
-              >
-                Multiple districts were returned from your ZIP code.
-                To refine results, click refine.
-              </motion.p>
-              <motion.button
-                layoutId="refine-wrapper"
-                className={styles.button}
-                onClick={() => setIsOpen(true)}
-              >
-                <motion.p layoutId="refine-text">refine</motion.p>
-                <motion.div
-                  layoutId="button-square"
-                  className={styles.square}
-                ></motion.div>
-              </motion.button>
-            </motion.div>
-          ) : (
-            <div>
-              <AnimatePresence mode="popLayout" initial={false}>
-                {refined === true ? (
-                  <motion.div
-                    key="reps-refined"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
-                    transition={{ ease: "easeOut" }}
-                    className={styles.status}
-                  >
-                    <p>Reps refined</p>
-                    <div className="flex justify-center items-center bg-black rounded-full p-2">
-                      <Check className="w-10 h-10 text-white" />
-                    </div>
-                  </motion.div>
-                ) : showError ? (
-                  <motion.div
-                    key="unsuccessful"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
-                    transition={{ ease: "easeOut" }}
-                    className={styles.status}
-                  >
-                    <p>Unsuccessful, please try again</p>
-                    <motion.div
-                      initial={{ scale: 0.75 }}
-                      animate={{ scale: 1 }}
-                      className="flex justify-center items-center bg-black rounded-full p-2"
-                    >
-                      <X className="w-7 h-7 text-white" />
-                    </motion.div>
-                    <p></p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="street-form"
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ filter: "blur(7px)", opacity: 0 }}
-                    className={styles.contentWrapper}
-                  >
-                    {/* <motion.p className="text-lg" initial={{opacity: 0, y: -30}} animate={{opacity: 1, y: 0}} exit={{opacity: 0}} transition={{delay: 0.3, duration: 0.3}}>Enter your street name.</motion.p> */}
-
-                    <StreetForm refine={handleRefine} />
-                  </motion.div>
+    <section
+      className={styles.main}
+      role="dialog"
+      aria-label="Refine district results"
+    >
+      <motion.div
+        className={styles.panel}
+        initial={{ opacity: 0, transform: "translateY(12px)" }}
+        animate={{ opacity: 1, transform: "translateY(0px)" }}
+        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        <RefineContainer>
+          <AnimatePresence mode="popLayout">
+            {!isOpen ? (
+              <motion.div
+                key="popup"
+                className={clsx(
+                  styles.contentWrapper,
+                  styles.contentWrapperIntro,
                 )}
-              </AnimatePresence>
-            </div>
-          )}
-        </AnimatePresence>
-      </RefineContainer>
-    </div>
+              >
+                <motion.p
+                  exit={{ y: -80, opacity: 0 }}
+                  className={styles.message}
+                >
+                  Multiple districts were returned from your ZIP code.
+                  To refine results, click refine.
+                </motion.p>
+                <motion.button
+                  layoutId="refine-wrapper"
+                  className={styles.button}
+                  onClick={() => setIsOpen(true)}
+                >
+                  <motion.p layoutId="refine-text">refine</motion.p>
+                </motion.button>
+              </motion.div>
+            ) : (
+              <div>
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {refined === true ? (
+                    <motion.div
+                      key="reps-refined"
+                      initial={{ y: -20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
+                      transition={{ ease: "easeOut" }}
+                      className={styles.status}
+                    >
+                      <p>Reps refined</p>
+                      <div className="flex justify-center items-center bg-black rounded-full p-2">
+                        <Check className="w-10 h-10 text-white" />
+                      </div>
+                    </motion.div>
+                  ) : showError ? (
+                    <motion.div
+                      key="unsuccessful"
+                      initial={{ y: -20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
+                      transition={{ ease: "easeOut" }}
+                      className={styles.status}
+                    >
+                      <p>Unsuccessful, please try again</p>
+                      <motion.div
+                        initial={{ scale: 0.75 }}
+                        animate={{ scale: 1 }}
+                        className="flex justify-center items-center bg-black rounded-full p-2"
+                      >
+                        <X className="w-7 h-7 text-white" />
+                      </motion.div>
+                      <p></p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="street-form"
+                      initial={{ y: -20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ filter: "blur(7px)", opacity: 0 }}
+                      className={styles.contentWrapper}
+                    >
+                      <StreetForm refine={handleRefine} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </AnimatePresence>
+        </RefineContainer>
+      </motion.div>
+    </section>
   );
 }

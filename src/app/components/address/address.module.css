@@ -2,11 +2,20 @@
   padding: 7rem 0;
   /* margin: 8rem; */
 }
+
+.addressContainerCompact {
+  padding: 0;
+  width: 100%;
+}
 .form {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
+}
+
+.formCompact {
+  gap: 0;
 }
 
 .addressTitle {
@@ -35,6 +44,30 @@
   animation: reveal 1s ease;
   /* max-width: min(50rem, 92vw); */
   /* height: clamp(24rem, 55vh, 38rem); */
+}
+
+.inputWrapperCompact {
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  width: auto;
+  animation: none;
+}
+
+.addressTitleCompact {
+  margin: 0;
+  font-style: italic;
+  font-weight: 200;
+  font-size: var(--header-zip-size, clamp(2.25rem, 8vw + 1.25rem, 7rem));
+  line-height: 1;
+  letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
+  font-family: montserrat, sans-serif;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 0;
+  text-align: center;
 }
 
 @keyframes reveal {

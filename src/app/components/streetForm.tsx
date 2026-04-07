@@ -51,17 +51,21 @@ export default function StreetForm({
 
   return (
     <>
-      <motion.form
-        layoutId="refine-wrapper"
+      <form
         onSubmit={onSubmit}
-        className="flex border rounded-lg px-2 relative h-full"
+        className="flex flex-col justify-between items-center relative w-full h-full max-w-[42rem] mx-auto"
+        onClick={() => inputRef.current?.focus()}
       >
         <input type="hidden" name="zip" value={zip} />
-        <div className="absolute top-0 py-1 text-gray-500 text-lg"></div>
-        <input
+        <motion.input
           type="text"
           ref={inputRef}
-          className="outline-none text-black text-lg w-full py-1 absolute top-0 "
+          layoutId="refine-wrapper"
+          className="border-[2px] border-[var(--background-color)] placeholder:text-[var(--background-color)] placeholder:opacity-60 text-lg leading-tight w-full h-[2.25rem] py-0 pr-[80px] bg-transparent"
+          style={{
+            color:
+              "color-mix(in srgb, var(--background-color) 60%, transparent)",
+          }}
           placeholder="Enter your street address"
           name="street"
           required
@@ -70,7 +74,7 @@ export default function StreetForm({
           layoutId="button-square"
           initial={{ opacity: 0, filter: "blur(7px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
-          className="bg-black rounded-lg w-[70px] h-[35px] active:scale-95 absolute right-[2%] bottom-[5%] overflow-hidden"
+          className="self-end bg-[var(--red-accent)] text-[var(--background-color)] border-[2px] border-[var(--background-color)] w-[70px] h-[35px] active:scale-95 overflow-hidden"
         >
           <AnimatePresence mode="popLayout">
             {!loading ? (
@@ -78,7 +82,7 @@ export default function StreetForm({
                 layoutId="refine-text"
                 key="refine"
                 exit={{ y: 50 }}
-                className="text-white"
+                className="text-[var(--background-color)]"
               >
                 refine
               </motion.p>
@@ -90,12 +94,12 @@ export default function StreetForm({
                 animate={{ y: 0 }}
                 transition={{ ease: "easeOut" }}
               >
-                <Loader color="white" className="animate-spin" />
+                <Loader className="animate-spin text-[var(--background-color)]" />
               </motion.div>
             )}
           </AnimatePresence>
         </motion.button>
-      </motion.form>
+      </form>
     </>
   );
 }

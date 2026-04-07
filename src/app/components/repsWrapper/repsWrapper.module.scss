@@ -81,7 +81,7 @@
       font-style: italic;
       font-weight: 1000;
       letter-spacing: -0.07em;
-      font-size: 6.4rem;
+      font-size: clamp(2.4rem, 7vw, 6.4rem);
       text-transform: uppercase;
       padding-inline: 0;
       overflow: visible;
@@ -199,8 +199,9 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 50%;
-        height: clamp(12rem, 36vw, 26rem);
+        width: 22rem;
+        height: 14rem;
+        max-width: calc(100vw - 2rem);
         z-index: 10;
         cursor: inherit;
         opacity: 1;

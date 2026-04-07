@@ -27,7 +27,16 @@ export function districtFeatureName(
   return `district_${fallbackIndex}`;
 }
 
-/** Stable color index per distinct district name (order of first appearance in GeoJSON). */
+function districtColorIndex(name: string): number {
+  // Deterministic hash so a district keeps its color across reloads/refines.
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  }
+  return hash % DISTRICT_PALETTE.length;
+}
+
+/** Stable color index per distinct district name (independent of feature order). */
 export function districtStyleIndexByName(
   features: DistrictMapFeatureCollection["features"]
 ): Map<string, number> {
@@ -35,7 +44,7 @@ export function districtStyleIndexByName(
   features.forEach((f, i) => {
     const name = districtFeatureName(f.properties?.name, i);
     if (!map.has(name)) {
-      map.set(name, map.size);
+      map.set(name, districtColorIndex(name));
     }
   });
   return map;

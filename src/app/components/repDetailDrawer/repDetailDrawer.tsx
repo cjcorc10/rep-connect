@@ -130,7 +130,8 @@ export default function RepDetailDrawer({
               <Dialog.Close
                 className={styles.closeButton}
                 aria-label="Close details"
-                type="button"
+                type="button"  // refs for containers of elements
+
               >
                 <X size={22} strokeWidth={2} aria-hidden />
               </Dialog.Close>
