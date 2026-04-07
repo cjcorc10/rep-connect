@@ -11,6 +11,7 @@
     "seed": "ts-node src/app/lib/scripts/seedLegislators.ts"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@gsap/react": "^2.1.2",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.3",

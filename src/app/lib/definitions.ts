@@ -57,6 +57,31 @@ export type RepsData = {
   senateReps: Rep[];
 };
 
+/** GeoJSON subset serialized from server to the district map client. */
+export type DistrictMapFeatureCollection = {
+  type: "FeatureCollection";
+  features: DistrictMapFeature[];
+};
+
+export type DistrictMapFeature = {
+  type: "Feature";
+  properties: Record<string, unknown>;
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: unknown;
+  };
+};
+
+export type RepsByAddressPayload = {
+  data: RepsData;
+  cityStateLabel: string;
+  districtGeoJson: DistrictMapFeatureCollection | null;
+  mapFallback: {
+    bounds?: Coordinates;
+    location?: { lat: number; lng: number };
+  };
+};
+
 // two letter state codes for FIPS codes
 export const fipsToState: Record<string, string> = {
   "01": "AL",

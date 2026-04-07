@@ -2,7 +2,6 @@
 
 .main {
   position: relative;
-  height: 100vh;
   width: 100vw;
   display: flex;
   align-items: center;
@@ -66,70 +65,276 @@
   }
   .namesSection {
     position: relative;
-    height: fit-content;
-    width: fit-content;
+    width: 100%;
     display: flex;
+    overflow: visible;
 
-    .progressBarContainer {
-      position: relative;
-      margin: 0rem 2rem;
-      border-radius: 9999px;
-      display: grid;
-    }
-    .progressBarOverlay {
-      grid-area: 1/1;
-      position: relative;
-      width: 4px;
-      border-radius: 9999px;
-      background-color: var(--red-accent);
-      clip-path: inset(0 0 100% 0);
-    }
-    .progressBar {
-      grid-area: 1/1;
-      position: relative;
-      width: 4px;
-      border-radius: 9999px;
-      background-color: var(--background-color);
-    }
     .namesContainer {
+      --rep-meta-chamber-w: clamp(7rem, 12.5vw, 8.75rem);
+      --rep-meta-district-w: clamp(5.25rem, 11vw, 7rem);
+
       position: relative;
-      font-family: montserrat;
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+      font-family: montserrat, sans-serif;
       font-style: italic;
       font-weight: 1000;
       letter-spacing: -0.07em;
       font-size: 6.4rem;
       text-transform: uppercase;
-      white-space: nowrap;
-      display: inline-grid;
-      width: max-content;
-      min-width: max-content;
-      grid-template-columns: max-content;
-
-      .namesOverlay {
-        color: var(--red-accent);
-        grid-area: 1/1;
-        clip-path: inset(0 0 100% 0);
-      }
+      padding-inline: 0;
+      overflow: visible;
 
       .names {
-        grid-area: 1/1;
-        color: var(--background-color);
+        overflow: visible;
+        display: grid;
+        grid-template-columns:
+          minmax(0, auto)
+          minmax(0, 1fr)
+          var(--rep-meta-chamber-w)
+          var(--rep-meta-district-w)
+          max-content;
+        column-gap: clamp(1px, 0.2vw, 3px);
+        width: 100%;
+        white-space: nowrap;
+
+        .colValue {
+          color: var(--background-color);
+        }
+      }
+
+      .repNameNavHeader {
+        --header-row-pad-y: clamp(0.85rem, 3vw, 1.35rem);
+
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+        align-items: stretch;
+        box-sizing: border-box;
+        font-size: 0.125em;
+        font-style: normal;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        line-height: 1.2;
+        padding-top: var(--header-row-pad-y);
+        padding-bottom: var(--header-row-pad-y);
+        hyphens: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+      }
+
+      .repNameNavHeader > .headerKey:first-child {
+        justify-self: start;
+        align-self: center;
+        padding-left: clamp(0.75rem, 3vw, 2rem);
+        padding-right: clamp(1rem, 4vw, 2.75rem);
+        text-align: start;
+      }
+
+      .repNameNavHeader > .headerKey:nth-child(2) {
+        justify-self: stretch;
+        align-self: stretch;
+        box-sizing: border-box;
+        text-align: start;
+        padding-left: clamp(0.35rem, 1.2vw, 0.75rem);
+        padding-right: clamp(0.35rem, 1.2vw, 0.75rem);
+        display: flex;
+        align-items: center;
+      }
+
+      .repNameNavHeader .headerKey:nth-child(3),
+      .repNameNavHeader .headerKey:nth-child(4),
+      .repNameNavHeader .headerKey:nth-child(5) {
+        align-self: center;
+        text-align: center;
+        justify-self: center;
+      }
+
+      .repNameNavHeader > .headerKey:last-child {
+        padding-right: clamp(0.75rem, 3vw, 2rem);
+      }
+
+      .headerKey {
+        color: rgba(255, 255, 255, 0.55);
       }
 
       .repNameNav {
         cursor: pointer;
+        position: relative;
+        z-index: 0;
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+        align-items: stretch;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 2px solid var(--background-color);
         outline: none;
-        transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
-
-        &:hover {
-          opacity: 0.85;
-        }
 
         &:focus-visible {
           outline: 2px solid var(--red-accent);
           outline-offset: 4px;
         }
       }
+
+      .repNameNavHoverLift {
+        z-index: 8;
+      }
+
+      .names > .repNameNav:last-child {
+        border-bottom-color: transparent;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(2) {
+        position: relative;
+        overflow: visible;
+        justify-self: stretch;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+      }
+
+      .repRowImageFloat {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        height: clamp(12rem, 36vw, 26rem);
+        z-index: 10;
+        cursor: inherit;
+        opacity: 1;
+      }
+
+      .repRowImageFloatBottom {
+        top: auto;
+        bottom: 0;
+      }
+
+      .repRowImageInner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 0;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      }
+
+      .repRowImageImg {
+        object-fit: cover;
+        object-position: 50% 22%;
+        opacity: 1;
+      }
+
+      .repRowImagePlaceholder {
+        width: 100%;
+        height: 100%;
+        background: color-mix(
+          in srgb,
+          var(--background-color) 35%,
+          transparent
+        );
+      }
+
+      .repNameNav .repNameNavCell:nth-child(3) {
+        justify-self: stretch;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(4) {
+        justify-self: stretch;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(5) {
+        justify-self: center;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(3) .colValue {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.52);
+        border-radius: 9999px;
+        padding: 0.12em 0.36em 0.16em;
+        box-sizing: border-box;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(4) .colValue {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.52);
+        border-radius: 0;
+        padding: 0.12em 0.42em 0.16em;
+        box-sizing: border-box;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(5) .colValue {
+        width: fit-content;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.52);
+        border-radius: 9999px;
+        padding: 0.12em 0.48em 0.16em;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(5) .colValue.termNextMidterm {
+        color: var(--red-accent);
+      }
+
+      /* Match .namesContainer font-size (6.4rem): meta line 1.2×0.3 + pad 0.28×0.3 + 2px borders */
+      .repNameNav .repNameNavCell:nth-child(3) .colValue,
+      .repNameNav .repNameNavCell:nth-child(4) .colValue,
+      .repNameNav .repNameNavCell:nth-child(5) .colValue {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(0.444 * 6.4rem + 4px);
+      }
+
+      .repNameNavCell {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0;
+        min-width: 0;
+        min-height: 0;
+      }
+
+      .repNameNav > .repNameNavCell:first-child {
+        align-self: center;
+        padding-left: clamp(0.75rem, 3vw, 2rem);
+        padding-right: clamp(1rem, 4vw, 2.75rem);
+      }
+
+      .repNameNav > .repNameNavCell:last-child {
+        padding-right: clamp(0.75rem, 3vw, 2rem);
+      }
+
+      .colValue {
+        font-size: 0.3em;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: -0.02em;
+        text-transform: none;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .repNameNav .repNameNavCell:nth-child(3) .colValue {
+        font-size: 0.26em;
+        letter-spacing: -0.03em;
+      }
+
+      .repNameNav > .repNameNavCell:first-child .colValue {
+        font-size: 1em;
+        font-weight: 1000;
+        font-style: italic;
+        letter-spacing: -0.07em;
+        text-transform: uppercase;
+        line-height: 1.05;
+      }
+
     }
   }
   .images {

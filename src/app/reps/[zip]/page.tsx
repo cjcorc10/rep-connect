@@ -16,8 +16,16 @@ export default async function Page({ params, searchParams }: Props) {
     typeof query.street === "string" ? query.street : undefined;
   const address = street ? `${street}, ${zip}` : zip;
 
-  const data = await getRepsByAddress(address);
-  if (!data) notFound();
+  const payload = await getRepsByAddress(address, zip);
+  if (!payload) notFound();
 
-  return <RepsPageClient address={address} data={data} />;
+  return (
+    <RepsPageClient
+      zipFromRoute={zip}
+      data={payload.data}
+      cityStateLabel={payload.cityStateLabel}
+      districtGeoJson={payload.districtGeoJson}
+      mapFallback={payload.mapFallback}
+    />
+  );
 }

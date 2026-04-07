@@ -1,22 +1,43 @@
-import { Coordinates, fipsToState } from "./definitions";
+import type {
+  Coordinates,
+  DistrictMapFeature,
+  DistrictMapFeatureCollection,
+} from "./definitions";
+import { fipsToState } from "./definitions";
+
+type AddressComponent = {
+  long_name: string;
+  short_name: string;
+  types: string[];
+};
+
+type GeocodeGeometry = {
+  bounds?: {
+    northeast: { lat: number; lng: number };
+    southwest: { lat: number; lng: number };
+  };
+  viewport?: {
+    northeast: { lat: number; lng: number };
+    southwest: { lat: number; lng: number };
+  };
+  location?: { lat: number; lng: number };
+};
+
+export type GeocodeResult = {
+  geometry: GeocodeGeometry;
+  address_components?: AddressComponent[];
+};
 
 type GeocodeData = {
   status: string;
-  results: Array<{
-    geometry: {
-      bounds: {
-        northeast: { lat: number; lng: number };
-        southwest: { lat: number; lng: number };
-      };
-    };
-  }>;
+  results: GeocodeResult[];
 };
 
 export const getCoordinates = async (
-  zipcode: string
+  address: string
 ): Promise<GeocodeData | null> => {
   const response = await fetch(
-    `${process.env.GOOGLE_API_URL}${zipcode}&key=${process.env.GOOGLE_API_KEY}`
+    `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`
   );
   if (!response.ok) {
     throw new Error("Failed to fetch district data");
@@ -25,18 +46,127 @@ export const getCoordinates = async (
   return await response.json();
 };
 
+export function parseGeocodePlace(result: GeocodeResult): {
+  city?: string;
+  stateAbbrev?: string;
+} {
+  const components = result.address_components ?? [];
+  const pick = (...types: string[]) =>
+    components.find((c) => types.some((t) => c.types.includes(t)));
+
+  const locality = pick("locality");
+  const sublocality = pick(
+    "sublocality",
+    "sublocality_level_1",
+    "administrative_area_level_3",
+  );
+  const neighborhood = pick("neighborhood");
+  const postalTown = pick("postal_town");
+  const admin1 = pick("administrative_area_level_1");
+
+  const city =
+    locality?.long_name ||
+    sublocality?.long_name ||
+    neighborhood?.long_name ||
+    postalTown?.long_name;
+
+  const stateAbbrev = admin1?.short_name;
+
+  return { city, stateAbbrev };
+}
+
+export function formatCityStateLabel(
+  place: { city?: string; stateAbbrev?: string },
+  resolvedState: string,
+  zipFallback: string
+): string {
+  if (place.city && place.stateAbbrev) {
+    return `${place.city}, ${place.stateAbbrev}`;
+  }
+  if (place.city && resolvedState) {
+    return `${place.city}, ${resolvedState}`;
+  }
+  if (place.stateAbbrev) {
+    return place.stateAbbrev;
+  }
+  if (resolvedState) {
+    return resolvedState;
+  }
+  return `ZIP ${zipFallback}`;
+}
+
+export function getBoundsForDistrictQuery(
+  result: GeocodeResult
+): Coordinates | null {
+  const g = result.geometry;
+  if (g.bounds) {
+    return {
+      northeast: g.bounds.northeast,
+      southwest: g.bounds.southwest,
+    };
+  }
+  if (g.viewport) {
+    return {
+      northeast: g.viewport.northeast,
+      southwest: g.viewport.southwest,
+    };
+  }
+  if (g.location) {
+    const pad = 0.04;
+    return {
+      northeast: {
+        lat: g.location.lat + pad,
+        lng: g.location.lng + pad,
+      },
+      southwest: {
+        lat: g.location.lat - pad,
+        lng: g.location.lng - pad,
+      },
+    };
+  }
+  return null;
+}
+
+export function extractMapFallback(result: GeocodeResult): {
+  bounds?: Coordinates;
+  location?: { lat: number; lng: number };
+} {
+  const bounds = getBoundsForDistrictQuery(result) ?? undefined;
+  const location = result.geometry.location;
+  return {
+    bounds,
+    location: location
+      ? { lat: location.lat, lng: location.lng }
+      : undefined,
+  };
+}
+
 type DistrictFeature = {
   attributes: Record<string, string>;
+  geometry?: { rings?: number[][][] };
 };
-export const getDistricts = async (coordinates: Coordinates) => {
-  const url = constructDistrictUrl(coordinates);
+
+export type DistrictResolution = {
+  state: string;
+  districts: string[];
+  districtGeoJson: DistrictMapFeatureCollection | null;
+};
+
+export const getDistricts = async (
+  coordinates: Coordinates
+): Promise<DistrictResolution> => {
+  const url = constructDistrictUrl(coordinates, true);
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error("Failed to fetch district data");
   }
   const data = await response.json();
 
-  const features = data.features || [];
+  const features: DistrictFeature[] = data.features || [];
+  if (features.length === 0) {
+    throw new Error("No district features in response");
+  }
+
   const stateCode = features[0].attributes.STATE;
 
   const districts = features.map(
@@ -46,10 +176,61 @@ export const getDistricts = async (coordinates: Coordinates) => {
 
   const state = fipsToState[stateCode];
 
-  return { state, districts };
+  return {
+    state,
+    districts,
+    districtGeoJson: buildDistrictFeatureCollection(features),
+  };
 };
 
-const constructDistrictUrl = (coordinates: Coordinates) => {
+function buildDistrictFeatureCollection(
+  features: DistrictFeature[]
+): DistrictMapFeatureCollection | null {
+  const out: DistrictMapFeature[] = [];
+  for (const f of features) {
+    const gj = esriPolygonToGeoJSONFeature(f);
+    if (gj) out.push(gj);
+  }
+  if (out.length === 0) return null;
+  return { type: "FeatureCollection", features: out };
+}
+
+function esriPolygonToGeoJSONFeature(
+  feature: DistrictFeature
+): DistrictMapFeature | null {
+  const rings = feature.geometry?.rings;
+  if (!rings?.length) return null;
+
+  const coordinates = rings.map((ring: number[][]) => {
+    const mapped = ring.map(
+      ([x, y]) => [x, y] as [number, number]
+    );
+    const first = mapped[0];
+    const last = mapped[mapped.length - 1];
+    if (
+      !first ||
+      !last ||
+      first[0] !== last[0] ||
+      first[1] !== last[1]
+    ) {
+      mapped.push([first[0], first[1]]);
+    }
+    return mapped;
+  });
+
+  return {
+    type: "Feature",
+    geometry: { type: "Polygon", coordinates },
+    properties: {
+      name: String(feature.attributes?.NAME ?? ""),
+    },
+  };
+}
+
+const constructDistrictUrl = (
+  coordinates: Coordinates,
+  includeGeometry: boolean
+) => {
   const baseURL = process.env.DISTRICT_API_URL;
   if (!baseURL) {
     throw new Error("District API URL is not defined");
@@ -64,7 +245,8 @@ const constructDistrictUrl = (coordinates: Coordinates) => {
     inSR: "4326",
     spatialRel: "esriSpatialRelIntersects",
     outFields: "*",
-    returnGeometry: "false",
+    returnGeometry: includeGeometry ? "true" : "false",
+    outSR: "4326",
     f: "json",
   });
   return `${baseURL}?${queryParams.toString()}`;

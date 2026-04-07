@@ -7,45 +7,81 @@
   max-width: 70vw;
   width: 100%;
   gap: 0.5rem;
+
   .header {
     display: flex;
+    flex-wrap: wrap;
     color: #fff;
     justify-content: center;
-    padding-top: 5rem;
-    font-size: 3rem;
-    gap: 2px;
+    align-items: stretch;
+    padding-top: clamp(2rem, 8vw, 5rem);
+    gap: clamp(2px, 0.4vw, 8px);
     font-weight: 600;
     width: 100%;
+    --header-label-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
+    --header-city-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
+    --header-zip-size: clamp(2.25rem, 8vw + 1.25rem, 7rem);
+    --header-box-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+    --header-box-pad-x: clamp(0.5rem, 2.2vw, 1rem);
+
     .addressContainer {
-      flex: 1;
-      padding: 0.5rem 1rem;
+      flex: 1 1 200px;
+      min-width: 0;
+      padding: var(--header-box-pad-y) var(--header-box-pad-x);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       background-color: var(--blue-accent);
+      transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+      > h1:not(.addressText) {
+        margin: 0;
+        font-size: var(--header-label-size);
+        line-height: 1.1;
+        font-weight: inherit;
+        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
       .addressText {
+        margin: 0;
         font-style: italic;
         font-weight: 200;
-        font-size: 7rem;
+        font-size: var(--header-zip-size);
         line-height: 1;
-        letter-spacing: 0.3em;
-        font-family: montserrat;
+        letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
+        font-family: montserrat, sans-serif;
+        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+          letter-spacing 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
     }
+
     .cityContainer {
-      flex: 1;
-      padding: 0.5rem 1rem;
+      flex: 1 1 140px;
+      min-width: 0;
+      padding: var(--header-box-pad-y) var(--header-box-pad-x);
       display: flex;
       align-items: center;
       justify-content: center;
       background-color: var(--primary-color);
       border-radius: 9999rem;
+      transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+      h1 {
+        margin: 0;
+        font-size: var(--header-city-size);
+        line-height: 1.15;
+        font-weight: inherit;
+        text-align: center;
+        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
     }
   }
+
   .mapContainer {
     width: 100%;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: clamp(12rem, 28vh, 20rem);
     background-color: #e9e5cf;
   }
 }

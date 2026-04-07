@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getDistricts, getCoordinates } from "@/app/lib/util";
+import {
+  getBoundsForDistrictQuery,
+  getCoordinates,
+  getDistricts,
+} from "@/app/lib/util";
 import { getHouseReps, getSenators } from "@/app/lib/db";
 
 export async function POST(req: Request) {
@@ -26,11 +30,14 @@ export async function POST(req: Request) {
       );
     }
 
-    const { northeast, southwest } = geo.results[0].geometry.bounds;
-    const { state, districts } = await getDistricts({
-      northeast,
-      southwest,
-    });
+    const box = getBoundsForDistrictQuery(geo.results[0]);
+    if (!box) {
+      return NextResponse.json(
+        { error: "Failed to get coordinates" },
+        { status: 404 }
+      );
+    }
+    const { state, districts } = await getDistricts(box);
 
     const [houseRepsResult, senateReps] = await Promise.all([
       getHouseReps(districts, state),

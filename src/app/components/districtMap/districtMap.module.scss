@@ -1,0 +1,15 @@
+.map {
+  width: 100%;
+  min-height: clamp(12rem, 28vh, 20rem);
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.fallback {
+  composes: map;
+  background-color: #e9e5cf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -8,6 +8,44 @@ import type { Rep } from "@/app/lib/definitions";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import styles from "./repDetailDrawer.module.scss";
 
+type ExternalLinkItem = { label: string; href: string };
+
+function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
+  const links: ExternalLinkItem[] = [];
+
+  if (rep.opensecrets_id?.trim()) {
+    links.push({
+      label: "OpenSecrets",
+      href: `https://www.opensecrets.org/members-of-congress/summary?cid=${encodeURIComponent(rep.opensecrets_id.trim())}`,
+    });
+  }
+
+  const twitterHandle = rep.twitter?.trim().replace(/^@/, "");
+  if (twitterHandle) {
+    links.push({
+      label: "Twitter",
+      href: `https://twitter.com/${encodeURIComponent(twitterHandle)}`,
+    });
+  }
+
+  if (rep.govtrack_id != null) {
+    links.push({
+      label: "GovTrack",
+      href: `https://www.govtrack.us/congress/members/${rep.govtrack_id}`,
+    });
+  }
+
+  if (rep.ballotpedia_id?.trim()) {
+    const slug = rep.ballotpedia_id.trim().replace(/\s+/g, "_");
+    links.push({
+      label: "Ballotpedia",
+      href: `https://ballotpedia.org/${slug}`,
+    });
+  }
+
+  return links;
+}
+
 type RepDetailDrawerProps = {
   rep: Rep | null;
   open: boolean;
@@ -41,8 +79,10 @@ export default function RepDetailDrawer({
 
   if (!displayRep) return null;
 
+  const externalLinks = getRepExternalLinks(displayRep);
+
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root modal={false} open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal forceMount>
         <Dialog.Overlay forceMount asChild>
           <motion.div
@@ -55,7 +95,12 @@ export default function RepDetailDrawer({
             style={{ pointerEvents: open ? "auto" : "none" }}
           />
         </Dialog.Overlay>
-        <Dialog.Content forceMount asChild>
+        <Dialog.Content
+          forceMount
+          asChild
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+        >
           <motion.div
             key={displayRep.bioguide_id}
             className={styles.panel}
@@ -92,6 +137,33 @@ export default function RepDetailDrawer({
             </header>
             <div className={styles.body}>
               <RepCardBottom rep={displayRep} />
+              {externalLinks.length > 0 ? (
+                <section
+                  className={styles.linksSection}
+                  aria-labelledby="drawer-external-links-heading"
+                >
+                  <h2
+                    id="drawer-external-links-heading"
+                    className={styles.linksHeading}
+                  >
+                    Links
+                  </h2>
+                  <ul className={styles.linksList}>
+                    {externalLinks.map(({ label, href }) => (
+                      <li key={`${label}-${href}`} className={styles.linksItem}>
+                        <a
+                          href={href}
+                          className={styles.externalLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
             </div>
           </motion.div>
         </Dialog.Content>

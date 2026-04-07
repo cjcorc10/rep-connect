@@ -3,44 +3,186 @@
 import React, {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
-import RepCard from "../repCard/repCard";
+import Image from "next/image";
+import clsx from "clsx";
 import RepDetailDrawer from "../repDetailDrawer/repDetailDrawer";
+import { resolveRepPortraitUrl } from "../repCard/useRepImage";
 import styles from "./repsWrapper.module.scss";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/all";
 import gsap from "gsap";
 import type { Rep, RepsData } from "@/app/lib/definitions";
-import Refine from "../refine/refine";
-import { MaskText } from "../maskText/maskText";
 import { useRepStore } from "@/app/store/useRepStore";
-import clsx from "clsx";
-import Banner from "../banner/banner";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-const SENATE_COUNT = 2;
+/** Next federal midterm general election calendar year (Nov, years ≡ 2 mod 4). */
+function nextMidtermElectionYear(from: Date = new Date()): number {
+  let y = from.getFullYear();
+  for (;;) {
+    while (y % 4 !== 2) y += 1;
+    const electionCutoff = new Date(y, 10, 15);
+    if (from.getTime() <= electionCutoff.getTime()) return y;
+    y += 4;
+  }
+}
+
+/** Term ends during the congressional turnover for the upcoming midterm (that year or following Jan). */
+function termEndsAtNextMidterm(
+  termEnd: Date,
+  from: Date = new Date(),
+): boolean {
+  if (termEnd.getTime() <= from.getTime()) return false;
+  const m = nextMidtermElectionYear(from);
+  const y = termEnd.getFullYear();
+  return y === m || y === m + 1;
+}
+
+function RepHoverPortrait({ imageUrl }: { imageUrl: string }) {
+  return (
+    <div className={styles.repRowImageInner}>
+      {imageUrl.trim() ? (
+        <Image
+          src={imageUrl}
+          alt=""
+          fill
+          sizes="(max-width: 768px) 90vw, min(36vw, 28rem)"
+          quality={88}
+          className={styles.repRowImageImg}
+        />
+      ) : (
+        <div className={styles.repRowImagePlaceholder} aria-hidden />
+      )}
+    </div>
+  );
+}
+
+function RepNameNavRow({
+  rep,
+  interactive,
+  onActivate,
+  isActiveHoverRow,
+  onRowMouseEnter,
+  onRowMouseLeave,
+  hoverPortraitUrl,
+  portraitAlignBottom,
+}: {
+  rep: Rep;
+  interactive: boolean;
+  onActivate?: () => void;
+  isActiveHoverRow: boolean;
+  onRowMouseEnter: () => void;
+  onRowMouseLeave: () => void;
+  hoverPortraitUrl: string;
+  portraitAlignBottom: boolean;
+}) {
+  const chamber = rep.type === "sen" ? "Senate" : "House";
+  const district =
+    rep.type === "sen" ? rep.state : rep.district;
+  const termEndDate = new Date(rep.end);
+  const termEnd = termEndDate.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  });
+  const termIsNextMidterm = termEndsAtNextMidterm(termEndDate);
+  const shortName = `${rep.first_name[0]}.${rep.last_name}`;
+
+  return (
+    <div
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      aria-label={
+        interactive
+          ? `Open details and scroll to ${rep.full_name}`
+          : undefined
+      }
+      onClick={interactive ? onActivate : undefined}
+      onKeyDown={
+        interactive
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onActivate?.();
+              }
+            }
+          : undefined
+      }
+      onMouseEnter={onRowMouseEnter}
+      onMouseLeave={onRowMouseLeave}
+      onFocus={onRowMouseEnter}
+      onBlur={onRowMouseLeave}
+      className={clsx(
+        styles.repNameNav,
+        isActiveHoverRow && styles.repNameNavHoverLift,
+      )}
+    >
+      <div className={styles.repNameNavCell}>
+        <span className={styles.colValue}>{shortName}</span>
+      </div>
+      <div className={styles.repNameNavCell} aria-hidden="true">
+        {isActiveHoverRow ? (
+          <div
+            className={clsx(
+              styles.repRowImageFloat,
+              portraitAlignBottom && styles.repRowImageFloatBottom,
+            )}
+          >
+            <RepHoverPortrait imageUrl={hoverPortraitUrl} />
+          </div>
+        ) : null}
+      </div>
+      <div className={styles.repNameNavCell}>
+        <span className={styles.colValue}>{chamber}</span>
+      </div>
+      <div className={styles.repNameNavCell}>
+        <span className={styles.colValue}>{district}</span>
+      </div>
+      <div className={styles.repNameNavCell}>
+        <span
+          className={clsx(
+            styles.colValue,
+            termIsNextMidterm && styles.termNextMidterm,
+          )}
+        >
+          {termEnd}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function RepsWrapper({
   repsData,
 }: {
   repsData: RepsData;
 }) {
-  const { setActiveRep, detailBioguideId, closeRepDetail } =
-    useRepStore();
+  const {
+    setActiveRep,
+    detailBioguideId,
+    closeRepDetail,
+    openRepDetail,
+  } = useRepStore();
   const [refinedHouseRepId, setRefinedHouseRepId] = useState<
     string | null
   >(null);
   const [index, setIndex] = useState(0);
+  const [hoveredRowBioguideId, setHoveredRowBioguideId] = useState<
+    string | null
+  >(null);
+  const [hoverPortraitById, setHoverPortraitById] = useState<
+    Record<string, string>
+  >({});
 
   const refine = useRef(repsData.houseReps.length > 1);
   // refs for containers of elements
   const scrollSection = useRef<HTMLDivElement>(null);
-  const namesText = useRef<HTMLDivElement>(null);
   const imagesContainer = useRef<HTMLDivElement>(null);
   const indexRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +192,6 @@ export default function RepsWrapper({
   const indexTextRef = useRef<HTMLSpanElement>(null);
   const indexTotalRef = useRef<HTMLSpanElement>(null);
   const currentIndexRef = useRef<number>(0);
-  const progressBarOverlayRef = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const scrollPositionRef = useRef<number>(0);
@@ -130,8 +271,25 @@ export default function RepsWrapper({
     repsData.houseReps.length +
     (refine.current ? 1 : 0);
 
-  const reps = prepareReps(repsData);
+  const reps = useMemo(() => prepareReps(repsData), [repsData]);
   repsListRef.current = reps;
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      reps.map((rep) =>
+        resolveRepPortraitUrl(rep).then(
+          (url) => [rep.bioguide_id, url] as const,
+        ),
+      ),
+    ).then((entries) => {
+      if (cancelled) return;
+      setHoverPortraitById(Object.fromEntries(entries));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [reps]);
 
   const detailRep =
     detailBioguideId === null
@@ -146,112 +304,110 @@ export default function RepsWrapper({
 
   const scrollToRepByIndex = useCallback(
     (i: number) => {
-      if (detailDrawerOpen) return;
-      const list = repsListRef.current;
       const st = scrollTriggerRef.current;
-      const tl = timelineRef.current;
-      if (!st || !tl || i < 0 || i >= list.length) return;
-
-      const label = `rep-${list[i]!.bioguide_id}`;
-      const labelTime = tl.labels[label];
-      const segmentStart =
-        typeof labelTime === "number" ? labelTime : i;
-      const dur = tl.duration();
-      if (!(dur > 0)) return;
-
-      const progress = segmentStart / dur;
-      const y = st.start + progress * (st.end - st.start);
-      st.scroll(y);
-      ScrollTrigger.update();
+      if (!st) return;
+      const n = reps.length;
+      if (n === 0) return;
+      const progress = n === 1 ? 0 : (i + 0.5) / n;
+      const target = st.start + progress * (st.end - st.start);
+      window.scrollTo({ top: target, behavior: "smooth" });
     },
-    [detailDrawerOpen],
+    [reps.length],
   );
 
-  useGSAP(
-    () => {
-      if (
-        !repsData ||
-        !scrollSection.current ||
-        !indexRef.current ||
-        !namesText.current ||
-        !imagesContainer.current
-      )
-        return;
+  // useGSAP(
+  //   () => {
+  //     if (!repsData || !scrollSection.current) return;
 
-      const images = imageRefs.current;
-      const numImages = images.length;
+  //     const images = imageRefs.current;
+  //     const numSegments = Math.max(reps.length, 1);
 
-      gsap.set(indexRef.current, {
-        x: "-100%",
-        autoAlpha: 0,
-      });
+  //     if (indexRef.current) {
+  //       gsap.set(indexRef.current, {
+  //         x: "-100%",
+  //         autoAlpha: 0,
+  //       });
+  //     }
 
-      gsap.set(indexTextRef.current, { textContent: "1" });
-      gsap.set(indexTotalRef.current, {
-        textContent: `${totalReps}`,
-      });
-      gsap.set(images, {
-        translateZ: (i) => (i ? "-1px" : "0px"),
-      });
+  //     if (indexTextRef.current) {
+  //       gsap.set(indexTextRef.current, { textContent: "1" });
+  //     }
+  //     if (indexTotalRef.current) {
+  //       gsap.set(indexTotalRef.current, {
+  //         textContent: `${totalReps}`,
+  //       });
+  //     }
+  //     if (images.length > 0) {
+  //       gsap.set(images, {
+  //         translateZ: (i) => (i ? "-1px" : "0px"),
+  //       });
+  //     }
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: scrollSection.current,
-          start: "top top",
-          end: `+=${window.innerHeight * numImages}px`,
-          scrub: 1,
-          pin: true,
-          onEnter: () => {
-            gsap.to(indexRef.current, {
-              x: "0%",
-              autoAlpha: 1,
-              duration: 0.7,
-              ease: "power3.out",
-            });
-          },
-          onUpdate: (self) => {
-            const progress = self.progress;
+  //     const scrollExtra =
+  //       window.innerHeight * numSegments;
+  //     const tl = gsap.timeline({
+  //       scrollTrigger: {
+  //         trigger: scrollSection.current,
+  //         start: "top top",
+  //         end: `+=${scrollExtra}px`,
+  //         scrub: 1,
+  //         pin: true,
+  //         onEnter: () => {
+  //           if (indexRef.current) {
+  //             gsap.to(indexRef.current, {
+  //               x: "0%",
+  //               autoAlpha: 1,
+  //               duration: 0.7,
+  //               ease: "power3.out",
+  //             });
+  //           }
+  //         },
+  //         onUpdate: (self) => {
+  //           const progress = self.progress;
+  //           const panTarget =
+  //             imagesContainer.current ?? scrollSection.current;
 
-            // animate images
-            animateImages(images, progress, imagesContainer.current);
+  //           if (images.length > 0) {
+  //             animateImages(
+  //               images,
+  //               progress,
+  //               panTarget,
+  //             );
+  //           }
 
-            // fill in names as scroll progresses
-            gsap.set(namesText.current, {
-              clipPath: `inset(0 0 ${100 - progress * 100}% 0)`,
-            });
-            gsap.set(progressBarOverlayRef.current, {
-              clipPath: `inset(0 0 ${100 - progress * 100}% 0)`,
-            });
+  //           const index = Math.min(
+  //             Math.floor(progress * numSegments),
+  //             numSegments - 1,
+  //           );
+  //           if (index !== currentIndexRef.current) {
+  //             updateIndex(index);
+  //           }
+  //         },
+  //       },
+  //     });
 
-            // update index
-            const index = Math.min(
-              Math.floor(progress * numImages),
-              numImages - 1,
-            );
-            if (index !== currentIndexRef.current) updateIndex(index);
-          },
-        },
-      });
+  //     const repsList = repsData.senateReps.concat(
+  //       repsData.houseReps,
+  //     );
+  //     repsList.forEach((rep, i) => {
+  //       tl.addLabel(`rep-${rep.bioguide_id}`, i);
+  //     });
 
-      const repsList = repsData.senateReps.concat(repsData.houseReps);
-      repsList.forEach((rep, i) => {
-        tl.addLabel(`rep-${rep.bioguide_id}`, i);
-      });
-      tl.to({}, { duration: numImages });
+  //     const st = tl.scrollTrigger ?? null;
+  //     scrollTriggerRef.current = st;
 
-      const st = tl.scrollTrigger ?? null;
-      if (st && detailDrawerOpenRef.current) {
-        scrollPositionRef.current = st.scroll();
-        st.disable(false);
-      }
-      return () => {
-        scrollTriggerRef.current = null;
-        st?.enable();
-        st?.scroll(scrollPositionRef.current);
-      };
-    },
-    { dependencies: [repsData] },
-  );
+  //     if (st && detailDrawerOpenRef.current) {
+  //       scrollPositionRef.current = st.scroll();
+  //       st.disable(false);
+  //     }
+  //     return () => {
+  //       scrollTriggerRef.current = null;
+  //       st?.enable();
+  //       st?.scroll(scrollPositionRef.current);
+  //     };
+  //   },
+  //   { dependencies: [repsData, reps.length, totalReps] },
+  // );
 
   useEffect(() => {
     const st = scrollTriggerRef.current;
@@ -267,101 +423,52 @@ export default function RepsWrapper({
 
   return (
     <div ref={scrollSection} className={styles.main}>
-      {/* <div className={styles.bannerContainer}>
-        <Banner />
-      </div> */}
-      <div ref={indexRef} className={styles.index}>
-        {/* <h1>
-          <span
-          ref={indexTextRef}
-          className={styles.indexNumber}
-          ></span>
-          <span className={styles.indexSeparator}>/</span>
-          <span
-          ref={indexTotalRef}
-          className={styles.indexTotal}
-          ></span>
-          </h1> */}
-      </div>
-      <div className={styles.maskTextContainer}>
-        <MaskText index={index}>
-          {repsData.senateReps.map((rep) => (
-            <p key={rep.bioguide_id} className={styles.maskDetail}>
-              Senate
-            </p>
-          ))}
-
-          {repsData.houseReps.map((rep) => (
-            <p key={rep.bioguide_id} className={styles.maskDetail}>
-              House of Representatives
-            </p>
-          ))}
-        </MaskText>
-      </div>
       <section className={styles.namesSection}>
-        <div className={styles.progressBarContainer}>
-          <div className={styles.progressBar} />
-          <div
-            ref={progressBarOverlayRef}
-            className={styles.progressBarOverlay}
-          />
-        </div>
         <div className={styles.namesContainer}>
           <div className={styles.names}>
+            <div
+              className={styles.repNameNavHeader}
+              role="row"
+              aria-label="Columns"
+            >
+              <span className={styles.headerKey}>Name</span>
+              <span className={styles.headerKey}>Image</span>
+              <span className={styles.headerKey}>Chamber</span>
+              <span className={styles.headerKey}>District</span>
+              <span className={styles.headerKey}>Term</span>
+            </div>
             {reps.map((rep, i) => (
-              <div
+              <RepNameNavRow
                 key={rep.bioguide_id}
-                role="button"
-                tabIndex={0}
-                aria-label={`Scroll to ${rep.full_name}`}
-                style={{
-                  borderBottom:
-                    i === reps.length - 1
-                      ? "none"
-                      : "2px solid var(--background-color)",
+                rep={rep}
+                interactive
+                isActiveHoverRow={
+                  hoveredRowBioguideId === rep.bioguide_id
+                }
+                onRowMouseEnter={() =>
+                  setHoveredRowBioguideId(rep.bioguide_id)
+                }
+                onRowMouseLeave={() =>
+                  setHoveredRowBioguideId(null)
+                }
+                onActivate={() => {
+                  openRepDetail(rep.bioguide_id);
+                  scrollToRepByIndex(i);
                 }}
-                className={clsx(styles.repNameNav)}
-                onClick={() => scrollToRepByIndex(i)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    scrollToRepByIndex(i);
-                  }
-                }}
-              >
-                {rep.first_name[0]}. {rep.last_name}
-              </div>
-            ))}
-          </div>
-          <div ref={namesText} className={styles.namesOverlay}>
-            {reps.map((rep, i) => (
-              <div
-                key={rep.bioguide_id}
-                role="button"
-                tabIndex={0}
-                aria-label={`Scroll to ${rep.full_name}`}
-                style={{
-                  borderBottom:
-                    i === reps.length - 1
-                      ? "none"
-                      : "2px solid var(--background-color)",
-                }}
-                className={clsx(styles.repNameNav)}
-                onClick={() => scrollToRepByIndex(i)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    scrollToRepByIndex(i);
-                  }
-                }}
-              >
-                {rep.first_name[0]}. {rep.last_name}
-              </div>
+                hoverPortraitUrl={
+                  hoverPortraitById[rep.bioguide_id] ??
+                  rep.image_url?.trim() ??
+                  ""
+                }
+                portraitAlignBottom={
+                  i >= Math.ceil(reps.length / 2)
+                }
+              />
             ))}
           </div>
         </div>
       </section>
-      <div ref={imagesContainer} className={styles.images}>
+      {/* <div ref={imagesContainer} className={styles.images}>
         {reps.map((rep) => (
           <div
             className={styles.repCard}
@@ -371,7 +478,7 @@ export default function RepsWrapper({
             <RepCard rep={rep} />
           </div>
         ))}
-      </div>
+      </div> */}
       <RepDetailDrawer
         rep={detailRep}
         open={detailBioguideId !== null && detailRep !== null}

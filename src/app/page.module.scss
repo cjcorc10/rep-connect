@@ -65,8 +65,8 @@
 
   .heroSubtitle {
     font-family: montserrat;
-    font-size: 2rem;
-    color: var(--blue-accent);
+    font-size: clamp(1rem, 2vw, 2rem);
+    color: var(--background-color);
     max-width: 75%;
     line-height: 1.2;
   }
@@ -77,11 +77,16 @@
     text-transform: uppercase;
     color: white;
     font-weight: 800;
-    font-size: 7rem;
+    font-size: clamp(2rem, 5vw, 7rem);
     max-width: 75%;
     letter-spacing: -0.05em;
+
+    @media (max-width: 768px) {
+      text-align: center;
+    }
   }
   .searchForm {
+    max-width: 75%;
     width: 30rem;
     margin-top: 2rem;
   }

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getDistricts, getCoordinates } from "@/app/lib/util";
+import {
+  getBoundsForDistrictQuery,
+  getCoordinates,
+  getDistricts,
+} from "@/app/lib/util";
 import { getHouseReps } from "@/app/lib/db";
 
 export async function POST(req: Request) {
@@ -16,18 +20,21 @@ export async function POST(req: Request) {
 
     const address = street ? `${street}, ${zip}` : zip;
     const geo = await getCoordinates(address);
-    const g = geo?.results?.[0]?.geometry;
-    if (!g)
+    const first = geo?.results?.[0];
+    if (!first)
       return NextResponse.json(
         { error: "Failed to get coordinates" },
         { status: 500 }
       );
 
-    const { northeast, southwest } = g.bounds;
-    const { state, districts } = await getDistricts({
-      northeast,
-      southwest,
-    });
+    const box = getBoundsForDistrictQuery(first);
+    if (!box)
+      return NextResponse.json(
+        { error: "Failed to get coordinates" },
+        { status: 500 }
+      );
+
+    const { state, districts } = await getDistricts(box);
     const reps = await getHouseReps(districts, state);
 
     return NextResponse.json({ state, districts, reps });

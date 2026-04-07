@@ -1,7 +1,13 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Maps JS needs a public env var; default to GOOGLE_API_KEY so one key works for Geocoding + Maps. */
+  env: {
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ??
+      process.env.GOOGLE_API_KEY ??
+      "",
+  },
 
   images: {
     remotePatterns: [

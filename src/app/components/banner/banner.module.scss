@@ -1,17 +1,54 @@
 .main {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   background-color: #e9e5cf;
-  display: flex;
-  align-items: center;
+  position: relative;
   height: clamp(5rem, 10vw, 10rem);
-  font-family: montserrat;
+  font-family: montserrat, sans-serif;
   font-size: clamp(2rem, 5vw, 8rem);
   font-weight: 600;
-  gap: 1rem;
   white-space: nowrap;
   color: #fff;
+  overflow: hidden;
+  padding-inline: 0.25rem;
+}
+
+.track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+.segment {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  height: 100%;
+  column-gap: clamp(0.5rem, 2vw, 1rem);
+  row-gap: 0;
+}
+
+.senateHeading,
+.houseHeading {
+  margin: 0;
+  padding: 0;
+  line-height: 1.05;
+  font: inherit;
 }
 
 .starsMark {
-  width: clamp(4rem, 15vw, 8rem);
+  box-sizing: border-box;
+  display: block;
+  flex-shrink: 0;
+  align-self: center;
+  width: auto;
+  height: min(2.57rem, calc((100% - 1.25rem) * 2 / 3));
+  aspect-ratio: 130 / 100;
+  overflow: visible;
 }
