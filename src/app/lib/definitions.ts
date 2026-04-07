@@ -50,11 +50,37 @@ export type Rep = {
   image_url: string;
 };
 
+/** State legislator from OpenStates (people.geo), normalized for UI. */
+export type StateLegislator = {
+  id: string;
+  full_name: string;
+  party: string;
+  chamber: string;
+  chamberKey: string;
+  district: string;
+  image_url: string;
+  url: string;
+  phone?: string;
+};
+
+export type StateDistrict = {
+  chamberKey: "upper" | "lower";
+  district: string;
+  label: string;
+  mapKey: string;
+};
+
 export type RepsData = {
   state: string;
   districts: string[];
   houseReps: Rep[];
   senateReps: Rep[];
+  /** State upper/lower chamber members for the geocoded point; empty if unavailable. */
+  stateLegislators: StateLegislator[];
+  /** State legislative district labels for legend rendering. */
+  stateDistricts: StateDistrict[];
+  /** Combined upper/lower district geometry for state mode map. */
+  stateDistrictGeoJson: DistrictMapFeatureCollection | null;
 };
 
 /** GeoJSON subset serialized from server to the district map client. */

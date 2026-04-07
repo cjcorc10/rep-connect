@@ -2,6 +2,7 @@ import type {
   Coordinates,
   DistrictMapFeature,
   DistrictMapFeatureCollection,
+  StateDistrict,
 } from "./definitions";
 import { fipsToState } from "./definitions";
 
@@ -152,10 +153,15 @@ export type DistrictResolution = {
   districtGeoJson: DistrictMapFeatureCollection | null;
 };
 
+export type StateDistrictResolution = {
+  stateDistricts: StateDistrict[];
+  stateDistrictGeoJson: DistrictMapFeatureCollection | null;
+};
+
 export const getDistricts = async (
   coordinates: Coordinates
 ): Promise<DistrictResolution> => {
-  const url = constructDistrictUrl(coordinates, true);
+  const url = constructDistrictUrl(coordinates, true, 54);
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error("Failed to fetch district data");
@@ -183,6 +189,72 @@ export const getDistricts = async (
   };
 };
 
+export const getStateLegislativeDistricts = async (
+  coordinates: Coordinates
+): Promise<StateDistrictResolution> => {
+  const [upperRes, lowerRes] = await Promise.all([
+    fetch(constructDistrictUrl(coordinates, true, 56)),
+    fetch(constructDistrictUrl(coordinates, true, 58)),
+  ]);
+
+  if (!upperRes.ok || !lowerRes.ok) {
+    throw new Error("Failed to fetch state district data");
+  }
+
+  const upperData = await upperRes.json();
+  const lowerData = await lowerRes.json();
+
+  const upperFeatures: DistrictFeature[] = upperData.features || [];
+  const lowerFeatures: DistrictFeature[] = lowerData.features || [];
+
+  const outFeatures: DistrictMapFeature[] = [];
+  const stateDistricts: StateDistrict[] = [];
+  const seenMapKey = new Set<string>();
+
+  const addFeatures = (
+    features: DistrictFeature[],
+    chamberKey: "upper" | "lower"
+  ) => {
+    for (const feature of features) {
+      const districtRaw =
+        chamberKey === "upper"
+          ? feature.attributes?.SLDU
+          : feature.attributes?.SLDL;
+      const district = String(districtRaw ?? "").trim();
+      if (!district) continue;
+
+      const mapKey = `${chamberKey}:${district}`;
+      const labelPrefix =
+        chamberKey === "upper" ? "State Senate" : "State House";
+      const label = `${labelPrefix} ${district}`;
+
+      if (!seenMapKey.has(mapKey)) {
+        stateDistricts.push({
+          chamberKey,
+          district,
+          label,
+          mapKey,
+        });
+        seenMapKey.add(mapKey);
+      }
+
+      const gj = esriPolygonToGeoJSONFeature(feature, mapKey, label);
+      if (gj) outFeatures.push(gj);
+    }
+  };
+
+  addFeatures(upperFeatures, "upper");
+  addFeatures(lowerFeatures, "lower");
+
+  return {
+    stateDistricts,
+    stateDistrictGeoJson:
+      outFeatures.length > 0
+        ? { type: "FeatureCollection", features: outFeatures }
+        : null,
+  };
+};
+
 function buildDistrictFeatureCollection(
   features: DistrictFeature[]
 ): DistrictMapFeatureCollection | null {
@@ -196,7 +268,9 @@ function buildDistrictFeatureCollection(
 }
 
 function esriPolygonToGeoJSONFeature(
-  feature: DistrictFeature
+  feature: DistrictFeature,
+  mapKey?: string,
+  nameOverride?: string
 ): DistrictMapFeature | null {
   const rings = feature.geometry?.rings;
   if (!rings?.length) return null;
@@ -222,14 +296,16 @@ function esriPolygonToGeoJSONFeature(
     type: "Feature",
     geometry: { type: "Polygon", coordinates },
     properties: {
-      name: String(feature.attributes?.NAME ?? ""),
+      name: nameOverride ?? String(feature.attributes?.NAME ?? ""),
+      mapKey: mapKey ?? "",
     },
   };
 }
 
 const constructDistrictUrl = (
   coordinates: Coordinates,
-  includeGeometry: boolean
+  includeGeometry: boolean,
+  layerId: number
 ) => {
   const baseURL = process.env.DISTRICT_API_URL;
   if (!baseURL) {
@@ -249,5 +325,9 @@ const constructDistrictUrl = (
     outSR: "4326",
     f: "json",
   });
-  return `${baseURL}?${queryParams.toString()}`;
+  const normalizedBase = baseURL
+    .replace(/\/\d+\/query$/i, "")
+    .replace(/\/query$/i, "")
+    .replace(/\/$/, "");
+  return `${normalizedBase}/${layerId}/query?${queryParams.toString()}`;
 };

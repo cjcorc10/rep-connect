@@ -8,6 +8,7 @@ import type {
   DistrictMapFeatureCollection,
   Rep,
   RepsData,
+  StateLegislator,
 } from "@/app/lib/definitions";
 import {
   districtFeatureName,
@@ -40,6 +41,9 @@ export default function RepsPageClient({
   mapFallback,
 }: Props) {
   const { setReps } = useRepStore();
+  const [activeLevel, setActiveLevel] = useState<"federal" | "state">(
+    "federal",
+  );
   const [currentData, setCurrentData] = useState(data);
   const [currentCityStateLabel, setCurrentCityStateLabel] =
     useState(cityStateLabel);
@@ -97,6 +101,30 @@ export default function RepsPageClient({
     return out;
   }, [currentData.districts, districtRankByLabel]);
 
+  const stateDistrictRankByMapKey = useMemo(() => {
+    const rankByKey = new Map<string, number>();
+    const stateGeo = currentData.stateDistrictGeoJson;
+    if (!stateGeo) return rankByKey;
+
+    const styleIndexByName = districtStyleIndexByName(stateGeo.features);
+    stateGeo.features.forEach((feature, i) => {
+      const name = districtFeatureName(feature.properties?.name, i);
+      const rank = styleIndexByName.get(name);
+      if (rank == null) return;
+      const mapKey = String(feature.properties?.mapKey ?? "");
+      if (mapKey && !rankByKey.has(mapKey)) {
+        rankByKey.set(mapKey, rank);
+      }
+    });
+
+    return rankByKey;
+  }, [currentData.stateDistrictGeoJson]);
+
+  const activeDistrictGeoJson =
+    activeLevel === "state"
+      ? currentData.stateDistrictGeoJson
+      : currentDistrictGeoJson;
+
   return (
     <>
       <main className="py-4 sm:py-6 h-[100vh] relative flex flex-col items-center justify-center">
@@ -115,7 +143,7 @@ export default function RepsPageClient({
               <div className={styles.mapCanvas}>
                 <DistrictMap
                   apiKey={mapsApiKey}
-                  districtGeoJson={currentDistrictGeoJson}
+                  districtGeoJson={activeDistrictGeoJson}
                   mapFallback={currentMapFallback}
                 />
               </div>
@@ -124,31 +152,57 @@ export default function RepsPageClient({
                 aria-label="District legend"
               >
                 <h2 className={styles.legendTitle}>Districts</h2>
-                <h3 className={styles.legendSubheader}>Federal</h3>
+                <h3 className={styles.legendSubheader}>
+                  {activeLevel === "state" ? "State" : "Federal"}
+                </h3>
                 <ul className={styles.legendList}>
-                  {currentData.districts.map((district, i) => {
-                    const rank =
-                      districtRankByLabel.get(String(district)) ?? i;
-                    const color = paletteForDistrictRank(rank);
-                    return (
-                      <li
-                        key={`${currentData.state}-${district}-${i}`}
-                        className={styles.legendItem}
-                      >
-                        <span
-                          className={styles.legendSwatch}
-                          style={{
-                            backgroundColor: color.fill,
-                            borderColor: color.stroke,
-                          }}
-                          aria-hidden
-                        />
-                        <span className={styles.legendText}>
-                          {currentData.state}-{district}
-                        </span>
-                      </li>
-                    );
-                  })}
+                  {activeLevel === "state"
+                    ? currentData.stateDistricts.map((d, i) => {
+                        const rank =
+                          stateDistrictRankByMapKey.get(d.mapKey) ?? i;
+                        const color = paletteForDistrictRank(rank);
+                        return (
+                          <li
+                            key={`${d.mapKey}-${i}`}
+                            className={styles.legendItem}
+                          >
+                            <span
+                              className={styles.legendSwatch}
+                              style={{
+                                backgroundColor: color.fill,
+                                borderColor: color.stroke,
+                              }}
+                              aria-hidden
+                            />
+                            <span className={styles.legendText}>
+                              {d.label}
+                            </span>
+                          </li>
+                        );
+                      })
+                    : currentData.districts.map((district, i) => {
+                        const rank =
+                          districtRankByLabel.get(String(district)) ?? i;
+                        const color = paletteForDistrictRank(rank);
+                        return (
+                          <li
+                            key={`${currentData.state}-${district}-${i}`}
+                            className={styles.legendItem}
+                          >
+                            <span
+                              className={styles.legendSwatch}
+                              style={{
+                                backgroundColor: color.fill,
+                                borderColor: color.stroke,
+                              }}
+                              aria-hidden
+                            />
+                            <span className={styles.legendText}>
+                              {currentData.state}-{district}
+                            </span>
+                          </li>
+                        );
+                      })}
                 </ul>
               </aside>
             </div>
@@ -165,12 +219,94 @@ export default function RepsPageClient({
         </section>
       </main>
       <Banner />
+      <section className={styles.levelToggleSection} aria-label="Choose representative level">
+        <div className={styles.levelToggle}>
+          <button
+            type="button"
+            className={
+              activeLevel === "federal"
+                ? `${styles.levelButton} ${styles.levelButtonActive}`
+                : styles.levelButton
+            }
+            onClick={() => setActiveLevel("federal")}
+          >
+            Federal
+          </button>
+          <button
+            type="button"
+            className={
+              activeLevel === "state"
+                ? `${styles.levelButton} ${styles.levelButtonActive}`
+                : styles.levelButton
+            }
+            onClick={() => setActiveLevel("state")}
+          >
+            State
+          </button>
+        </div>
+      </section>
       <div>
-        <RepsWrapper
-          repsData={currentData}
-          districtColorByDistrict={districtColorByDistrict}
-        />
+        {activeLevel === "federal" ? (
+          <RepsWrapper
+            repsData={currentData}
+            districtColorByDistrict={districtColorByDistrict}
+          />
+        ) : (
+          <StateLegislatorList
+            stateAbbrev={currentData.state}
+            members={currentData.stateLegislators}
+          />
+        )}
       </div>
     </>
+  );
+}
+
+function StateLegislatorList({
+  stateAbbrev,
+  members,
+}: {
+  stateAbbrev: string;
+  members: StateLegislator[];
+}) {
+  if (!members.length) {
+    return (
+      <section className={styles.stateSection}>
+        <p className={styles.stateEmpty}>
+          State legislators are unavailable for this address right now.
+        </p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={styles.stateSection}>
+      <div className={styles.stateHeading}>{stateAbbrev} State Legislature</div>
+      <div className={styles.stateGrid}>
+        <div className={styles.stateHeader} role="row" aria-label="State Columns">
+          <span>Name</span>
+          <span>Chamber</span>
+          <span>District</span>
+          <span>Party</span>
+          <span>Link</span>
+        </div>
+        {members.map((m) => (
+          <div key={m.id} className={styles.stateRow}>
+            <span className={styles.stateName}>{m.full_name}</span>
+            <span>{m.chamber}</span>
+            <span>{m.district}</span>
+            <span>{m.party || "Unknown"}</span>
+            <a
+              href={m.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.stateLink}
+            >
+              Profile
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

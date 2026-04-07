@@ -93,6 +93,11 @@
       align-items: stretch;
       padding: 0.5rem;
       box-sizing: border-box;
+      background: color-mix(
+        in srgb,
+        var(--background-color) 86%,
+        #000000 14%
+      );
     }
 
     .mapCanvas {
@@ -101,8 +106,9 @@
     }
 
     .legend {
-      background: color-mix(in srgb, var(--background-color) 85%, transparent);
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      background: #ffffff;
+      border: 1px solid color-mix(in srgb, var(--primary-color) 22%, transparent);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
       padding: 0.6rem;
       overflow: auto;
     }
@@ -141,6 +147,7 @@
       color: var(--primary-color);
       font-size: 0.9rem;
       line-height: 1.2;
+      padding: 0.3rem 0;
     }
 
     .legendSwatch {
@@ -161,4 +168,96 @@
       }
     }
   }
+}
+
+.levelToggleSection {
+  width: min(70vw, 100%);
+  margin: 0.5rem auto 0;
+}
+
+.levelToggle {
+  display: inline-flex;
+  border: 2px solid var(--background-color);
+}
+
+.levelButton {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--background-color);
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.levelButtonActive {
+  background: var(--background-color);
+  color: var(--primary-color);
+}
+
+.stateSection {
+  width: 100vw;
+  background: var(--primary-color);
+  padding: 0.8rem 0 2rem;
+  box-sizing: border-box;
+}
+
+.stateHeading {
+  margin: 0;
+  padding: 0.65rem clamp(0.75rem, 3vw, 2rem);
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.stateGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 0.8fr) auto;
+  column-gap: clamp(0.25rem, 0.8vw, 0.65rem);
+  width: 100%;
+  color: var(--background-color);
+}
+
+.stateEmpty {
+  margin: 0;
+  color: var(--background-color);
+  padding: 0.8rem clamp(0.75rem, 3vw, 2rem);
+}
+
+.stateHeader,
+.stateRow {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0.6rem clamp(0.75rem, 3vw, 2rem);
+}
+
+.stateHeader {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.stateRow {
+  border-bottom: 2px solid var(--background-color);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.stateName {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+}
+
+.stateLink {
+  color: var(--background-color);
+  text-decoration: underline;
+  justify-self: end;
 }

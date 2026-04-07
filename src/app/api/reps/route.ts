@@ -5,9 +5,11 @@ import {
   getBoundsForDistrictQuery,
   getCoordinates,
   getDistricts,
+  getStateLegislativeDistricts,
   parseGeocodePlace,
 } from "@/app/lib/util";
 import { getHouseReps, getSenators } from "@/app/lib/db";
+import { fetchStateLegislatorsByLatLng } from "@/app/lib/openstates";
 
 export async function POST(req: Request) {
   try {
@@ -40,8 +42,22 @@ export async function POST(req: Request) {
         { status: 404 }
       );
     }
-    const { state, districts, districtGeoJson } =
-      await getDistricts(box);
+    const loc = geo.results[0].geometry.location;
+    const [
+      { state, districts, districtGeoJson },
+      stateLegResult,
+      stateDistrictResult,
+    ] =
+      await Promise.all([
+        getDistricts(box),
+        loc
+          ? fetchStateLegislatorsByLatLng(loc.lat, loc.lng)
+          : Promise.resolve({ legislators: [] }),
+        getStateLegislativeDistricts(box).catch(() => ({
+          stateDistricts: [],
+          stateDistrictGeoJson: null,
+        })),
+      ]);
 
     const [houseRepsResult, senateReps] = await Promise.all([
       getHouseReps(districts, state),
@@ -62,6 +78,10 @@ export async function POST(req: Request) {
       districts,
       houseReps,
       senateReps,
+      stateLegislators: stateLegResult.legislators,
+      stateError: stateLegResult.stateError,
+      stateDistricts: stateDistrictResult.stateDistricts,
+      stateDistrictGeoJson: stateDistrictResult.stateDistrictGeoJson,
       cityStateLabel,
       districtGeoJson,
       mapFallback: extractMapFallback(geo.results[0]),

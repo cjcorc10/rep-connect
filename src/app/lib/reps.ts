@@ -5,9 +5,11 @@ import {
   getBoundsForDistrictQuery,
   getCoordinates,
   getDistricts,
+  getStateLegislativeDistricts,
   parseGeocodePlace,
 } from "./util";
 import { getHouseReps, getSenators } from "./db";
+import { fetchStateLegislatorsByLatLng } from "./openstates";
 
 /** Server-only: fetch reps by address. Returns null when address cannot be resolved (404). */
 export async function getRepsByAddress(
@@ -30,8 +32,24 @@ export async function getRepsByAddress(
     return null;
   }
 
-  const { state, districts, districtGeoJson } =
-    await getDistricts(bounds);
+  const loc = first.geometry.location;
+  const [
+    { state, districts, districtGeoJson },
+    stateLegResult,
+    stateDistrictResult,
+  ] =
+    await Promise.all([
+      getDistricts(bounds),
+      loc
+        ? fetchStateLegislatorsByLatLng(loc.lat, loc.lng)
+        : Promise.resolve({
+            legislators: [] as RepsData["stateLegislators"],
+          }),
+      getStateLegislativeDistricts(bounds).catch(() => ({
+        stateDistricts: [] as RepsData["stateDistricts"],
+        stateDistrictGeoJson: null,
+      })),
+    ]);
 
   const [houseRepsResult, senateReps] = await Promise.all([
     getHouseReps(districts, state),
@@ -45,6 +63,9 @@ export async function getRepsByAddress(
     districts,
     houseReps,
     senateReps,
+    stateLegislators: stateLegResult.legislators,
+    stateDistricts: stateDistrictResult.stateDistricts,
+    stateDistrictGeoJson: stateDistrictResult.stateDistrictGeoJson,
   };
 
   const place = parseGeocodePlace(first);

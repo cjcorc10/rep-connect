@@ -11,6 +11,8 @@ import type {
   DistrictMapFeatureCollection,
   Rep,
   RepsData,
+  StateDistrict,
+  StateLegislator,
 } from "../../lib/definitions";
 
 type RefineProps = {
@@ -64,6 +66,9 @@ export default function Refine({
       districts: string[];
       houseReps?: Rep[];
       senateReps?: Rep[];
+      stateLegislators?: StateLegislator[];
+      stateDistricts?: StateDistrict[];
+      stateDistrictGeoJson?: DistrictMapFeatureCollection | null;
       cityStateLabel?: string;
       districtGeoJson?: DistrictMapFeatureCollection | null;
       mapFallback?: {
@@ -81,6 +86,9 @@ export default function Refine({
           districts: data.districts,
           houseReps: data.houseReps ?? [],
           senateReps: data.senateReps ?? [],
+          stateLegislators: data.stateLegislators ?? [],
+          stateDistricts: data.stateDistricts ?? [],
+          stateDistrictGeoJson: data.stateDistrictGeoJson ?? null,
         },
         cityStateLabel: data.cityStateLabel ?? zipCode,
         districtGeoJson: data.districtGeoJson ?? null,
