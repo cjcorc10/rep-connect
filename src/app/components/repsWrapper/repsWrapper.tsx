@@ -21,15 +21,9 @@ export default function RepsWrapper({
   const { detailBioguideId, closeRepDetail, openRepDetail } =
     useRepStore();
 
-  const reps = useMemo(
-    () => repsData.senateReps.concat(repsData.houseReps),
-    [repsData.senateReps, repsData.houseReps],
-  );
+  const reps = repsData.senateReps.concat(repsData.houseReps)
+  const rows = buildFederalRosterRows(repsData, districtColorByDistrict)
 
-  const rows = useMemo(
-    () => buildFederalRosterRows(repsData, districtColorByDistrict),
-    [repsData, districtColorByDistrict],
-  );
 
   const [portraitByRowId, setPortraitByRowId] = useState<
     Record<string, string>

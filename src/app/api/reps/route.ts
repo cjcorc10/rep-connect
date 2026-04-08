@@ -11,6 +11,14 @@ import {
 import { getHouseReps, getSenators } from "@/app/lib/db";
 import { fetchStateLegislatorsByLatLng } from "@/app/lib/openstates";
 
+/**
+ * 
+ * @api {post} /reps Resolve Legislative Data 
+ * @description Coordinates geocoding and spatial lookups to identify
+ * state, districts, and member information.
+ * @access public
+ */
+
 export async function POST(req: Request) {
   try {
     const { address } = (await req.json()) as {

@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { fetchWikipediaData } from "@/app/lib/wikipedia";
 
+/**
+ * 
+ * @api {get} /wikipedia Wiki-Proxy 
+ * @description Fetch wiki data for member using their id
+ * @access public 
+ */
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
