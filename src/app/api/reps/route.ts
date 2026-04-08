@@ -79,7 +79,10 @@ export async function POST(req: Request) {
       houseReps,
       senateReps,
       stateLegislators: stateLegResult.legislators,
-      stateError: stateLegResult.stateError,
+      stateError:
+        "stateError" in stateLegResult
+          ? stateLegResult.stateError
+          : undefined,
       stateDistricts: stateDistrictResult.stateDistricts,
       stateDistrictGeoJson: stateDistrictResult.stateDistrictGeoJson,
       cityStateLabel,

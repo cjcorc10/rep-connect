@@ -3,11 +3,13 @@
 import DistrictMap from "@/app/components/districtMap/districtMap";
 import Address from "@/app/components/address/address";
 import RepsWrapper from "@/app/components/repsWrapper/repsWrapper";
+import RepRoster from "@/app/components/repsWrapper/RepRoster";
 import type {
   Coordinates,
   DistrictMapFeatureCollection,
   Rep,
   RepsData,
+  StateDistrict,
   StateLegislator,
 } from "@/app/lib/definitions";
 import {
@@ -18,9 +20,69 @@ import {
 } from "@/app/lib/districtMapStyles";
 import Banner from "@/app/components/banner/banner";
 import { useRepStore } from "@/app/store/useRepStore";
+import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./repsPageClient.module.scss";
 import Refine from "@/app/components/refine/refine";
+import { stateLegislatorsToRosterRows } from "@/app/lib/repRoster";
+
+/** Strip leading zeros from numeric state district ids (e.g. "025" → "25"). */
+function formatStateDistrictDisplay(district: string): string {
+  const t = district.trim();
+  if (!t) return t;
+  if (/^\d+$/.test(t)) {
+    return String(parseInt(t, 10));
+  }
+  return t;
+}
+
+function districtsMatch(a: string, b: string): boolean {
+  const x = a.trim();
+  const y = b.trim();
+  if (x === y) return true;
+  if (/^\d+$/.test(x) && /^\d+$/.test(y)) {
+    return parseInt(x, 10) === parseInt(y, 10);
+  }
+  return false;
+}
+
+function lastNameFromFullName(name: string): string {
+  const t = name.trim();
+  if (!t) return "";
+  const parts = t.split(/\s+/).filter(Boolean);
+  return parts.length ? parts[parts.length - 1]! : "";
+}
+
+function federalHouseLastName(houseReps: Rep[], district: string): string {
+  const rep = houseReps.find((h) =>
+    districtsMatch(String(h.district), String(district)),
+  );
+  return rep?.last_name?.trim() ?? "";
+}
+
+function stateLegislatorLastName(
+  members: StateLegislator[],
+  chamberKey: StateLegislator["chamberKey"],
+  district: string,
+): string {
+  const m = members.find(
+    (x) => x.chamberKey === chamberKey && districtsMatch(x.district, district),
+  );
+  return m ? lastNameFromFullName(m.full_name) : "";
+}
+
+/** ArcGIS envelope can return many districts; keep rows that match a people.geo legislator. */
+function stateDistrictHasLegislator(
+  d: StateDistrict,
+  legislators: StateLegislator[],
+): boolean {
+  if (!legislators.length) return true;
+  return legislators.some(
+    (m) =>
+      m.chamberKey === d.chamberKey &&
+      districtsMatch(m.district, d.district),
+  );
+}
 
 type Props = {
   zipFromRoute: string;
@@ -101,9 +163,35 @@ export default function RepsPageClient({
     return out;
   }, [currentData.districts, districtRankByLabel]);
 
+  const alignedStateDistricts = useMemo(() => {
+    const all = currentData.stateDistricts;
+    const legs = currentData.stateLegislators;
+    if (!legs.length) return all;
+    const matched = all.filter((d) => stateDistrictHasLegislator(d, legs));
+    return matched.length > 0 ? matched : all;
+  }, [currentData.stateDistricts, currentData.stateLegislators]);
+
+  const alignedStateDistrictGeoJson = useMemo(() => {
+    const geo = currentData.stateDistrictGeoJson;
+    if (!geo?.features?.length) return geo;
+    const legs = currentData.stateLegislators;
+    if (!legs.length) return geo;
+
+    const allowed = new Set(alignedStateDistricts.map((d) => d.mapKey));
+    const features = geo.features.filter((f) =>
+      allowed.has(String(f.properties?.mapKey ?? "")),
+    );
+    if (features.length === 0) return geo;
+    return { type: "FeatureCollection" as const, features };
+  }, [
+    currentData.stateDistrictGeoJson,
+    currentData.stateLegislators,
+    alignedStateDistricts,
+  ]);
+
   const stateDistrictRankByMapKey = useMemo(() => {
     const rankByKey = new Map<string, number>();
-    const stateGeo = currentData.stateDistrictGeoJson;
+    const stateGeo = alignedStateDistrictGeoJson;
     if (!stateGeo) return rankByKey;
 
     const styleIndexByName = districtStyleIndexByName(stateGeo.features);
@@ -118,16 +206,68 @@ export default function RepsPageClient({
     });
 
     return rankByKey;
-  }, [currentData.stateDistrictGeoJson]);
+  }, [alignedStateDistrictGeoJson]);
+
+  const stateSenateDistricts = useMemo(
+    () =>
+      alignedStateDistricts.filter((d) => d.chamberKey === "upper"),
+    [alignedStateDistricts],
+  );
+
+  const stateHouseDistricts = useMemo(
+    () =>
+      alignedStateDistricts.filter((d) => d.chamberKey === "lower"),
+    [alignedStateDistricts],
+  );
 
   const activeDistrictGeoJson =
     activeLevel === "state"
-      ? currentData.stateDistrictGeoJson
+      ? alignedStateDistrictGeoJson
       : currentDistrictGeoJson;
+
+  const stateRosterRows = useMemo(
+    () => stateLegislatorsToRosterRows(currentData.stateLegislators),
+    [currentData.stateLegislators],
+  );
 
   return (
     <>
-      <main className="py-4 sm:py-6 h-[100vh] relative flex flex-col items-center justify-center">
+      <main
+        className={clsx(
+          "py-4 sm:py-6 h-[100vh] relative flex flex-col items-center justify-center",
+          styles.main,
+        )}
+      >
+        <div
+          className={styles.folderTabs}
+          role="tablist"
+          aria-label="Representative level"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeLevel === "federal"}
+            className={clsx(
+              styles.levelButton,
+              activeLevel === "federal" && styles.levelButtonActive,
+            )}
+            onClick={() => setActiveLevel("federal")}
+          >
+            Federal
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeLevel === "state"}
+            className={clsx(
+              styles.levelButton,
+              activeLevel === "state" && styles.levelButtonActive,
+            )}
+            onClick={() => setActiveLevel("state")}
+          >
+            State
+          </button>
+        </div>
         <section className={styles.headerSection}>
           <header className={styles.header}>
             <div className={styles.addressContainer}>
@@ -152,38 +292,18 @@ export default function RepsPageClient({
                 aria-label="District legend"
               >
                 <h2 className={styles.legendTitle}>Districts</h2>
-                <h3 className={styles.legendSubheader}>
-                  {activeLevel === "state" ? "State" : "Federal"}
-                </h3>
-                <ul className={styles.legendList}>
-                  {activeLevel === "state"
-                    ? currentData.stateDistricts.map((d, i) => {
-                        const rank =
-                          stateDistrictRankByMapKey.get(d.mapKey) ?? i;
-                        const color = paletteForDistrictRank(rank);
-                        return (
-                          <li
-                            key={`${d.mapKey}-${i}`}
-                            className={styles.legendItem}
-                          >
-                            <span
-                              className={styles.legendSwatch}
-                              style={{
-                                backgroundColor: color.fill,
-                                borderColor: color.stroke,
-                              }}
-                              aria-hidden
-                            />
-                            <span className={styles.legendText}>
-                              {d.label}
-                            </span>
-                          </li>
-                        );
-                      })
-                    : currentData.districts.map((district, i) => {
+                {activeLevel === "federal" ? (
+                  <>
+                    <h3 className={styles.legendSubheader}>Federal</h3>
+                    <ul className={styles.legendList}>
+                      {currentData.districts.map((district, i) => {
                         const rank =
                           districtRankByLabel.get(String(district)) ?? i;
                         const color = paletteForDistrictRank(rank);
+                        const last = federalHouseLastName(
+                          currentData.houseReps,
+                          String(district),
+                        );
                         return (
                           <li
                             key={`${currentData.state}-${district}-${i}`}
@@ -198,12 +318,121 @@ export default function RepsPageClient({
                               aria-hidden
                             />
                             <span className={styles.legendText}>
-                              {currentData.state}-{district}
+                              {district}
+                              {last ? (
+                                <>
+                                  {" "}
+                                  <span className={styles.legendLastName}>
+                                    {last}
+                                  </span>
+                                </>
+                              ) : null}
                             </span>
                           </li>
                         );
                       })}
-                </ul>
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    {stateSenateDistricts.length > 0 ? (
+                      <section
+                        className={styles.legendChamber}
+                        aria-label="State Senate districts"
+                      >
+                        <h3 className={styles.legendChamberTitle}>
+                          State Senate
+                        </h3>
+                        <ul className={styles.legendList}>
+                          {stateSenateDistricts.map((d, i) => {
+                            const rank =
+                              stateDistrictRankByMapKey.get(d.mapKey) ?? i;
+                            const color = paletteForDistrictRank(rank);
+                            const last = stateLegislatorLastName(
+                              currentData.stateLegislators,
+                              "upper",
+                              d.district,
+                            );
+                            return (
+                              <li
+                                key={`${d.mapKey}-sen-${i}`}
+                                className={styles.legendItem}
+                              >
+                                <span
+                                  className={styles.legendSwatch}
+                                  style={{
+                                    backgroundColor: color.fill,
+                                    borderColor: color.stroke,
+                                  }}
+                                  aria-hidden
+                                />
+                                <span className={styles.legendText}>
+                                  {formatStateDistrictDisplay(d.district)}
+                                  {last ? (
+                                    <>
+                                      {" "}
+                                      <span className={styles.legendLastName}>
+                                        {last}
+                                      </span>
+                                    </>
+                                  ) : null}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </section>
+                    ) : null}
+                    {stateHouseDistricts.length > 0 ? (
+                      <section
+                        className={styles.legendChamber}
+                        aria-label="State House districts"
+                      >
+                        <h3 className={styles.legendChamberTitle}>
+                          State House
+                        </h3>
+                        <ul className={styles.legendList}>
+                          {stateHouseDistricts.map((d, i) => {
+                            const rank =
+                              stateDistrictRankByMapKey.get(d.mapKey) ?? i;
+                            const color = paletteForDistrictRank(rank);
+                            const last = stateLegislatorLastName(
+                              currentData.stateLegislators,
+                              "lower",
+                              d.district,
+                            );
+                            return (
+                              <li
+                                key={`${d.mapKey}-house-${i}`}
+                                className={styles.legendItem}
+                              >
+                                <span
+                                  className={styles.legendSwatch}
+                                  style={{
+                                    backgroundColor: color.fill,
+                                    borderColor: color.stroke,
+                                  }}
+                                  aria-hidden
+                                />
+                                <span className={styles.legendText}>
+                                  {formatStateDistrictDisplay(d.district)}
+                                  {last ? (
+                                    <>
+                                      {" "}
+                                      <span className={styles.legendLastName}>
+                                        {last}
+                                      </span>
+                                    </>
+                                  ) : null}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </section>
+                    ) : null}
+                  </>
+                )}
               </aside>
             </div>
           </div>
@@ -219,32 +448,6 @@ export default function RepsPageClient({
         </section>
       </main>
       <Banner />
-      <section className={styles.levelToggleSection} aria-label="Choose representative level">
-        <div className={styles.levelToggle}>
-          <button
-            type="button"
-            className={
-              activeLevel === "federal"
-                ? `${styles.levelButton} ${styles.levelButtonActive}`
-                : styles.levelButton
-            }
-            onClick={() => setActiveLevel("federal")}
-          >
-            Federal
-          </button>
-          <button
-            type="button"
-            className={
-              activeLevel === "state"
-                ? `${styles.levelButton} ${styles.levelButtonActive}`
-                : styles.levelButton
-            }
-            onClick={() => setActiveLevel("state")}
-          >
-            State
-          </button>
-        </div>
-      </section>
       <div>
         {activeLevel === "federal" ? (
           <RepsWrapper
@@ -252,61 +455,21 @@ export default function RepsPageClient({
             districtColorByDistrict={districtColorByDistrict}
           />
         ) : (
-          <StateLegislatorList
-            stateAbbrev={currentData.state}
-            members={currentData.stateLegislators}
+          <RepRoster
+            rows={stateRosterRows}
+            onRowDetails={(row) => {
+              if (row.externalUrl) {
+                window.open(
+                  row.externalUrl,
+                  "_blank",
+                  "noopener,noreferrer",
+                );
+              }
+            }}
+            emptyMessage="State legislators are unavailable for this address right now."
           />
         )}
       </div>
     </>
-  );
-}
-
-function StateLegislatorList({
-  stateAbbrev,
-  members,
-}: {
-  stateAbbrev: string;
-  members: StateLegislator[];
-}) {
-  if (!members.length) {
-    return (
-      <section className={styles.stateSection}>
-        <p className={styles.stateEmpty}>
-          State legislators are unavailable for this address right now.
-        </p>
-      </section>
-    );
-  }
-
-  return (
-    <section className={styles.stateSection}>
-      <div className={styles.stateHeading}>{stateAbbrev} State Legislature</div>
-      <div className={styles.stateGrid}>
-        <div className={styles.stateHeader} role="row" aria-label="State Columns">
-          <span>Name</span>
-          <span>Chamber</span>
-          <span>District</span>
-          <span>Party</span>
-          <span>Link</span>
-        </div>
-        {members.map((m) => (
-          <div key={m.id} className={styles.stateRow}>
-            <span className={styles.stateName}>{m.full_name}</span>
-            <span>{m.chamber}</span>
-            <span>{m.district}</span>
-            <span>{m.party || "Unknown"}</span>
-            <a
-              href={m.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.stateLink}
-            >
-              Profile
-            </a>
-          </div>
-        ))}
-      </div>
-    </section>
   );
 }

@@ -12,7 +12,9 @@ type OsRole = {
   title?: string;
   org_classification?: string;
   district?: string | number;
+  division_id?: string;
   jurisdiction?: OsJurisdiction;
+  end_date?: string;
 };
 
 type OsPerson = {
@@ -39,41 +41,91 @@ function isStateJurisdiction(j?: OsJurisdiction): boolean {
   );
 }
 
-function pickStateLegislativeRole(person: OsPerson): OsRole | null {
-  const candidates: OsRole[] = [];
-  if (person.current_role) candidates.push(person.current_role);
-  if (Array.isArray(person.roles)) candidates.push(...person.roles);
-
-  for (const role of candidates) {
-    const cls = role.org_classification;
-    if (
-      cls !== "upper" &&
-      cls !== "lower" &&
-      cls !== "legislature"
-    ) {
-      continue;
-    }
-    const j = role.jurisdiction ?? person.jurisdiction;
-    if (isStateJurisdiction(j)) return role;
+/** Normalize API `org_classification` or infer from title (handles missing/variant values). */
+function classifyStateLegislativeChamber(
+  role: OsRole,
+): "upper" | "lower" | "legislature" | null {
+  const cls = role.org_classification?.toLowerCase()?.trim();
+  if (cls === "upper" || cls === "lower" || cls === "legislature") {
+    return cls;
   }
 
-  if (person.current_role) {
-    const cls = person.current_role.org_classification;
-    if (
-      (cls === "upper" ||
-        cls === "lower" ||
-        cls === "legislature") &&
-      isStateJurisdiction(person.jurisdiction)
-    ) {
-      return person.current_role;
-    }
+  const title = (role.title ?? "").trim();
+  const tl = title.toLowerCase();
+  if (!title) return null;
+
+  if (
+    tl.includes("u.s. senator") ||
+    tl.includes("u.s. representative") ||
+    tl.includes("united states senator") ||
+    tl.includes("united states representative") ||
+    tl.includes("us representative") ||
+    tl.includes("us senator")
+  ) {
+    return null;
+  }
+
+  if (
+    tl.includes("state senator") ||
+    (tl.includes("senator") && !tl.includes("representative"))
+  ) {
+    return "upper";
+  }
+
+  if (
+    tl.includes("state representative") ||
+    tl.includes("state rep") ||
+    tl.includes("representative") ||
+    tl.includes("delegate") ||
+    tl.includes("assembly member") ||
+    /^rep\.?\s/i.test(title)
+  ) {
+    return "lower";
   }
 
   return null;
 }
 
-function chamberLabel(orgClassification?: string): string {
-  switch (orgClassification) {
+type PickedRole = {
+  role: OsRole;
+  chamber: "upper" | "lower" | "legislature";
+};
+
+function pickStateLegislativeRole(
+  person: OsPerson,
+): PickedRole | null {
+  const candidates: OsRole[] = [];
+  if (person.current_role) candidates.push(person.current_role);
+  if (Array.isArray(person.roles)) candidates.push(...person.roles);
+
+  const matches: PickedRole[] = [];
+
+  for (const role of candidates) {
+    const j = role.jurisdiction ?? person.jurisdiction;
+    if (!isStateJurisdiction(j)) continue;
+
+    const chamber = classifyStateLegislativeChamber(role);
+    if (!chamber) continue;
+
+    matches.push({ role, chamber });
+  }
+
+  if (matches.length === 0) return null;
+
+  if (person.current_role) {
+    const byCurrent = matches.find(
+      (m) => m.role === person.current_role,
+    );
+    if (byCurrent) return byCurrent;
+  }
+
+  return matches[0]!;
+}
+
+function chamberLabel(
+  chamber: "upper" | "lower" | "legislature",
+): string {
+  switch (chamber) {
     case "upper":
       return "State Senate";
     case "lower":
@@ -95,14 +147,57 @@ function voiceFromContacts(
   return v?.value?.trim() ?? "";
 }
 
+function normalizeIsoDate(value?: string): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) return undefined;
+  return parsed.toISOString();
+}
+
+function extractRoleTermEnd(
+  person: OsPerson,
+  picked: PickedRole,
+): string | undefined {
+  const direct = normalizeIsoDate(picked.role.end_date);
+  if (direct) return direct;
+
+  const roles: OsRole[] = [];
+  if (Array.isArray(person.roles)) roles.push(...person.roles);
+
+  const sameChamber = roles.filter((role) => {
+    const j = role.jurisdiction ?? person.jurisdiction;
+    if (!isStateJurisdiction(j)) return false;
+    return classifyStateLegislativeChamber(role) === picked.chamber;
+  });
+
+  const now = Date.now();
+  const normalized = sameChamber
+    .map((r) => normalizeIsoDate(r.end_date))
+    .filter((d): d is string => Boolean(d));
+  if (!normalized.length) return undefined;
+
+  const upcoming = normalized
+    .map((d) => ({ iso: d, t: new Date(d).getTime() }))
+    .filter((d) => d.t >= now)
+    .sort((a, b) => a.t - b.t);
+  if (upcoming.length) return upcoming[0]!.iso;
+
+  const latestPast = normalized
+    .map((d) => ({ iso: d, t: new Date(d).getTime() }))
+    .sort((a, b) => b.t - a.t)[0];
+  return latestPast?.iso;
+}
+
 function normalizePerson(person: OsPerson): StateLegislator | null {
   const id = person.id?.trim();
   const name = person.name?.trim();
   if (!id || !name) return null;
 
-  const role = pickStateLegislativeRole(person);
-  if (!role) return null;
+  const picked = pickStateLegislativeRole(person);
+  if (!picked) return null;
 
+  const { role, chamber } = picked;
   const district =
     role.district != null ? String(role.district).trim() : "";
   const url =
@@ -113,9 +208,10 @@ function normalizePerson(person: OsPerson): StateLegislator | null {
     id,
     full_name: name,
     party: person.party?.trim() ?? "",
-    chamber: chamberLabel(role.org_classification),
-    chamberKey: role.org_classification ?? "unknown",
+    chamber: chamberLabel(chamber),
+    chamberKey: chamber,
     district: district || "—",
+    term_end: extractRoleTermEnd(person, picked),
     image_url: person.image?.trim() ?? "",
     url,
     phone: voiceFromContacts(person.contact_details),
@@ -161,7 +257,6 @@ export async function fetchStateLegislatorsByLatLng(
         stateError: `http_${res.status}`,
       };
     }
-
     const json = (await res.json()) as OsGeoResponse;
     const raw = json.results ?? [];
     const seen = new Set<string>();
@@ -169,8 +264,10 @@ export async function fetchStateLegislatorsByLatLng(
 
     for (const p of raw) {
       const leg = normalizePerson(p);
-      if (!leg || seen.has(leg.id)) continue;
-      seen.add(leg.id);
+      if (!leg) continue;
+      const dedupeKey = `${leg.id}|${leg.chamberKey}|${leg.district}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
       legislators.push(leg);
     }
 

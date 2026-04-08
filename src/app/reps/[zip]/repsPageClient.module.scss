@@ -1,3 +1,83 @@
+.main {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.folderTabs {
+  position: fixed;
+  top: 0;
+  // left: clamp(0.35rem, 2vw, 1rem);
+  z-index: 200;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0;
+  pointer-events: auto;
+  transform: skewX(-15deg);
+}
+
+.levelButton {
+  position: relative;
+  appearance: none;
+  margin: 0 0 0 -6px;
+  padding: 0.4rem 1.05rem 0.48rem;
+  font: inherit;
+  font-size: clamp(0.68rem, 1.1vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(
+    180deg,
+    var(--blue-accent) 0%,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 100%
+  );
+  border-bottom: none;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.08),
+    2px 0 4px rgba(0, 0, 0, 0.06);
+  transition:
+    color 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+    background 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+    transform 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+    padding 0.2s cubic-bezier(0.215, 0.61, 0.355, 1),
+    z-index 0s;
+  z-index: 0;
+}
+
+.levelButton:first-child {
+  margin-left: 0;
+}
+
+.levelButton:hover:not(.levelButtonActive) {
+  color: white;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 0%,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 55%,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 100%
+  );
+}
+
+.levelButtonActive {
+  z-index: 2;
+  padding: 0.5rem 1.2rem 0.58rem;
+  color: white;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary-color) 72%, white 18%) 0%,
+    color-mix(in srgb, var(--primary-color) 72%, white 18%) 100%
+  );
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -2px 5px rgba(90, 77, 56, 0.06),
+    0 3px 8px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
 .headerSection {
   display: flex;
   flex-direction: column;
@@ -40,7 +120,8 @@
         font-size: var(--header-label-size);
         line-height: 1.1;
         font-weight: inherit;
-        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: font-size 0.2s
+          cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
 
       .addressText {
@@ -51,7 +132,8 @@
         line-height: 1;
         letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
         font-family: montserrat, sans-serif;
-        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transition:
+          font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
           letter-spacing 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
     }
@@ -73,7 +155,8 @@
         line-height: 1.15;
         font-weight: inherit;
         text-align: center;
-        transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: font-size 0.2s
+          cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
     }
   }
@@ -107,7 +190,8 @@
 
     .legend {
       background: #ffffff;
-      border: 1px solid color-mix(in srgb, var(--primary-color) 22%, transparent);
+      border: 1px solid
+        color-mix(in srgb, var(--primary-color) 22%, transparent);
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
       padding: 0.6rem;
       overflow: auto;
@@ -128,7 +212,39 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: color-mix(in srgb, var(--primary-color) 78%, transparent);
+      color: color-mix(
+        in srgb,
+        var(--primary-color) 78%,
+        transparent
+      );
+    }
+
+    .legendChamber {
+      margin: 0;
+
+      &:not(:first-of-type) {
+        margin-top: 0.55rem;
+        padding-top: 0.45rem;
+        border-top: 1px solid
+          color-mix(in srgb, var(--primary-color) 14%, transparent);
+      }
+    }
+
+    .legendChamberTitle {
+      margin: 0 0 0.3rem 0;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: color-mix(
+        in srgb,
+        var(--primary-color) 88%,
+        transparent
+      );
+    }
+
+    .legendChamber:first-of-type .legendChamberTitle {
+      margin-top: 0;
     }
 
     .legendList {
@@ -161,6 +277,12 @@
       font-weight: 600;
     }
 
+    .legendLastName {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
     @media (max-width: 768px) {
       .mapWithLegend {
         grid-template-columns: 1fr;
@@ -168,96 +290,4 @@
       }
     }
   }
-}
-
-.levelToggleSection {
-  width: min(70vw, 100%);
-  margin: 0.5rem auto 0;
-}
-
-.levelToggle {
-  display: inline-flex;
-  border: 2px solid var(--background-color);
-}
-
-.levelButton {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--background-color);
-  padding: 0.45rem 0.9rem;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.levelButtonActive {
-  background: var(--background-color);
-  color: var(--primary-color);
-}
-
-.stateSection {
-  width: 100vw;
-  background: var(--primary-color);
-  padding: 0.8rem 0 2rem;
-  box-sizing: border-box;
-}
-
-.stateHeading {
-  margin: 0;
-  padding: 0.65rem clamp(0.75rem, 3vw, 2rem);
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 0.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
-}
-
-.stateGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 0.8fr) auto;
-  column-gap: clamp(0.25rem, 0.8vw, 0.65rem);
-  width: 100%;
-  color: var(--background-color);
-}
-
-.stateEmpty {
-  margin: 0;
-  color: var(--background-color);
-  padding: 0.8rem clamp(0.75rem, 3vw, 2rem);
-}
-
-.stateHeader,
-.stateRow {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 0.6rem clamp(0.75rem, 3vw, 2rem);
-}
-
-.stateHeader {
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
-}
-
-.stateRow {
-  border-bottom: 2px solid var(--background-color);
-  font-size: 1rem;
-  line-height: 1.2;
-}
-
-.stateName {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-}
-
-.stateLink {
-  color: var(--background-color);
-  text-decoration: underline;
-  justify-self: end;
 }

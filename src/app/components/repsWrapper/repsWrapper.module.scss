@@ -72,6 +72,7 @@
     .namesContainer {
       --rep-meta-chamber-w: clamp(7rem, 12.5vw, 8.75rem);
       --rep-meta-district-w: clamp(5.25rem, 11vw, 7rem);
+      --rep-name-nav-row-min-h: calc(0.444 * 6.4rem + 4px);
 
       position: relative;
       width: 100%;
@@ -101,6 +102,20 @@
 
         .colValue {
           color: var(--background-color);
+        }
+      }
+
+      .repRosterDesktopOnly {
+        @media (max-width: 48rem) {
+          display: none !important;
+        }
+      }
+
+      .repNameNavCell.repRosterMobileOnly {
+        display: none !important;
+
+        @media (max-width: 48rem) {
+          display: flex !important;
         }
       }
 
@@ -144,15 +159,13 @@
         align-items: center;
       }
 
-      .repNameNavHeader .headerKey:nth-child(3),
-      .repNameNavHeader .headerKey:nth-child(4),
-      .repNameNavHeader .headerKey:nth-child(5) {
+      .repNameNavHeader .headerKeyMeta {
         align-self: center;
         text-align: center;
         justify-self: center;
       }
 
-      .repNameNavHeader > .headerKey:last-child {
+      .repNameNavHeader .headerKeyTrailDesktop {
         padding-right: clamp(0.75rem, 3vw, 2rem);
       }
 
@@ -161,7 +174,7 @@
       }
 
       .repNameNav {
-        cursor: pointer;
+        cursor: default;
         position: relative;
         z-index: 0;
         display: grid;
@@ -170,13 +183,8 @@
         align-items: stretch;
         width: 100%;
         box-sizing: border-box;
+        min-height: var(--rep-name-nav-row-min-h);
         border-bottom: 2px solid var(--background-color);
-        outline: none;
-
-        &:focus-visible {
-          outline: 2px solid var(--red-accent);
-          outline-offset: 4px;
-        }
       }
 
       .repNameNavHoverLift {
@@ -284,14 +292,90 @@
         color: var(--red-accent);
       }
 
-      /* Match .namesContainer font-size (6.4rem): meta line 1.2×0.3 + pad 0.28×0.3 + 2px borders */
       .repNameNav .repNameNavCell:nth-child(3) .colValue,
       .repNameNav .repNameNavCell:nth-child(4) .colValue,
       .repNameNav .repNameNavCell:nth-child(5) .colValue {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-height: calc(0.444 * 6.4rem + 4px);
+        min-height: var(--rep-name-nav-row-min-h);
+      }
+
+      .repNameNav .repNameNavCell:nth-child(3) .colValue {
+        font-size: 0.26em;
+        letter-spacing: -0.03em;
+      }
+
+      .repNameNavCellTrailDesktop {
+        padding-right: clamp(0.75rem, 3vw, 2rem);
+
+        @media (max-width: 48rem) {
+          padding-right: 0;
+        }
+      }
+
+      .repNameNavCellTrailMobile {
+        @media (min-width: 48.0625rem) {
+          padding-right: 0;
+        }
+
+        @media (max-width: 48rem) {
+          padding-right: clamp(0.75rem, 3vw, 2rem);
+        }
+      }
+
+      /* Mobile-only Call (pill) + Details (rectangle), matching desktop chamber/district shapes */
+      .repRowActionBase {
+        appearance: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+        min-height: var(--rep-name-nav-row-min-h);
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0.12em 0.42em 0.16em;
+        border: 2px solid rgba(255, 255, 255, 0.52);
+        background: transparent;
+        color: var(--background-color);
+        font-family: inherit;
+        font-size: 0.26em;
+        font-weight: 700;
+        font-style: normal;
+        letter-spacing: -0.03em;
+        text-transform: none;
+        text-decoration: none;
+        line-height: 1.2;
+        cursor: pointer;
+        transition:
+          background-color 200ms cubic-bezier(0.215, 0.61, 0.355, 1),
+          border-color 200ms cubic-bezier(0.215, 0.61, 0.355, 1),
+          opacity 200ms cubic-bezier(0.215, 0.61, 0.355, 1);
+
+        &:hover:not(:disabled) {
+          background-color: rgba(255, 255, 255, 0.12);
+          border-color: rgba(255, 255, 255, 0.72);
+        }
+
+        &:disabled {
+          opacity: 0.42;
+          cursor: not-allowed;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--red-accent);
+          outline-offset: 3px;
+        }
+      }
+
+      .repRowActionPill {
+        border-radius: 9999px;
+      }
+
+      .repRowActionRect {
+        border-radius: 0;
       }
 
       .repNameNavCell {
@@ -309,10 +393,6 @@
         padding-right: clamp(1rem, 4vw, 2.75rem);
       }
 
-      .repNameNav > .repNameNavCell:last-child {
-        padding-right: clamp(0.75rem, 3vw, 2rem);
-      }
-
       .colValue {
         font-size: 0.3em;
         font-weight: 700;
@@ -323,11 +403,6 @@
         word-break: break-word;
       }
 
-      .repNameNav .repNameNavCell:nth-child(3) .colValue {
-        font-size: 0.26em;
-        letter-spacing: -0.03em;
-      }
-
       .repNameNav > .repNameNavCell:first-child .colValue {
         font-size: 1em;
         font-weight: 1000;
@@ -336,9 +411,71 @@
         text-transform: uppercase;
         line-height: 1.05;
       }
+    }
 
+    @media (max-width: 48rem) {
+      .namesContainer {
+        font-size: clamp(3rem, 5vw + 2.25rem, 6.4rem);
+        --rep-name-nav-row-min-h: clamp(4.25rem, 12vw + 2.5rem, 5.5rem);
+      }
+
+      .namesContainer .names {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+
+      .namesContainer .repNameNavHeader {
+        display: none !important;
+      }
+
+      .namesContainer .repNameNav {
+        padding-block: 0.45rem;
+        row-gap: clamp(0.4rem, 2.5vw, 0.75rem);
+        align-items: start;
+      }
+
+      .namesContainer .repNameNav > .repNameNavCell:first-child {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: start;
+      }
+
+      .namesContainer .repNameNav > .repNameNavCell:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: start;
+      }
+
+      .namesContainer .repNameNavCellMobileActions {
+        grid-column: 1;
+        grid-row: 2;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        align-self: start;
+        gap: clamp(0.35rem, 2vw, 0.65rem);
+        padding-left: clamp(0.75rem, 3vw, 2rem);
+      }
+
+      .namesContainer .repNameNavCellMobileActions .repRowActionBase {
+        width: auto;
+        flex: 0 1 auto;
+        min-width: 0;
+        min-height: clamp(2.75rem, 8vw + 1.5rem, 3.5rem);
+      }
     }
   }
+  .rosterEmpty {
+    margin: 0;
+    padding: clamp(1.5rem, 4vw, 2.5rem) clamp(0.75rem, 3vw, 2rem);
+    color: var(--background-color);
+    font-family: montserrat, sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-weight: 600;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
   .images {
     display: grid;
     justify-content: center;

@@ -58,6 +58,8 @@ export type StateLegislator = {
   chamber: string;
   chamberKey: string;
   district: string;
+  /** ISO date string when available from OpenStates role metadata. */
+  term_end?: string;
   image_url: string;
   url: string;
   phone?: string;

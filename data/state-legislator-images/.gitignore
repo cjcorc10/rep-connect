@@ -1,0 +1,5 @@
+# Downloaded binaries (large)
+downloads/
+
+# Ephemeral SQL chunks for MCP/psql import
+sql-chunks/

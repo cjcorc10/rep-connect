@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "transform:legislators": "ts-node src/app/lib/scripts/transformLegislators.ts",
-    "seed": "ts-node src/app/lib/scripts/seedLegislators.ts"
+    "seed": "ts-node src/app/lib/scripts/seedLegislators.ts",
+    "state-leg-images:index": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/fetch-index.ts",
+    "state-leg-images:download": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/download-images.ts",
+    "state-leg-images:import-sql": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/import-from-jsonl.ts",
+    "state-leg-images:import-meta": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/import-download-meta.ts",
+    "state-leg-images:push-sql": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/push-index-sql.ts",
+    "state-leg-images:push-supabase": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/state-legislator-images/push-jsonl-rest.ts"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.0.2",
@@ -39,9 +45,11 @@
     "@tailwindcss/postcss": "^4",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
+    "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
+    "pg": "^8.14.1",
     "eslint-config-next": "15.4.3",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",

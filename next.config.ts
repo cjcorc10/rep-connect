@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* Maps JS needs a public env var; default to GOOGLE_API_KEY so one key works for Geocoding + Maps. */
@@ -12,12 +12,24 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'www.congress.gov',
+        protocol: "https",
+        hostname: "www.congress.gov",
       },
       {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org',
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      {
+        protocol: "https",
+        hostname: "*senate.texas.gov",
+      },
+      {
+        protocol: "https",
+        hostname: "*house.texas.gov",
+      },
+      {
+        protocol: "https",
+        hostname: "*.gov",
       },
     ],
   },

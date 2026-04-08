@@ -1,8 +1,11 @@
 @use "../../styles/typography" as *;
 
 .main {
+  /* Taller floor on narrow viewports so wrapped copy + button stay inside */
+  --refine-min-h: max(8rem, min(18rem, calc(14rem - 10vw)));
+
   width: 100%;
-  min-height: 8rem;
+  min-height: var(--refine-min-h);
   background-color: transparent;
   border-top: 2px solid color-mix(in srgb, var(--background-color) 45%, transparent);
   position: relative;
@@ -11,8 +14,7 @@
 
 .panel {
   width: 100%;
-  height: 100%;
-  min-height: 8rem;
+  min-height: var(--refine-min-h);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,6 +31,9 @@
   padding: 0.3rem 0;
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .contentWrapper,
@@ -48,12 +53,22 @@
 
 .contentWrapperIntro {
   align-items: center;
+  position: static;
+  inset: auto;
+  width: fit-content;
+  height: auto;
+  margin: 0 auto;
 }
 
 .message {
   margin: 0;
   text-align: center;
   max-width: 36rem;
+}
+
+.button p {
+  margin: 0;
+  line-height: 1;
 }
 
 .status {

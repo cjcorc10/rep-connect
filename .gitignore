@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Cursor MCP (local / machine-specific)
+.cursor/mcp.json
+.cursor/mcp*.json
+
+# Generated DB import (run locally; do not commit)
+/import-index.sql
+
+# SQL dumps, generated chunks, and migration files (keep out of remote)
+*.sql
