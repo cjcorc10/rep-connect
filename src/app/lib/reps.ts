@@ -12,11 +12,10 @@ import { getHouseReps, getSenators } from "./db";
 import { fetchStateLegislatorsByLatLng } from "./openstates";
 
 /** Server-only: fetch reps by address. Returns null when address cannot be resolved (404). */
-export async function getRepsByAddress(
-  address: string,
-  zipFromRoute?: string
+export async function getRepsByLocationQuery(
+  zip: string
 ): Promise<RepsByAddressPayload | null> {
-  const geo = await getCoordinates(address);
+  const geo = await getCoordinates(zip);
   if (
     !geo ||
     geo.status !== "OK" ||
@@ -72,7 +71,7 @@ export async function getRepsByAddress(
   const cityStateLabel = formatCityStateLabel(
     place,
     state,
-    zipFromRoute ?? address
+    zip.toString()
   );
 
   return {

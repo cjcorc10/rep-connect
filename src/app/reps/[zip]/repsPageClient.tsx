@@ -9,8 +9,6 @@ import type {
   DistrictMapFeatureCollection,
   Rep,
   RepsData,
-  StateDistrict,
-  StateLegislator,
 } from "@/app/lib/definitions";
 import {
   districtFeatureName,
@@ -25,64 +23,12 @@ import { useEffect, useMemo, useState } from "react";
 import styles from "./repsPageClient.module.scss";
 import Refine from "@/app/components/refine/refine";
 import { stateLegislatorsToRosterRows } from "@/app/lib/repRoster";
-
-/** Strip leading zeros from numeric state district ids (e.g. "025" → "25"). */
-function formatStateDistrictDisplay(district: string): string {
-  const t = district.trim();
-  if (!t) return t;
-  if (/^\d+$/.test(t)) {
-    return String(parseInt(t, 10));
-  }
-  return t;
-}
-
-function districtsMatch(a: string, b: string): boolean {
-  const x = a.trim();
-  const y = b.trim();
-  if (x === y) return true;
-  if (/^\d+$/.test(x) && /^\d+$/.test(y)) {
-    return parseInt(x, 10) === parseInt(y, 10);
-  }
-  return false;
-}
-
-function lastNameFromFullName(name: string): string {
-  const t = name.trim();
-  if (!t) return "";
-  const parts = t.split(/\s+/).filter(Boolean);
-  return parts.length ? parts[parts.length - 1]! : "";
-}
-
-function federalHouseLastName(houseReps: Rep[], district: string): string {
-  const rep = houseReps.find((h) =>
-    districtsMatch(String(h.district), String(district)),
-  );
-  return rep?.last_name?.trim() ?? "";
-}
-
-function stateLegislatorLastName(
-  members: StateLegislator[],
-  chamberKey: StateLegislator["chamberKey"],
-  district: string,
-): string {
-  const m = members.find(
-    (x) => x.chamberKey === chamberKey && districtsMatch(x.district, district),
-  );
-  return m ? lastNameFromFullName(m.full_name) : "";
-}
-
-/** ArcGIS envelope can return many districts; keep rows that match a people.geo legislator. */
-function stateDistrictHasLegislator(
-  d: StateDistrict,
-  legislators: StateLegislator[],
-): boolean {
-  if (!legislators.length) return true;
-  return legislators.some(
-    (m) =>
-      m.chamberKey === d.chamberKey &&
-      districtsMatch(m.district, d.district),
-  );
-}
+import {
+  federalHouseLastName,
+  formatStateDistrictDisplay,
+  stateDistrictHasLegislator,
+  stateLegislatorLastName,
+} from "./repsPageClient.helpers";
 
 type Props = {
   zipFromRoute: string;
@@ -95,6 +41,7 @@ type Props = {
   };
 };
 
+// Main client page: controls level toggle, map/legend, and roster rendering.
 export default function RepsPageClient({
   zipFromRoute,
   data,
@@ -114,6 +61,7 @@ export default function RepsPageClient({
   const [currentMapFallback, setCurrentMapFallback] =
     useState(mapFallback);
 
+  // Sync local UI state when fresh server props arrive.
   useEffect(() => {
     setCurrentData(data);
     setCurrentCityStateLabel(cityStateLabel);
@@ -121,6 +69,7 @@ export default function RepsPageClient({
     setCurrentMapFallback(mapFallback);
   }, [data, cityStateLabel, districtGeoJson, mapFallback]);
 
+  // Keep rep detail store in sync with current federal reps.
   useEffect(() => {
     setReps(
       currentData.senateReps.concat(currentData.houseReps) as Rep[]
@@ -130,6 +79,7 @@ export default function RepsPageClient({
   const mapsApiKey =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
+  // Build a stable style-rank lookup for federal district labels.
   const districtRankByLabel = useMemo(() => {
     const rankByLabel = new Map<string, number>();
     if (!currentDistrictGeoJson) return rankByLabel;
@@ -154,6 +104,7 @@ export default function RepsPageClient({
     return rankByLabel;
   }, [currentDistrictGeoJson]);
 
+  // Assign map-derived colors per federal district for table display.
   const districtColorByDistrict = useMemo(() => {
     const out: Record<string, { fill: string; stroke: string }> = {};
     currentData.districts.forEach((district, i) => {
@@ -163,6 +114,7 @@ export default function RepsPageClient({
     return out;
   }, [currentData.districts, districtRankByLabel]);
 
+  // Filter state districts to the ones that match returned legislators.
   const alignedStateDistricts = useMemo(() => {
     const all = currentData.stateDistricts;
     const legs = currentData.stateLegislators;
@@ -171,6 +123,7 @@ export default function RepsPageClient({
     return matched.length > 0 ? matched : all;
   }, [currentData.stateDistricts, currentData.stateLegislators]);
 
+  // Filter state district geojson to keep map and legend in sync.
   const alignedStateDistrictGeoJson = useMemo(() => {
     const geo = currentData.stateDistrictGeoJson;
     if (!geo?.features?.length) return geo;
@@ -189,6 +142,7 @@ export default function RepsPageClient({
     alignedStateDistricts,
   ]);
 
+  // Build style-rank lookup for state map keys.
   const stateDistrictRankByMapKey = useMemo(() => {
     const rankByKey = new Map<string, number>();
     const stateGeo = alignedStateDistrictGeoJson;
@@ -208,6 +162,7 @@ export default function RepsPageClient({
     return rankByKey;
   }, [alignedStateDistrictGeoJson]);
 
+  // Split state districts by chamber for grouped legend sections.
   const stateSenateDistricts = useMemo(
     () =>
       alignedStateDistricts.filter((d) => d.chamberKey === "upper"),
@@ -225,6 +180,7 @@ export default function RepsPageClient({
       ? alignedStateDistrictGeoJson
       : currentDistrictGeoJson;
 
+  // Convert state legislators to shared roster-row shape.
   const stateRosterRows = useMemo(
     () => stateLegislatorsToRosterRows(currentData.stateLegislators),
     [currentData.stateLegislators],
@@ -238,6 +194,7 @@ export default function RepsPageClient({
           styles.main,
         )}
       >
+        {/* Federal/state level tabs */}
         <div
           className={styles.folderTabs}
           role="tablist"
@@ -268,6 +225,7 @@ export default function RepsPageClient({
             State
           </button>
         </div>
+        {/* Header, map canvas, legend, and refine controls */}
         <section className={styles.headerSection}>
           <header className={styles.header}>
             <div className={styles.addressContainer}>
@@ -448,6 +406,7 @@ export default function RepsPageClient({
         </section>
       </main>
       <Banner />
+      {/* Federal detail drawer path or state roster path */}
       <div>
         {activeLevel === "federal" ? (
           <RepsWrapper

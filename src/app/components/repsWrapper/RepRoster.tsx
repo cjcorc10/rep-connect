@@ -2,10 +2,19 @@
 
 import clsx from "clsx";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { RepRosterRow } from "@/app/lib/repRoster";
 import { useWikimediaPortraitFallback } from "@/app/lib/useWikimediaPortraitFallback";
 import styles from "./repsWrapper.module.scss";
+
+const prefetchedPortraitUrls = new Set<string>();
+
+function resolveHoverPortraitUrl(row: RepRosterRow): string {
+  if (row.portraitProxyOcdId) {
+    return `/api/state-legislator-portrait?ocd=${encodeURIComponent(row.portraitProxyOcdId)}`;
+  }
+  return row.portraitSrc ?? row.imageUrl ?? "";
+}
 
 function HoverPortrait({ imageUrl }: { imageUrl: string }) {
   const { unoptimized, onError, remountKey } =
@@ -52,6 +61,9 @@ function RosterRow({
   const isStateRow = Boolean(row.portraitProxyOcdId);
   const detailsDisabled =
     !onRowDetails || (isStateRow && !row.externalUrl?.trim());
+  const openDetails = () => {
+    if (!detailsDisabled) onRowDetails?.(row);
+  };
 
   return (
     <div
@@ -66,6 +78,17 @@ function RosterRow({
         const next = e.relatedTarget;
         if (next && e.currentTarget.contains(next as Node)) return;
         onRowMouseLeave();
+      }}
+      onClick={(e) => {
+        const target = e.target as HTMLElement | null;
+        if (
+          target?.closest(
+            "a,button,input,textarea,select,[role='button']",
+          )
+        ) {
+          return;
+        }
+        openDetails();
       }}
     >
       <div className={styles.repNameNavCell}>
@@ -149,9 +172,7 @@ function RosterRow({
           className={clsx(styles.repRowActionBase, styles.repRowActionRect)}
           disabled={detailsDisabled}
           aria-label={`Details for ${row.fullName}`}
-          onClick={() => {
-            if (!detailsDisabled) onRowDetails?.(row);
-          }}
+          onClick={openDetails}
         >
           Details
         </button>
@@ -172,6 +193,17 @@ export default function RepRoster({
   emptyMessage,
 }: RepRosterProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  useEffect(() => {
+    rows.forEach((row) => {
+      const imageUrl = resolveHoverPortraitUrl(row).trim();
+      if (!imageUrl || prefetchedPortraitUrls.has(imageUrl)) return;
+      prefetchedPortraitUrls.add(imageUrl);
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = imageUrl;
+    });
+  }, [rows]);
 
   if (!rows.length && emptyMessage) {
     return (
@@ -236,11 +268,7 @@ export default function RepRoster({
                 isActiveHoverRow={hoveredId === row.id}
                 onRowMouseEnter={() => setHoveredId(row.id)}
                 onRowMouseLeave={() => setHoveredId(null)}
-                hoverPortraitUrl={
-                  row.portraitProxyOcdId
-                    ? `/api/state-legislator-portrait?ocd=${encodeURIComponent(row.portraitProxyOcdId)}`
-                    : (row.portraitSrc ?? row.imageUrl ?? "")
-                }
+                hoverPortraitUrl={resolveHoverPortraitUrl(row)}
                 portraitAlignBottom={i >= Math.ceil(rows.length / 2)}
               />
             ))}

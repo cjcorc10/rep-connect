@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getRepsByAddress } from "@/app/lib/reps";
+import { getRepsByLocationQuery } from "@/app/lib/reps";
 import RepsPageClient from "@/app/reps/[zip]/repsPageClient";
 
 type Props = {
@@ -9,14 +9,9 @@ type Props = {
   }>;
 };
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page({ params }: Props) {
   const { zip } = await params;
-  const query = await searchParams;
-  const street =
-    typeof query.street === "string" ? query.street : undefined;
-  const address = street ? `${street}, ${zip}` : zip;
-
-  const payload = await getRepsByAddress(address, zip);
+  const payload = await getRepsByLocationQuery(zip);
   if (!payload) notFound();
 
   return (
