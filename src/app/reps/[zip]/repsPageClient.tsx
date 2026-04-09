@@ -8,6 +8,7 @@ import type {
   Coordinates,
   DistrictMapFeatureCollection,
   Rep,
+  RepsByAddressPayload,
   RepsData,
 } from "@/app/lib/definitions";
 import {
@@ -31,24 +32,16 @@ import {
 } from "./repsPageClient.helpers";
 
 type Props = {
-  zipFromRoute: string;
-  data: RepsData;
-  cityStateLabel: string;
-  districtGeoJson: DistrictMapFeatureCollection | null;
-  mapFallback: {
-    bounds?: Coordinates;
-    location?: { lat: number; lng: number };
-  };
+  zip: string;
+  payload: RepsByAddressPayload;
 };
 
 // Main client page: controls level toggle, map/legend, and roster rendering.
 export default function RepsPageClient({
-  zipFromRoute,
-  data,
-  cityStateLabel,
-  districtGeoJson,
-  mapFallback,
+  zip,
+  payload,
 }: Props) {
+  const { data, cityStateLabel, districtGeoJson, mapFallback } = payload;
   const { setReps } = useRepStore();
   const [activeLevel, setActiveLevel] = useState<"federal" | "state">(
     "federal",
@@ -230,7 +223,7 @@ export default function RepsPageClient({
           <header className={styles.header}>
             <div className={styles.addressContainer}>
               <h1>Showing results for</h1>
-              <Address address={zipFromRoute} compact />
+              <Address address={zip} compact />
             </div>
             <div className={styles.cityContainer}>
               <h1>{currentCityStateLabel}</h1>
