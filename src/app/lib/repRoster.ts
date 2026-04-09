@@ -1,10 +1,13 @@
 import type { Rep, StateLegislator } from "./definitions";
+import { buildRepImageApiUrl } from "./repImageUrl";
 
 export type RepRosterRow = {
   id: string;
   shortName: string;
   fullName: string;
   imageUrl: string;
+  /** Federal: `/api/rep-image?…` for next/image src (proxied image). */
+  portraitSrc?: string;
   portraitProxyOcdId?: string;
   phone?: string;
   externalUrl?: string;
@@ -72,6 +75,7 @@ export function repToRosterRow(
     shortName: `${rep.first_name[0]}.${rep.last_name}`,
     fullName: rep.full_name,
     imageUrl: rep.image_url?.trim() ?? "",
+    portraitSrc: buildRepImageApiUrl(rep),
     phone: rep.phone?.trim() || undefined,
     chamber,
     district,

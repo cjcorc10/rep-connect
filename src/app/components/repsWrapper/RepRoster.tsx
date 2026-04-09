@@ -162,14 +162,12 @@ function RosterRow({
 
 export type RepRosterProps = {
   rows: RepRosterRow[];
-  portraitByRowId?: Record<string, string>;
   onRowDetails?: (row: RepRosterRow) => void;
   emptyMessage?: string;
 };
 
 export default function RepRoster({
   rows,
-  portraitByRowId = {},
   onRowDetails,
   emptyMessage,
 }: RepRosterProps) {
@@ -241,7 +239,7 @@ export default function RepRoster({
                 hoverPortraitUrl={
                   row.portraitProxyOcdId
                     ? `/api/state-legislator-portrait?ocd=${encodeURIComponent(row.portraitProxyOcdId)}`
-                    : (portraitByRowId[row.id] ?? row.imageUrl ?? "")
+                    : (row.portraitSrc ?? row.imageUrl ?? "")
                 }
                 portraitAlignBottom={i >= Math.ceil(rows.length / 2)}
               />

@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { fetchWikipediaBestImageUrl } from "@/app/lib/wikipedia";
 
 /**
- * 
  * @api {get} /rep-image Image-Proxy
- * @description Orchestrates a fallback strategy for member images prioritizing
- * wikipedia (hi-res) over congress.gov.
- * @access public
+ * @description Wikipedia (hi-res) → Congress.gov → optional fallback URL.
+ * Tries each candidate until one returns a successful image response.
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,42 +15,69 @@ export async function GET(request: Request) {
   if (!wikipediaId && !bioguideId) {
     return NextResponse.json(
       { error: "wikipedia_id or bioguide_id required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
-  let requestURL: string | null = null;
-  // Try Wikipedia first (original / page media / thumbnail)
-  if (wikipediaId) requestURL = await fetchWikipediaBestImageUrl(wikipediaId);
+  const candidates: string[] = [];
 
-  // Fallback to Congress.gov if bioguide_id is available
-  if (!requestURL && bioguideId) {
-    const congressImageUrl = `https://www.congress.gov/img/member/${bioguideId.toLowerCase()}.jpg`;
-    
-    // Verify the image exists by checking the response
-    const checkRes = await fetch(congressImageUrl, { method: "HEAD" });
-    if (checkRes.ok) requestURL = congressImageUrl
+  if (wikipediaId) {
+    const wiki = await fetchWikipediaBestImageUrl(wikipediaId);
+    if (wiki) candidates.push(wiki);
   }
-  // use fallback if provided
-  if (!requestURL && fallbackImage) requestURL = fallbackImage
-  if (!requestURL) return NextResponse.json({ error: "No image found" }, { status: 404 })
 
+  if (bioguideId) {
+    candidates.push(
+      `https://www.congress.gov/img/member/${bioguideId}.jpg`,
+    );
+    candidates.push(
+      `https://www.congress.gov/img/member/${bioguideId}_200.jpg`,
+    );
+  }
 
-  try {
-    const response = await fetch(requestURL, {
-      next: { revalidate: 864000}
-    })
+  if (fallbackImage) candidates.push(fallbackImage);
 
-    if (!response.ok) throw new Error("Upstream failure");
+  if (candidates.length === 0)
+    return NextResponse.json(
+      { error: "No image found" },
+      { status: 404 },
+    );
 
-    return new NextResponse(response.body, {
-      headers: {
-        "Content-Type": response.headers.get("Content-Type") || "image/jpeg",
-        "Cache-Control": "public, max-age=864000, s-maxage=864000",
+  let lastStatus = 0;
+  for (const imageUrl of candidates) {
+    try {
+      console.log("fetching image from:", imageUrl);
+      const response = await fetch(imageUrl, {
+        next: { revalidate: 864000 },
+      });
+
+      if (!response.ok) {
+        lastStatus = response.status;
+        continue;
       }
-    });
-  } catch (error) {
-    console.error("Proxy error: ", error)
-    return new NextResponse("Error fetching image", {status: 502})
+
+      const contentType = response.headers.get("Content-Type") || "";
+      if (contentType && !contentType.startsWith("image/")) {
+        continue;
+      }
+
+      return new NextResponse(response.body, {
+        headers: {
+          "Content-Type": contentType || "image/jpeg",
+          "Cache-Control": "public, max-age=864000, s-maxage=864000",
+        },
+      });
+    } catch (err) {
+      console.error("rep-image fetch attempt failed:", imageUrl, err);
+    }
   }
+
+  console.error(
+    "rep-image: all candidates failed; last upstream status:",
+    lastStatus,
+  );
+  return NextResponse.json(
+    { error: "No image could be loaded" },
+    { status: 502 },
+  );
 }

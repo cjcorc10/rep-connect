@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import RepDetailDrawer from "../repDetailDrawer/repDetailDrawer";
-import { resolveRepPortraitUrl } from "../repCard/useRepImage";
 import RepRoster from "./RepRoster";
 import type { RepsData } from "@/app/lib/definitions";
 import { buildFederalRosterRows } from "@/app/lib/repRoster";
@@ -21,30 +20,11 @@ export default function RepsWrapper({
   const { detailBioguideId, closeRepDetail, openRepDetail } =
     useRepStore();
 
-  const reps = repsData.senateReps.concat(repsData.houseReps)
-  const rows = buildFederalRosterRows(repsData, districtColorByDistrict)
-
-
-  const [portraitByRowId, setPortraitByRowId] = useState<
-    Record<string, string>
-  >({});
-
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all(
-      reps.map((rep) =>
-        resolveRepPortraitUrl(rep).then(
-          (url) => [rep.bioguide_id, url] as const,
-        ),
-      ),
-    ).then((entries) => {
-      if (cancelled) return;
-      setPortraitByRowId(Object.fromEntries(entries));
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [reps]);
+  const reps = repsData.senateReps.concat(repsData.houseReps);
+  const rows = buildFederalRosterRows(
+    repsData,
+    districtColorByDistrict,
+  );
 
   const detailRep =
     detailBioguideId === null
@@ -56,7 +36,6 @@ export default function RepsWrapper({
     <>
       <RepRoster
         rows={rows}
-        portraitByRowId={portraitByRowId}
         onRowDetails={(row) => {
           openRepDetail(row.id);
         }}
