@@ -15,8 +15,8 @@ export function districtsMatch(a: string, b: string): boolean {
   if (x === y) return true;
   const xNum = Number(x);
   const yNum = Number(y);
-  const isXInt = Number.isInteger(xNum) && /^d+$/.test(x);
-  const isYInt = Number.isInteger(yNum) && /^d+$/.test(y);
+  const isXInt = Number.isInteger(xNum) && /^\d+$/.test(x);
+  const isYInt = Number.isInteger(yNum) && /^\d+$/.test(y);
   return isXInt && isYInt && xNum === yNum;
 }
 
