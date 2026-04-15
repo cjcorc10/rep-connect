@@ -71,6 +71,8 @@ export default function RepsPageClient({
 
   const mapsApiKey =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
+  const mapsMapId =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID ?? "";
 
   // Build a stable style-rank lookup for federal district labels.
   const districtRankByLabel = useMemo(() => {
@@ -234,6 +236,7 @@ export default function RepsPageClient({
               <div className={styles.mapCanvas}>
                 <DistrictMap
                   apiKey={mapsApiKey}
+                  mapId={mapsMapId}
                   districtGeoJson={activeDistrictGeoJson}
                   mapFallback={currentMapFallback}
                 />

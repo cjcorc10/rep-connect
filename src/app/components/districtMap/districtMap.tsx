@@ -18,12 +18,18 @@ type MapFallback = {
 
 type Props = {
   apiKey: string;
+  /**
+   * Optional Google Cloud map ID. When set, district pins use {@link google.maps.marker.AdvancedMarkerElement}.
+   * When omitted, pins use legacy {@link google.maps.Marker} (no extra console setup).
+   */
+  mapId?: string;
   districtGeoJson: DistrictMapFeatureCollection | null;
   mapFallback: MapFallback;
 };
 
 export default function DistrictMap({
   apiKey,
+  mapId = "",
   districtGeoJson,
   mapFallback,
 }: Props) {
@@ -39,7 +45,9 @@ export default function DistrictMap({
     if (!el || !apiKey) return;
 
     let cancelled = false;
-    const markers: google.maps.Marker[] = [];
+    const advancedMarkers: google.maps.marker.AdvancedMarkerElement[] =
+      [];
+    const legacyMarkers: google.maps.Marker[] = [];
 
     setOptions({ key: apiKey, v: "weekly" });
 
@@ -47,12 +55,18 @@ export default function DistrictMap({
       await importLibrary("maps");
       if (cancelled || !containerRef.current) return;
 
-      const map = new google.maps.Map(containerRef.current, {
+      const trimmedMapId = mapId.trim();
+      const mapOptions: google.maps.MapOptions = {
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: true,
         disableDefaultUI: false,
-      });
+      };
+      if (trimmedMapId) {
+        mapOptions.mapId = trimmedMapId;
+      }
+
+      const map = new google.maps.Map(containerRef.current, mapOptions);
 
       const hasFeatures =
         districtGeoJson &&
@@ -96,49 +110,94 @@ export default function DistrictMap({
           });
         });
 
-        const markerPlaced = new Set<string>();
-        map.data.forEach((feature) => {
-          const mapKey = String(feature.getProperty("_mapKey") ?? "");
-          if (!mapKey || markerPlaced.has(mapKey)) return;
-          markerPlaced.add(mapKey);
+        if (trimmedMapId) {
+          const { AdvancedMarkerElement, PinElement } =
+            (await importLibrary(
+              "marker",
+            )) as google.maps.MarkerLibrary;
 
-          const fb = new google.maps.LatLngBounds();
-          feature.getGeometry()?.forEachLatLng((latlng) => {
-            fb.extend(latlng);
-          });
-          if (fb.isEmpty()) return;
+          const markerPlaced = new Set<string>();
+          map.data.forEach((feature) => {
+            const mapKey = String(feature.getProperty("_mapKey") ?? "");
+            if (!mapKey || markerPlaced.has(mapKey)) return;
+            markerPlaced.add(mapKey);
 
-          const rank = styleRank.has(mapKey)
-            ? styleRank.get(mapKey)!
-            : 0;
-          const { stroke, fill } = paletteForDistrictRank(rank);
-          const labelNum = districtNumberForMarker(
-            feature.getProperty("name"),
-            rank
-          );
+            const fb = new google.maps.LatLngBounds();
+            feature.getGeometry()?.forEachLatLng((latlng) => {
+              fb.extend(latlng);
+            });
+            if (fb.isEmpty()) return;
 
-          markers.push(
-            new google.maps.Marker({
+            const rank = styleRank.has(mapKey)
+              ? styleRank.get(mapKey)!
+              : 0;
+            const { stroke, fill } = paletteForDistrictRank(rank);
+            const labelNum = districtNumberForMarker(
+              feature.getProperty("name"),
+              rank
+            );
+
+            const pin = new PinElement({
+              background: fill,
+              borderColor: stroke,
+              glyph: labelNum,
+              glyphColor: "#ffffff",
+              scale: 1.05,
+            });
+
+            const marker = new AdvancedMarkerElement({
               map,
               position: fb.getCenter(),
+              content: pin.element,
               zIndex: 900 + rank,
-              label: {
-                text: labelNum,
-                color: "#ffffff",
-                fontSize: "11px",
-                fontWeight: "bold",
-              },
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 15,
-                fillColor: fill,
-                fillOpacity: 1,
-                strokeColor: stroke,
-                strokeWeight: 2,
-              },
-            })
-          );
-        });
+            });
+            advancedMarkers.push(marker);
+          });
+        } else {
+          const markerPlaced = new Set<string>();
+          map.data.forEach((feature) => {
+            const mapKey = String(feature.getProperty("_mapKey") ?? "");
+            if (!mapKey || markerPlaced.has(mapKey)) return;
+            markerPlaced.add(mapKey);
+
+            const fb = new google.maps.LatLngBounds();
+            feature.getGeometry()?.forEachLatLng((latlng) => {
+              fb.extend(latlng);
+            });
+            if (fb.isEmpty()) return;
+
+            const rank = styleRank.has(mapKey)
+              ? styleRank.get(mapKey)!
+              : 0;
+            const { stroke, fill } = paletteForDistrictRank(rank);
+            const labelNum = districtNumberForMarker(
+              feature.getProperty("name"),
+              rank
+            );
+
+            legacyMarkers.push(
+              new google.maps.Marker({
+                map,
+                position: fb.getCenter(),
+                zIndex: 900 + rank,
+                label: {
+                  text: labelNum,
+                  color: "#ffffff",
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                },
+                icon: {
+                  path: google.maps.SymbolPath.CIRCLE,
+                  scale: 15,
+                  fillColor: fill,
+                  fillOpacity: 1,
+                  strokeColor: stroke,
+                  strokeWeight: 2,
+                },
+              }),
+            );
+          });
+        }
 
         if (!bounds.isEmpty()) {
           map.fitBounds(bounds, 28);
@@ -159,11 +218,15 @@ export default function DistrictMap({
 
     return () => {
       cancelled = true;
-      markers.forEach((m) => m.setMap(null));
+      advancedMarkers.forEach((m) => {
+        m.map = null;
+      });
+      legacyMarkers.forEach((m) => m.setMap(null));
       el.replaceChildren();
     };
   }, [
     apiKey,
+    mapId,
     geoKey,
     fallbackKey,
     districtGeoJson,
