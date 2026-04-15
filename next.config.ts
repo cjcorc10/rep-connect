@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ??
       process.env.GOOGLE_API_KEY ??
       "",
+    /* Required for AdvancedMarkerElement (district number pins). Create in Google Cloud → Map Management. */
+    NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID ?? "",
   },
 
   images: {
