@@ -1,10 +1,21 @@
 import type { DistrictMapFeatureCollection } from "./definitions";
 
-/** Stroke + fill pairs tuned for contrast on default map tiles. */
-export const DISTRICT_PALETTE: ReadonlyArray<{
+/** One district’s map colors (outline + fill). */
+export type DistrictSwatch = {
   stroke: string;
   fill: string;
-}> = [
+};
+
+/**
+ * For each House district number (string key), the swatch used on the map and roster.
+ * (Senate rows do not use this lookup.)
+ */
+export type FederalHouseColorsByDistrict = {
+  [district: string]: DistrictSwatch;
+};
+
+/** Stroke + fill pairs tuned for contrast on default map tiles. */
+export const DISTRICT_PALETTE: ReadonlyArray<DistrictSwatch> = [
   { stroke: "#1d4ed8", fill: "#3b82f6" },
   { stroke: "#b45309", fill: "#f59e0b" },
   { stroke: "#047857", fill: "#34d399" },
@@ -67,10 +78,23 @@ export function districtNumberForMarker(
   return String(rankZeroBased + 1);
 }
 
-export function paletteForDistrictRank(rank: number): {
-  stroke: string;
-  fill: string;
-} {
+export function paletteForDistrictRank(rank: number): DistrictSwatch {
   const slot = rank % DISTRICT_PALETTE.length;
   return DISTRICT_PALETTE[slot]!;
+}
+
+/**
+ * Builds “district number → colors” so the House roster row can use the same swatch as the map legend.
+ */
+export function federalHouseColorsForDistricts(
+  districts: (string | number)[],
+  rankByDistrictLabel: Map<string, number>,
+): FederalHouseColorsByDistrict {
+  const colors: FederalHouseColorsByDistrict = {};
+  districts.forEach((district, index) => {
+    const key = String(district);
+    const rank = rankByDistrictLabel.get(key) ?? index;
+    colors[key] = paletteForDistrictRank(rank);
+  });
+  return colors;
 }

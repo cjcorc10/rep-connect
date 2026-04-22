@@ -1,0 +1,19 @@
+/*
+ * Header-only loading: repsPageClient `.headerSection` uses justify-content: center.
+ * With no map below, that vertically centers the header; loaded UI keeps the header
+ * at the top of the centered stack. Align to start so it doesn’t jump.
+ */
+.headerSectionAlignStart {
+  justify-content: flex-start !important;
+}
+
+/*
+ * Hide label/zip text while keeping typography-driven line boxes. No animation —
+ * color comes from Address / CityStateLabel containers.
+ */
+.placeholderText {
+  color: transparent !important;
+  caret-color: transparent;
+  user-select: none;
+  pointer-events: none;
+}

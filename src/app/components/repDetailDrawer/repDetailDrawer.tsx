@@ -8,38 +8,30 @@ import type { Rep } from "@/app/lib/definitions";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import styles from "./repDetailDrawer.module.scss";
 
-type ExternalLinkItem = { label: string; href: string };
+type ExternalLinkItem = { href: string; text: string };
 
 function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
   const links: ExternalLinkItem[] = [];
 
   if (rep.opensecrets_id?.trim()) {
     links.push({
-      label: "OpenSecrets",
       href: `https://www.opensecrets.org/members-of-congress/summary?cid=${encodeURIComponent(rep.opensecrets_id.trim())}`,
-    });
-  }
-
-  const twitterHandle = rep.twitter?.trim().replace(/^@/, "");
-  if (twitterHandle) {
-    links.push({
-      label: "Twitter",
-      href: `https://twitter.com/${encodeURIComponent(twitterHandle)}`,
+      text: "Click here to see who has financed this campaign (OpenSecrets).",
     });
   }
 
   if (rep.govtrack_id != null) {
     links.push({
-      label: "GovTrack",
       href: `https://www.govtrack.us/congress/members/${rep.govtrack_id}`,
+      text: "Click here to track bills, votes, and sponsorship on GovTrack.",
     });
   }
 
   if (rep.ballotpedia_id?.trim()) {
     const slug = rep.ballotpedia_id.trim().replace(/\s+/g, "_");
     links.push({
-      label: "Ballotpedia",
       href: `https://ballotpedia.org/${slug}`,
+      text: "Click here to read their background and positions on Ballotpedia.",
     });
   }
 
@@ -130,8 +122,7 @@ export default function RepDetailDrawer({
               <Dialog.Close
                 className={styles.closeButton}
                 aria-label="Close details"
-                type="button"  // refs for containers of elements
-
+                type="button"
               >
                 <X size={22} strokeWidth={2} aria-hidden />
               </Dialog.Close>
@@ -150,15 +141,15 @@ export default function RepDetailDrawer({
                     Links
                   </h2>
                   <ul className={styles.linksList}>
-                    {externalLinks.map(({ label, href }) => (
-                      <li key={`${label}-${href}`} className={styles.linksItem}>
+                    {externalLinks.map(({ href, text }) => (
+                      <li key={href} className={styles.linksItem}>
                         <a
                           href={href}
                           className={styles.externalLink}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {label}
+                          {text}
                         </a>
                       </li>
                     ))}

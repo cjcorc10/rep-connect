@@ -75,11 +75,7 @@ export async function POST(req: Request) {
     const houseReps = houseRepsResult || [];
 
     const place = parseGeocodePlace(geo.results[0]);
-    const cityStateLabel = formatCityStateLabel(
-      place,
-      state,
-      address
-    );
+    const cityStateLabel = formatCityStateLabel(place, state);
 
     return NextResponse.json({
       state,

@@ -1,20 +1,59 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { motion } from "framer-motion";
 import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./searchForm.module.scss";
 
+const FormSchema = z.object({
+  zip: z
+    .string()
+    .trim()
+    .regex(/^\d{5}(-\d{4})?$/)
+    .min(5),
+});
+
+const PREFETCH_DEBOUNCE_MS = 300;
+
 export default function SearchForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const FormSchema = z.object({
-    zip: z
-      .string()
-      .regex(/^\d{5}(-\d{4})?$/)
-      .min(5),
-  });
+  const prefetchTimerRef = useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
+  const lastPrefetchedZipRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (prefetchTimerRef.current) {
+        clearTimeout(prefetchTimerRef.current);
+      }
+    };
+  }, []);
+
+  function prefetchIfValidZip(raw: string) {
+    const parsed = FormSchema.safeParse({ zip: raw });
+    if (!parsed.success) {
+      lastPrefetchedZipRef.current = null;
+      return;
+    }
+    const { zip } = parsed.data;
+    if (lastPrefetchedZipRef.current === zip) return;
+    lastPrefetchedZipRef.current = zip;
+    router.prefetch(`/reps/${zip}`);
+  }
+
+  const onZipChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (prefetchTimerRef.current) {
+      clearTimeout(prefetchTimerRef.current);
+    }
+    prefetchTimerRef.current = setTimeout(() => {
+      prefetchTimerRef.current = null;
+      prefetchIfValidZip(value);
+    }, PREFETCH_DEBOUNCE_MS);
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,6 +68,7 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
+    prefetchIfValidZip(zip);
     router.push(`/reps/${zip}`);
   };
 
@@ -49,6 +89,7 @@ export default function SearchForm() {
             required
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
+            onChange={onZipChange}
           />
           <BeautifulButton
             content="SEARCH"

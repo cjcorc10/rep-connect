@@ -31,7 +31,7 @@ export default function Home() {
           style={{ objectFit: "cover" }}
         />
       </div>
-      <div ref={navItemsRef} className={styles.navBar}>
+      {/* <div ref={navItemsRef} className={styles.navBar}>
         <div className={styles.navList}>
           <Link className={styles.navLink} href="/">
             Home
@@ -42,8 +42,8 @@ export default function Home() {
             About
           </Link>
         </div>
-      </div>
-      <div ref={titleRef} className={styles.logo}>
+      </div> */}
+      {/* <div ref={titleRef} className={styles.logo}>
         <Image
           ref={logoRef}
           src="/images/logo.svg"
@@ -51,7 +51,7 @@ export default function Home() {
           fill
           style={{ objectFit: "contain" }}
         />
-      </div>
+      </div> */}
       <div className={styles.heroContainer}>
         <h1 className={styles.heroTitle}>
           Get loud, contact your representatives today.

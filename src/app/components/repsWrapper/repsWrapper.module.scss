@@ -288,7 +288,9 @@
         padding: 0.12em 0.48em 0.16em;
       }
 
-      .repNameNav .repNameNavCell:nth-child(5) .colValue.termNextMidterm {
+      .repNameNav
+        .repNameNavCell:nth-child(5)
+        .colValue.termNextMidterm {
         color: var(--red-accent);
       }
 
@@ -416,7 +418,11 @@
     @media (max-width: 48rem) {
       .namesContainer {
         font-size: clamp(3rem, 5vw + 2.25rem, 6.4rem);
-        --rep-name-nav-row-min-h: clamp(4.25rem, 12vw + 2.5rem, 5.5rem);
+        --rep-name-nav-row-min-h: clamp(
+          4.25rem,
+          12vw + 2.5rem,
+          5.5rem
+        );
       }
 
       .namesContainer .names {
@@ -430,7 +436,7 @@
       .namesContainer .repNameNav {
         padding-block: 0.45rem;
         row-gap: clamp(0.4rem, 2.5vw, 0.75rem);
-        align-items: start;
+        align-items: center;
       }
 
       .namesContainer .repNameNav > .repNameNavCell:first-child {
@@ -439,29 +445,40 @@
         align-self: start;
       }
 
+      /* Row 1 only so row 2 can be a full-width actions strip (centered on the card). */
       .namesContainer .repNameNav > .repNameNavCell:nth-child(2) {
         grid-column: 2;
-        grid-row: 1 / span 2;
+        grid-row: 1;
         align-self: start;
       }
 
       .namesContainer .repNameNavCellMobileActions {
-        grid-column: 1;
+        display: flex;
+        grid-column: 1 / -1;
         grid-row: 2;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         align-items: center;
-        justify-content: flex-start;
-        align-self: start;
-        gap: clamp(0.35rem, 2vw, 0.65rem);
-        padding-left: clamp(0.75rem, 3vw, 2rem);
+        justify-content: center;
+        align-self: center;
+        width: 100%;
+        max-width: 100%;
+        gap: clamp(0.5rem, 2.5vw, 0.85rem);
+        padding-inline: clamp(0.75rem, 3vw, 2rem);
+        box-sizing: border-box;
       }
 
       .namesContainer .repNameNavCellMobileActions .repRowActionBase {
-        width: auto;
-        flex: 0 1 auto;
-        min-width: 0;
-        min-height: clamp(2.75rem, 8vw + 1.5rem, 3.5rem);
+        flex: 1 1 auto;
+        justify-content: center;
+        min-width: clamp(7.25rem, 36vw, 11rem);
+        max-width: calc(50% - clamp(0.25rem, 1.25vw, 0.45rem));
+        min-height: clamp(3.35rem, 9.5vw + 1.65rem, 4.35rem);
+        padding: 0.3em clamp(0.85rem, 3.5vw, 1.5rem) 0.36em;
+        font-size: clamp(1.12rem, 3.6vw + 0.45rem, 1.5rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
       }
     }
   }

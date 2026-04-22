@@ -1,0 +1,94 @@
+.legend {
+  background: #ffffff;
+  border: 1px solid
+    color-mix(in srgb, var(--primary-color) 22%, transparent);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  padding: 0.6rem;
+  overflow: auto;
+}
+
+.legendTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--primary-color);
+}
+
+.legendSubheader {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(
+    in srgb,
+    var(--primary-color) 78%,
+    transparent
+  );
+}
+
+.legendChamber {
+  margin: 0;
+
+  &:not(:first-of-type) {
+    margin-top: 0.55rem;
+    padding-top: 0.45rem;
+    border-top: 1px solid
+      color-mix(in srgb, var(--primary-color) 14%, transparent);
+  }
+}
+
+.legendChamberTitle {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(
+    in srgb,
+    var(--primary-color) 88%,
+    transparent
+  );
+}
+
+.legendChamber:first-of-type .legendChamberTitle {
+  margin-top: 0;
+}
+
+.legendList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0.3rem 0;
+}
+
+.legendSwatch {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 2px solid transparent;
+  flex: 0 0 auto;
+}
+
+.legendText {
+  font-weight: 600;
+}
+
+.legendLastName {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}

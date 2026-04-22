@@ -1,80 +1,72 @@
+/* Fluid tokens: vw tracks viewport without JS; clamp caps min/max for performance. */
 .addressContainer {
-  padding: 7rem 0;
-  /* margin: 8rem; */
+  --addr-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+  --addr-pad-x: clamp(0.5rem, 2.2vw, 1rem);
+  --addr-label-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
+  --addr-zip-size: clamp(2.25rem, 8vw + 1.25rem, 7rem);
+
+  /* Flex child of reps header row */
+  flex: 1 1 200px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+
+  padding: var(--addr-pad-y) var(--addr-pad-x);
+  background-color: var(--blue-accent);
+  color: #fff;
+
+  transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.addressContainerCompact {
-  padding: 0;
-  width: 100%;
+.label {
+  margin: 0;
+  font-size: var(--addr-label-size);
+  line-height: 1.1;
+  font-weight: inherit;
+  transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+
 .form {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-}
-
-.formCompact {
-  gap: 0;
-}
-
-.addressTitle {
-  font-family: var(--typo-d1-font);
-  font-size: max(10vw, 4rem);
-  font-weight: 600;
-  text-align: center;
-  color: #252525;
-  padding: 0.5rem 1rem;
   width: 100%;
-  @media (min-width: 768px) {
-    font-size: 7rem;
-  }
 }
 
 .inputWrapper {
-  border-radius: 1.5rem;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  background-color: white;
-  position: relative;
   display: flex;
   align-items: center;
-  width: clamp(20rem, 25vw, 100%);
-  animation: reveal 1s ease;
-  /* max-width: min(50rem, 92vw); */
-  /* height: clamp(24rem, 55vh, 38rem); */
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
 }
 
-.inputWrapperCompact {
-  border-radius: 0;
-  box-shadow: none;
-  background-color: transparent;
-  width: auto;
-  animation: none;
-}
-
-.addressTitleCompact {
+.addressTitle {
   margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+
+  font-family: montserrat, sans-serif;
   font-style: italic;
   font-weight: 200;
-  font-size: var(--header-zip-size, clamp(2.25rem, 8vw + 1.25rem, 7rem));
+  font-size: var(--addr-zip-size);
   line-height: 1;
   letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
-  font-family: montserrat, sans-serif;
+
   color: inherit;
   background: transparent;
   border: 0;
   outline: none;
   padding: 0;
-  text-align: center;
-}
 
-@keyframes reveal {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
+  transition:
+    font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    letter-spacing 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

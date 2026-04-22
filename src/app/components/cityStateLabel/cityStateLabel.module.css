@@ -1,0 +1,30 @@
+.container {
+  --city-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+  --city-pad-x: clamp(0.5rem, 2.2vw, 1rem);
+  --city-title-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
+
+  flex: 1 1 140px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: var(--city-pad-y) var(--city-pad-x);
+  background-color: var(--primary-color);
+  border-radius: 9999rem;
+
+  transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--city-title-size);
+  line-height: 1.15;
+  font-weight: inherit;
+  text-align: center;
+
+  transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}

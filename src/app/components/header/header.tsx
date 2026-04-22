@@ -1,17 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
 import styles from "./header.module.scss";
 
 export default function Header() {
-  const pathname = usePathname();
-
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
     <header className={styles.header}>
       <div className={styles.navList}>

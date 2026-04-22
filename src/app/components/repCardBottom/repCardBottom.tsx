@@ -7,8 +7,15 @@ type RepCardBottomProps = {
   rep: Rep;
 };
 
+function twitterProfileUrl(rep: Rep): string | null {
+  const handle = rep.twitter?.trim().replace(/^@/, "");
+  if (!handle) return null;
+  return `https://twitter.com/${encodeURIComponent(handle)}`;
+}
+
 const RepCardBottom = ({ rep }: RepCardBottomProps) => {
   const { wiki } = useWikipedia(rep.wikipedia_id);
+  const twitterUrl = twitterProfileUrl(rep);
 
   const expiration = new Date(rep.end);
   const currentYear = new Date().getFullYear();
@@ -68,6 +75,18 @@ const RepCardBottom = ({ rep }: RepCardBottomProps) => {
               </a>
             </p>
           </address>
+          {twitterUrl ? (
+            <p className={styles.contactLine}>
+              <a
+                href={twitterUrl}
+                className={styles.contactTwitterLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Click here to tweet me
+              </a>
+            </p>
+          ) : null}
         </BlockText>
       </div>
     </div>

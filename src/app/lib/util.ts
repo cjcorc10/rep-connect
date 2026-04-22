@@ -35,7 +35,7 @@ type GeocodeData = {
 };
 
 export const getCoordinates = async (
-  address: string
+  address: string,
 ): Promise<GeocodeData | null> => {
   const response = await fetch(
     `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`
@@ -76,10 +76,10 @@ export function parseGeocodePlace(result: GeocodeResult): {
   return { city, stateAbbrev };
 }
 
+/** City + state only (no postal code). ZIP is shown separately via the route `zip` prop / Address. */
 export function formatCityStateLabel(
   place: { city?: string; stateAbbrev?: string },
   resolvedState: string,
-  zipFallback: string
 ): string {
   if (place.city && place.stateAbbrev) {
     return `${place.city}, ${place.stateAbbrev}`;
@@ -93,7 +93,16 @@ export function formatCityStateLabel(
   if (resolvedState) {
     return resolvedState;
   }
-  return `ZIP ${zipFallback}`;
+  return "";
+}
+
+/**
+ * "City, ST" from one Google Geocoding API result.
+ * On the reps page, pass the same result you get from geocoding the ZIP (no extra API call).
+ */
+export function cityStateLabelFromGeocode(result: GeocodeResult): string {
+  const place = parseGeocodePlace(result);
+  return formatCityStateLabel(place, "");
 }
 
 export function getBoundsForDistrictQuery(

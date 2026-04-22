@@ -2,18 +2,50 @@
 
 import clsx from "clsx";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import type { RepRosterRow } from "@/app/lib/repRoster";
 import { useWikimediaPortraitFallback } from "@/app/lib/useWikimediaPortraitFallback";
 import styles from "./repsWrapper.module.scss";
 
 const prefetchedPortraitUrls = new Set<string>();
 
-function resolveHoverPortraitUrl(row: RepRosterRow): string {
+/** Matches repsWrapper mobile breakpoint (`max-width: 48rem`); hover portraits are desktop-only. */
+const HOVER_PORTRAIT_MEDIA_QUERY = "(min-width: 48.0625rem)";
+
+function useHoverPortraitEnabled() {
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      const mq = window.matchMedia(HOVER_PORTRAIT_MEDIA_QUERY);
+      mq.addEventListener("change", onStoreChange);
+      return () => mq.removeEventListener("change", onStoreChange);
+    },
+    () => window.matchMedia(HOVER_PORTRAIT_MEDIA_QUERY).matches,
+    () => false,
+  );
+}
+
+function portraitUrlForHover(row: RepRosterRow): string {
   if (row.portraitProxyOcdId) {
     return `/api/state-legislator-portrait?ocd=${encodeURIComponent(row.portraitProxyOcdId)}`;
   }
   return row.portraitSrc ?? row.imageUrl ?? "";
+}
+
+function usePrefetchPortraitImages(
+  rows: RepRosterRow[],
+  enabled: boolean,
+) {
+  useEffect(() => {
+    if (!enabled) return;
+    for (const row of rows) {
+      const url = portraitUrlForHover(row).trim();
+      if (!url || prefetchedPortraitUrls.has(url)) continue;
+      prefetchedPortraitUrls.add(url);
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = url;
+    }
+  }, [rows, enabled]);
 }
 
 function HoverPortrait({ imageUrl }: { imageUrl: string }) {
@@ -40,49 +72,93 @@ function HoverPortrait({ imageUrl }: { imageUrl: string }) {
   );
 }
 
+/** State rows use OCD proxy; federal rows use the rep-image API — details need an external URL for state. */
+function isDetailsDisabled(
+  row: RepRosterRow,
+  onRowDetails?: (row: RepRosterRow) => void,
+): boolean {
+  if (!onRowDetails) return true;
+  if (row.portraitProxyOcdId && !row.externalUrl?.trim()) return true;
+  return false;
+}
+
+function RosterColumnHeaders() {
+  const meta = clsx(
+    styles.headerKey,
+    styles.headerKeyMeta,
+    styles.repRosterDesktopOnly,
+  );
+  return (
+    <div
+      className={styles.repNameNavHeader}
+      role="row"
+      aria-label="Columns"
+    >
+      <span className={styles.headerKey}>Name</span>
+      <span className={styles.headerKey}>Image</span>
+      <span className={meta}>Chamber</span>
+      <span className={meta}>District</span>
+      <span
+        className={clsx(
+          meta,
+          styles.headerKeyTrailDesktop,
+        )}
+      >
+        Term
+      </span>
+    </div>
+  );
+}
+
 function RosterRow({
   row,
+  index,
+  rowCount,
   onRowDetails,
-  isActiveHoverRow,
-  onRowMouseEnter,
-  onRowMouseLeave,
-  hoverPortraitUrl,
-  portraitAlignBottom,
+  isHovered,
+  onHoverChange,
+  showHoverPortrait,
 }: {
   row: RepRosterRow;
+  index: number;
+  rowCount: number;
   onRowDetails?: (row: RepRosterRow) => void;
-  isActiveHoverRow: boolean;
-  onRowMouseEnter: () => void;
-  onRowMouseLeave: () => void;
-  hoverPortraitUrl: string;
-  portraitAlignBottom: boolean;
+  isHovered: boolean;
+  onHoverChange: (hovering: boolean) => void;
+  showHoverPortrait: boolean;
 }) {
   const tel = row.phone?.trim().replace(/\s/g, "") ?? "";
-  const isStateRow = Boolean(row.portraitProxyOcdId);
-  const detailsDisabled =
-    !onRowDetails || (isStateRow && !row.externalUrl?.trim());
+  const detailsDisabled = isDetailsDisabled(row, onRowDetails);
   const openDetails = () => {
     if (!detailsDisabled) onRowDetails?.(row);
   };
+
+  const hoverUrl = portraitUrlForHover(row);
+  const floatAtBottom = index >= Math.ceil(rowCount / 2);
+
+  const cell = styles.repNameNavCell;
+  const desktop = clsx(cell, styles.repRosterDesktopOnly);
 
   return (
     <div
       className={clsx(
         styles.repNameNav,
-        isActiveHoverRow && styles.repNameNavHoverLift,
+        isHovered &&
+          showHoverPortrait &&
+          styles.repNameNavHoverLift,
       )}
-      onMouseEnter={onRowMouseEnter}
-      onMouseLeave={onRowMouseLeave}
-      onFocusCapture={onRowMouseEnter}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+      onFocusCapture={() => onHoverChange(true)}
       onBlurCapture={(e) => {
         const next = e.relatedTarget;
         if (next && e.currentTarget.contains(next as Node)) return;
-        onRowMouseLeave();
+        onHoverChange(false);
       }}
       onClick={(e) => {
-        const target = e.target as HTMLElement | null;
+        const el = e.target as HTMLElement | null;
         if (
-          target?.closest(
+          el?.closest(
             "a,button,input,textarea,select,[role='button']",
           )
         ) {
@@ -91,29 +167,25 @@ function RosterRow({
         openDetails();
       }}
     >
-      <div className={styles.repNameNavCell}>
+      <div className={cell}>
         <span className={styles.colValue}>{row.shortName}</span>
       </div>
-      <div className={styles.repNameNavCell} aria-hidden="true">
-        {isActiveHoverRow ? (
+      <div className={cell} aria-hidden="true">
+        {isHovered && showHoverPortrait ? (
           <div
             className={clsx(
               styles.repRowImageFloat,
-              portraitAlignBottom && styles.repRowImageFloatBottom,
+              floatAtBottom && styles.repRowImageFloatBottom,
             )}
           >
-            <HoverPortrait imageUrl={hoverPortraitUrl} />
+            <HoverPortrait imageUrl={hoverUrl} />
           </div>
         ) : null}
       </div>
-      <div
-        className={clsx(styles.repNameNavCell, styles.repRosterDesktopOnly)}
-      >
+      <div className={desktop}>
         <span className={styles.colValue}>{row.chamber}</span>
       </div>
-      <div
-        className={clsx(styles.repNameNavCell, styles.repRosterDesktopOnly)}
-      >
+      <div className={desktop}>
         <span
           className={styles.colValue}
           style={
@@ -127,8 +199,7 @@ function RosterRow({
       </div>
       <div
         className={clsx(
-          styles.repNameNavCell,
-          styles.repRosterDesktopOnly,
+          desktop,
           styles.repNameNavCellTrailDesktop,
         )}
       >
@@ -143,7 +214,7 @@ function RosterRow({
       </div>
       <div
         className={clsx(
-          styles.repNameNavCell,
+          cell,
           styles.repRosterMobileOnly,
           styles.repNameNavCellMobileActions,
           styles.repNameNavCellTrailMobile,
@@ -152,7 +223,10 @@ function RosterRow({
         {tel ? (
           <a
             href={`tel:${tel}`}
-            className={clsx(styles.repRowActionBase, styles.repRowActionPill)}
+            className={clsx(
+              styles.repRowActionBase,
+              styles.repRowActionPill,
+            )}
             aria-label={`Call ${row.fullName}`}
           >
             Call
@@ -160,7 +234,10 @@ function RosterRow({
         ) : (
           <button
             type="button"
-            className={clsx(styles.repRowActionBase, styles.repRowActionPill)}
+            className={clsx(
+              styles.repRowActionBase,
+              styles.repRowActionPill,
+            )}
             disabled
             aria-label={`No phone listed for ${row.fullName}`}
           >
@@ -169,7 +246,10 @@ function RosterRow({
         )}
         <button
           type="button"
-          className={clsx(styles.repRowActionBase, styles.repRowActionRect)}
+          className={clsx(
+            styles.repRowActionBase,
+            styles.repRowActionRect,
+          )}
           disabled={detailsDisabled}
           aria-label={`Details for ${row.fullName}`}
           onClick={openDetails}
@@ -193,19 +273,12 @@ export default function RepRoster({
   emptyMessage,
 }: RepRosterProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const showHoverPortrait = useHoverPortraitEnabled();
 
-  useEffect(() => {
-    rows.forEach((row) => {
-      const imageUrl = resolveHoverPortraitUrl(row).trim();
-      if (!imageUrl || prefetchedPortraitUrls.has(imageUrl)) return;
-      prefetchedPortraitUrls.add(imageUrl);
-      const img = new window.Image();
-      img.decoding = "async";
-      img.src = imageUrl;
-    });
-  }, [rows]);
+  usePrefetchPortraitImages(rows, showHoverPortrait);
 
-  if (!rows.length && emptyMessage) {
+  if (!rows.length) {
+    if (!emptyMessage) return null;
     return (
       <div className={styles.main}>
         <section className={styles.namesSection}>
@@ -215,61 +288,26 @@ export default function RepRoster({
     );
   }
 
-  if (!rows.length) {
-    return null;
-  }
+  const n = rows.length;
 
   return (
     <div className={styles.main}>
       <section className={styles.namesSection}>
         <div className={styles.namesContainer}>
           <div className={styles.names}>
-            <div
-              className={styles.repNameNavHeader}
-              role="row"
-              aria-label="Columns"
-            >
-              <span className={styles.headerKey}>Name</span>
-              <span className={styles.headerKey}>Image</span>
-              <span
-                className={clsx(
-                  styles.headerKey,
-                  styles.headerKeyMeta,
-                  styles.repRosterDesktopOnly,
-                )}
-              >
-                Chamber
-              </span>
-              <span
-                className={clsx(
-                  styles.headerKey,
-                  styles.headerKeyMeta,
-                  styles.repRosterDesktopOnly,
-                )}
-              >
-                District
-              </span>
-              <span
-                className={clsx(
-                  styles.headerKey,
-                  styles.headerKeyMeta,
-                  styles.repRosterDesktopOnly,
-                  styles.headerKeyTrailDesktop,
-                )}
-              >
-                Term
-              </span>
-            </div>
+            <RosterColumnHeaders />
             {rows.map((row, i) => (
               <RosterRow
                 key={row.id}
                 row={row}
+                index={i}
+                rowCount={n}
                 onRowDetails={onRowDetails}
-                isActiveHoverRow={hoveredId === row.id}
-                onRowMouseEnter={() => setHoveredId(row.id)}
-                onRowMouseLeave={() => setHoveredId(null)}
-                hoverPortraitUrl={resolveHoverPortraitUrl(row)}
-                portraitAlignBottom={i >= Math.ceil(rows.length / 2)}
+                isHovered={hoveredId === row.id}
+                showHoverPortrait={showHoverPortrait}
+                onHoverChange={(hovering) =>
+                  setHoveredId(hovering ? row.id : null)
+                }
               />
             ))}
           </div>

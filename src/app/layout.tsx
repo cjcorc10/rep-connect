@@ -4,6 +4,7 @@ import Header from "./components/header/header";
 import Container from "./components/container";
 import { ReactLenis } from "lenis/react";
 import { Montserrat, Merriweather_Sans } from "next/font/google";
+import PageTransition from "./components/pageTransition";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ export default function RootLayout({
         <ReactLenis root />
         <Container>
           <Header />
-          {children}
+          <PageTransition>{children}</PageTransition>
         </Container>
       </body>
     </html>

@@ -90,7 +90,7 @@ export default function Refine({
           stateDistricts: data.stateDistricts ?? [],
           stateDistrictGeoJson: data.stateDistrictGeoJson ?? null,
         },
-        cityStateLabel: data.cityStateLabel ?? zipCode,
+        cityStateLabel: data.cityStateLabel ?? "",
         districtGeoJson: data.districtGeoJson ?? null,
         mapFallback: data.mapFallback ?? {},
       });
