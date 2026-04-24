@@ -23,18 +23,20 @@ export default function Address({ address }: { address: string }) {
 
   return (
     <div className={styles.addressContainer}>
-      <h1 className={styles.label}>Showing results for</h1>
-      <form onSubmit={onSubmit} className={styles.form}>
-        <div className={styles.inputWrapper}>
-          <input
-            ref={inputRef}
-            className={styles.addressTitle}
-            onClick={() => setEditing(true)}
-            value={value}
-            onChange={(e) => setValue(e.currentTarget.value)}
-          />
-        </div>
-      </form>
+      <div className={styles.addressContent}>
+        <h1 className={styles.label}>Showing results for</h1>
+        <form onSubmit={onSubmit} className={styles.form}>
+          <div className={styles.inputWrapper}>
+            <input
+              ref={inputRef}
+              className={styles.addressTitle}
+              onClick={() => setEditing(true)}
+              value={value}
+              onChange={(e) => setValue(e.currentTarget.value)}
+            />
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

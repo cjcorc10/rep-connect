@@ -1,11 +1,8 @@
-import { notFound } from "next/navigation";
-import { getRepsByLocationQuery } from "@/app/lib/reps";
-import RepsPageClient from "@/app/reps/[zip]/repsPageClient";
-import {
-  cityStateLabelFromGeocode,
-  getCoordinates,
-} from "@/app/lib/util";
-import type { RepsByAddressPayload } from "@/app/lib/definitions";
+import { Suspense, ViewTransition } from "react";
+import HeaderWrapper from "@/app/components/headerWrapper";
+import HeaderSkeleton from "../../skeletons/headerSkeleton";
+import RepsPageWrapper from "@/app/components/repsPageWrapper";
+import MapSkeleton from "@/app/skeletons/mapSkeleton";
 
 type Props = {
   params: Promise<{ zip: string }>;
@@ -15,16 +12,16 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const { zip } = await params;
-  const geo = await getCoordinates(zip);
-  if (!geo || !geo.results?.[0]) notFound();
-  const location = geo.results[0];
-
-  const core = await getRepsByLocationQuery(location);
-  if (!core) notFound();
-
-  const cityStateLabel = cityStateLabelFromGeocode(location);
-  const payload: RepsByAddressPayload = { ...core, cityStateLabel };
-
-  return <RepsPageClient zip={zip} payload={payload} />;
+  return (
+    // <ViewTransition enter="none">
+    <>
+      <Suspense fallback={<HeaderSkeleton />}>
+        <HeaderWrapper params={params} />
+      </Suspense>
+      <Suspense fallback={<MapSkeleton />}>
+        <RepsPageWrapper params={params} />
+      </Suspense>
+    </>
+    // </ViewTransition>
+  );
 }

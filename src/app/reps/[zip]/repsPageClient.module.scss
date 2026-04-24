@@ -8,10 +8,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+  flex-shrink: 0;
   max-width: 70vw;
   width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
   gap: 0.5rem;
 
   .header {
@@ -28,28 +29,35 @@
 
   .mapContainer {
     width: 100%;
-    flex: 1 1 auto;
-    min-height: clamp(12rem, 28vh, 20rem);
-    background-color: #e9e5cf;
+    min-height: clamp(14rem, 50vh, 30rem);
+    /* Flex gives mapWithLegend a real height so inner %/grid heights can fill. */
+    display: flex;
+    flex-direction: column;
+    background-color: color-mix(
+      in srgb,
+      var(--background-color) 86%,
+      #000000 14%
+    );
+    transform-origin: bottom center;
 
     .mapWithLegend {
-      height: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
       width: 100%;
       display: grid;
       grid-template-columns: minmax(0, 1fr) clamp(10rem, 20vw, 14rem);
+      grid-template-rows: minmax(0, 1fr);
       gap: 0.75rem;
       align-items: stretch;
       padding: 0.5rem;
       box-sizing: border-box;
-      background: color-mix(
-        in srgb,
-        var(--background-color) 86%,
-        #000000 14%
-      );
     }
 
     .mapCanvas {
-      min-height: 100%;
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
     }
 

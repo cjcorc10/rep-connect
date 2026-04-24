@@ -69,7 +69,10 @@ export default function SearchForm() {
 
     const { zip } = parsedData.data;
     prefetchIfValidZip(zip);
-    router.push(`/reps/${zip}`);
+    router.push(`/reps/${zip}`, {
+      scroll: false,
+      transitionTypes: ["nav-forward"],
+    });
   };
 
   return (
@@ -85,7 +88,7 @@ export default function SearchForm() {
             name="zip"
             inputMode="numeric"
             autoComplete="postal-code"
-            placeholder="Enter your ZIP code or street address"
+            placeholder="Enter your ZIP code"
             required
             aria-invalid={error ? "true" : "false"}
             className={styles.input}

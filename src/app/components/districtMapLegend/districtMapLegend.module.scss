@@ -1,4 +1,7 @@
 .legend {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
   background: #ffffff;
   border: 1px solid
     color-mix(in srgb, var(--primary-color) 22%, transparent);

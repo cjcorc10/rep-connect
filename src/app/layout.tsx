@@ -29,7 +29,7 @@ export default function RootLayout({
         <ReactLenis root />
         <Container>
           <Header />
-          <PageTransition>{children}</PageTransition>
+          {children}
         </Container>
       </body>
     </html>

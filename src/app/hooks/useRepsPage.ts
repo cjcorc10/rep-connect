@@ -3,6 +3,7 @@
 import type {
   Rep,
   RepsByAddressPayload,
+  RepsLocationPayload,
 } from "@/app/lib/definitions";
 import { useRepStore } from "@/app/store/useRepStore";
 import { useEffect, useState } from "react";
@@ -17,10 +18,10 @@ import {
   computeStateRosterRows,
   filterStateHouseDistricts,
   filterStateSenateDistricts,
-} from "./repsPageDerivations";
+} from "../reps/[zip]/repsPageDerivations";
 
 type UseRepsPageArgs = {
-  payload: RepsByAddressPayload;
+  payload: RepsLocationPayload;
 };
 
 type RefineSuccessPayload = Pick<
@@ -34,7 +35,7 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
   const [activeLevel, setActiveLevel] = useState<"federal" | "state">(
     "federal",
   );
-  const [view, setView] = useState<RepsByAddressPayload>(
+  const [view, setView] = useState<RepsLocationPayload>(
     () => payload,
   );
 
@@ -67,11 +68,12 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     view.data.stateLegislators,
   );
 
-  const alignedStateDistrictGeoJson = computeAlignedStateDistrictGeoJson(
-    view.data.stateDistrictGeoJson,
-    view.data.stateLegislators,
-    alignedStateDistricts,
-  );
+  const alignedStateDistrictGeoJson =
+    computeAlignedStateDistrictGeoJson(
+      view.data.stateDistrictGeoJson,
+      view.data.stateLegislators,
+      alignedStateDistricts,
+    );
 
   const stateDistrictRankByMapKey = computeStateDistrictRankByMapKey(
     alignedStateDistrictGeoJson,
@@ -86,11 +88,13 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     stateDistrictColorFillByMapKey,
   );
 
-  const stateSenateDistricts =
-    filterStateSenateDistricts(alignedStateDistricts);
+  const stateSenateDistricts = filterStateSenateDistricts(
+    alignedStateDistricts,
+  );
 
-  const stateHouseDistricts =
-    filterStateHouseDistricts(alignedStateDistricts);
+  const stateHouseDistricts = filterStateHouseDistricts(
+    alignedStateDistricts,
+  );
 
   const activeDistrictGeoJson =
     activeLevel === "state"
@@ -125,9 +129,7 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
   const panel = {
     repsData: view.data,
     rosterRows:
-      activeLevel === "federal"
-        ? federalRosterRows
-        : stateRosterRows,
+      activeLevel === "federal" ? federalRosterRows : stateRosterRows,
   };
 
   const refine = {
@@ -138,7 +140,6 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
   return {
     activeLevel,
     setActiveLevel,
-    cityStateLabel: view.cityStateLabel,
     mapSection,
     legend,
     panel,
