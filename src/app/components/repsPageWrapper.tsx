@@ -3,16 +3,13 @@ import { getCoordinates } from "../lib/util";
 import { notFound } from "next/navigation";
 import { getRepsByLocationQuery } from "../lib/reps";
 
-async function RepsPageWrapper({params}: {
+export default async function RepsPageWrapper({params}: {
   params: Promise<{zip: string}>}) {
   const {zip} = await params;
-  const geo = await getCoordinates(zip);
-  if (!geo || !geo.results?.[0]) notFound();
-  const location = geo.results[0];
-  const payload = await getRepsByLocationQuery(location);
+  const coordinates = await getCoordinates(zip);
+  if (!coordinates) notFound();
+  const payload = await getRepsByLocationQuery(coordinates);
   if (!payload) notFound();
 
   return <RepsPageClient payload={payload} />;
 }
-
-export default RepsPageWrapper;

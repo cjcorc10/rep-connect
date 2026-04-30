@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import { motion } from "framer-motion";
 import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./searchForm.module.scss";
 
@@ -57,7 +56,6 @@ export default function SearchForm() {
             required
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
-            onChange={onZipChange}
           />
           <BeautifulButton
             content="SEARCH"
@@ -69,14 +67,12 @@ export default function SearchForm() {
       </form>
 
       {error && (
-        <motion.div
+        <div
           role="alert"
           className={styles.error}
-          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
         >
           {error}
-        </motion.div>
+        </div>
       )}
     </div>
   );

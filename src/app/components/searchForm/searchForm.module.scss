@@ -70,9 +70,16 @@
   color: #b91c1c;
   background-color: rgba(254, 226, 226, 0.9);
   border-radius: 0.5rem;
+  animation: fadeIn 0.2s ease-out;
 
   @media (min-width: 640px) {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0,
   }
 }

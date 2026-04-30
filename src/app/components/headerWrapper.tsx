@@ -13,10 +13,9 @@ type HeaderProps = {
 
 export default async function HeaderWrapper({ params }: HeaderProps) {
   const { zip } = await params
-  const geo = await getCoordinates(zip);
-  if (!geo || !geo.results?.[0]) notFound();
-  const location = geo.results[0];
-  const label = cityStateLabelFromGeocode(location);
+  const coordinates = await getCoordinates(zip);
+  if (!coordinates) notFound();
+  const label = cityStateLabelFromGeocode(coordinates);
 
   return (
     <section
