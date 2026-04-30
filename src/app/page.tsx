@@ -17,7 +17,7 @@ export default function Home() {
       </div>
       <div className={styles.heroContainer}>
         <h1 className={styles.heroTitle}>
-          Get loud, contact your representatives today.
+          Your voice matters beyond the ballot box.
         </h1>
         <p className={styles.heroSubtitle}>
           Candidates run on a promise to represent their constituents.

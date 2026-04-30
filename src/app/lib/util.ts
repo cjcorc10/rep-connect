@@ -6,6 +6,7 @@ import type {
 } from "./definitions";
 import { fipsToState } from "./definitions";
 import { cacheLife } from "next/cache";
+import { cache } from "react";
 
 type AddressComponent = {
   long_name: string;
@@ -35,20 +36,20 @@ type GeocodeData = {
   results: GeocodeResult[];
 };
 
-export const getCoordinates = async (
-  address: string,
-): Promise<GeocodeData | null> => {
-  "use cache";
-  cacheLife("weeks");
-  const response = await fetch(
-    `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`,
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch district data");
-  }
+export const getCoordinates = cache(
+  async (address: string): Promise<GeocodeData | null> => {
+    "use cache";
+    cacheLife("weeks");
+    const response = await fetch(
+      `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`,
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch district data");
+    }
 
-  return await response.json();
-};
+    return await response.json();
+  },
+);
 
 export function parseGeocodePlace(result: GeocodeResult): {
   city?: string;

@@ -71,7 +71,7 @@ export default function SearchForm() {
     prefetchIfValidZip(zip);
     router.push(`/reps/${zip}`, {
       scroll: false,
-      transitionTypes: ["nav-forward"],
+      // transitionTypes: ["nav-forward"],
     });
   };
 

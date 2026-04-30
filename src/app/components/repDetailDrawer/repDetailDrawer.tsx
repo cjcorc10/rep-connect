@@ -7,6 +7,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { Rep } from "@/app/lib/definitions";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import styles from "./repDetailDrawer.module.scss";
+import Image from "next/image";
 
 type ExternalLinkItem = { href: string; text: string };
 
@@ -16,14 +17,14 @@ function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
   if (rep.opensecrets_id?.trim()) {
     links.push({
       href: `https://www.opensecrets.org/members-of-congress/summary?cid=${encodeURIComponent(rep.opensecrets_id.trim())}`,
-      text: "Click here to see who has financed this campaign (OpenSecrets).",
+      text: "Who is funding this representative?",
     });
   }
 
   if (rep.govtrack_id != null) {
     links.push({
       href: `https://www.govtrack.us/congress/members/${rep.govtrack_id}`,
-      text: "Click here to track bills, votes, and sponsorship on GovTrack.",
+      text: "Voting history and sponsored bills",
     });
   }
 
@@ -31,7 +32,7 @@ function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
     const slug = rep.ballotpedia_id.trim().replace(/\s+/g, "_");
     links.push({
       href: `https://ballotpedia.org/${slug}`,
-      text: "Click here to read their background and positions on Ballotpedia.",
+      text: "Background and positions",
     });
   }
 
@@ -74,7 +75,11 @@ export default function RepDetailDrawer({
   const externalLinks = getRepExternalLinks(displayRep);
 
   return (
-    <Dialog.Root modal={false} open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root
+      modal={false}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <Dialog.Portal forceMount>
         <Dialog.Overlay forceMount asChild>
           <motion.div
@@ -98,14 +103,18 @@ export default function RepDetailDrawer({
             className={styles.panel}
             initial={{ transform: "translateX(100%)" }}
             animate={{
-              transform: open
-                ? "translateX(0%)"
-                : "translateX(100%)",
+              transform: open ? "translateX(0%)" : "translateX(100%)",
             }}
             transition={panelTransition}
             onAnimationComplete={handlePanelAnimationComplete}
           >
             <header className={styles.header}>
+              <Image
+                src={displayRep.image_url}
+                alt={displayRep.full_name}
+                width={150}
+                height={150}
+              />
               <div className={styles.headerText}>
                 <Dialog.Title className={styles.repName}>
                   {displayRep.full_name}

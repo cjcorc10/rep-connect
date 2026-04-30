@@ -13,15 +13,15 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   return (
-    // <ViewTransition enter="none">
-    <>
-      <Suspense fallback={<HeaderSkeleton />}>
-        <HeaderWrapper params={params} />
-      </Suspense>
-      <Suspense fallback={<MapSkeleton />}>
-        <RepsPageWrapper params={params} />
-      </Suspense>
-    </>
-    // </ViewTransition>
+    <ViewTransition>
+      <main>
+        <Suspense fallback={<HeaderSkeleton />}>
+          <HeaderWrapper params={params} />
+        </Suspense>
+        <Suspense fallback={<MapSkeleton />}>
+          <RepsPageWrapper params={params} />
+        </Suspense>
+      </main>
+    </ViewTransition>
   );
 }

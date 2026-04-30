@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
         // Omit `search` so any query params (bioguide_id, fallback, etc.) are allowed.
       },
       {
+        pathname: "/api/state-legislator-portrait",
+      },
+      {
         pathname: "/images/*.jpg",
       },
     ],

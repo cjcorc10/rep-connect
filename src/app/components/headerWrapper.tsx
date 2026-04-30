@@ -9,10 +9,6 @@ import {
 
 type Props = { params: Promise<{ zip: string }> };
 
-/**
- * Renders the reps page address + city/state header in the same centered
- * 70vw column as {@link RepsPageClient} (see `.headerSection` in repsPageClient.module.scss).
- */
 export default async function HeaderWrapper({ params }: Props) {
   const { zip } = await params;
   const geo = await getCoordinates(zip);
