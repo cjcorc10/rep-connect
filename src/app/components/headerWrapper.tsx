@@ -7,10 +7,12 @@ import {
   getCoordinates,
 } from "@/app/lib/util";
 
-type Props = { params: Promise<{ zip: string }> };
+type HeaderProps = { 
+  params: Promise<{zip: string}>
+};
 
-export default async function HeaderWrapper({ params }: Props) {
-  const { zip } = await params;
+export default async function HeaderWrapper({ params }: HeaderProps) {
+  const { zip } = await params
   const geo = await getCoordinates(zip);
   if (!geo || !geo.results?.[0]) notFound();
   const location = geo.results[0];

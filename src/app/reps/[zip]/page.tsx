@@ -4,16 +4,12 @@ import HeaderSkeleton from "../../skeletons/headerSkeleton";
 import RepsPageWrapper from "@/app/components/repsPageWrapper";
 import MapSkeleton from "@/app/skeletons/mapSkeleton";
 
-type Props = {
-  params: Promise<{ zip: string }>;
-  searchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
+type PageProps = {
+  params: Promise<{zip: string}>
 };
 
-export default async function Page({ params }: Props) {
+export default async function Page({ params }: PageProps) {
   return (
-    <ViewTransition>
       <main>
         <Suspense fallback={<HeaderSkeleton />}>
           <HeaderWrapper params={params} />
@@ -22,6 +18,5 @@ export default async function Page({ params }: Props) {
           <RepsPageWrapper params={params} />
         </Suspense>
       </main>
-    </ViewTransition>
   );
 }
