@@ -6,7 +6,7 @@ import {
   federalHouseLastName,
   formatStateDistrictDisplay,
   stateLegislatorLastName,
-} from "@/app/reps/[zip]/repsPageClient.helpers";
+} from "@/app/reps/[zip]/helper";
 import styles from "./districtMapLegend.module.scss";
 
 type Swatch = { fill: string; stroke: string };

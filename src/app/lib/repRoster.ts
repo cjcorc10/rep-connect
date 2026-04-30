@@ -1,6 +1,6 @@
 import type { FederalHouseColorsByDistrict } from "./districtMapStyles";
 import type { Rep, StateDistrict, StateLegislator } from "./definitions";
-import { districtsMatch } from "@/app/reps/[zip]/repsPageClient.helpers";
+import { districtsMatch } from "@/app/reps/[zip]/helper";
 import { buildRepImageApiUrl } from "./repImageUrl";
 
 export type RepRosterRow = {

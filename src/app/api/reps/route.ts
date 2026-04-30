@@ -30,27 +30,15 @@ export async function POST(req: Request) {
         { status: 400 }
       );
 
-    const geo = await getCoordinates(address);
-    if (
-      !geo ||
-      geo.status !== "OK" ||
-      !geo.results ||
-      geo.results.length === 0
-    ) {
-      return NextResponse.json(
-        { error: "Failed to get coordinates" },
-        { status: 404 }
-      );
-    }
-
-    const box = getBoundsForDistrictQuery(geo.results[0]);
+    const coordinates = await getCoordinates(address);
+        const box = getBoundsForDistrictQuery(coordinates);
     if (!box) {
       return NextResponse.json(
         { error: "Failed to get coordinates" },
         { status: 404 }
       );
     }
-    const loc = geo.results[0].geometry.location;
+    const loc = coordinates.geometry.location;
     const [
       { state, districts, districtGeoJson },
       stateLegResult,
@@ -74,7 +62,7 @@ export async function POST(req: Request) {
 
     const houseReps = houseRepsResult || [];
 
-    const place = parseGeocodePlace(geo.results[0]);
+    const place = parseGeocodePlace(coordinates);
     const cityStateLabel = formatCityStateLabel(place, state);
 
     return NextResponse.json({
@@ -91,7 +79,7 @@ export async function POST(req: Request) {
       stateDistrictGeoJson: stateDistrictResult.stateDistrictGeoJson,
       cityStateLabel,
       districtGeoJson,
-      mapFallback: extractMapFallback(geo.results[0]),
+      mapFallback: extractMapFallback(coordinates),
     });
   } catch (error) {
     console.error("Error fetching reps:", error);

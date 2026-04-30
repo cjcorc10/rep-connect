@@ -11,7 +11,7 @@ import {
   buildFederalRosterRows,
   stateLegislatorsToRosterRows,
 } from "@/app/lib/repRoster";
-import { stateDistrictHasLegislator } from "./repsPageClient.helpers";
+import { stateDistrictHasLegislator } from "./helper";
 
 /** Federal district label → style rank for map/legend alignment. */
 export function computeFederalDistrictRankByLabel(
