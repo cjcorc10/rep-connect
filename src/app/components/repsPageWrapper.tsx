@@ -13,7 +13,6 @@ export default async function RepsPageWrapper({
   if (!coordinates) notFound();
   const payload = await getRepsByLocationQuery(coordinates);
   if (!payload) notFound();
-  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   return <RepsPageClient payload={payload} />;
 }
