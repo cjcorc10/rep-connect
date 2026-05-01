@@ -26,46 +26,47 @@
     font-weight: 600;
     width: 100%;
   }
+}
 
-  .mapContainer {
+/* Top-level so MapSkeleton can use mapContainer without a .headerSection parent. */
+.mapContainer {
+  width: 100%;
+  min-height: clamp(14rem, 50vh, 30rem);
+  display: flex;
+  flex-direction: column;
+  background-color: color-mix(
+    in srgb,
+    var(--background-color) 86%,
+    #000000 14%
+  );
+  transform-origin: bottom center;
+  overflow: hidden;
+
+  .mapWithLegend {
+    flex: 1 1 auto;
+    min-height: 0;
     width: 100%;
-    min-height: clamp(14rem, 50vh, 30rem);
-    /* Flex gives mapWithLegend a real height so inner %/grid heights can fill. */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(10rem, 20vw, 14rem);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: stretch;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .mapCanvas {
+    min-height: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: color-mix(
-      in srgb,
-      var(--background-color) 86%,
-      #000000 14%
-    );
-    transform-origin: bottom center;
+    overflow: hidden;
+  }
 
+  @media (max-width: 768px) {
     .mapWithLegend {
-      flex: 1 1 auto;
-      min-height: 0;
-      width: 100%;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) clamp(10rem, 20vw, 14rem);
-      grid-template-rows: minmax(0, 1fr);
-      gap: 0.75rem;
-      align-items: stretch;
-      padding: 0.5rem;
-      box-sizing: border-box;
-    }
-
-    .mapCanvas {
-      min-height: 0;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    @media (max-width: 768px) {
-      .mapWithLegend {
-        grid-template-columns: 1fr;
-        grid-template-rows: minmax(10rem, 1fr) auto;
-      }
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(10rem, 1fr) auto;
     }
   }
 }

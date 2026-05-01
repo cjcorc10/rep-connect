@@ -2,12 +2,7 @@ import clsx from "clsx";
 import addressStyles from "@/app/components/address/address.module.css";
 import cityStateStyles from "@/app/components/cityStateLabel/cityStateLabel.module.css";
 import pageStyles from "@/app/reps/[zip]/repsPageClient.module.scss";
-import "./repsPageSkeleton.css";
 
-/**
- * Header-only shell (Address + CityStateLabel) for loading states.
- * Used by `loading.tsx` while the route segment resolves.
- */
 export default function HeaderSkeleton() {
   return (
     <section className={pageStyles.headerSection}>

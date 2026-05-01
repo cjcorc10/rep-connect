@@ -13,12 +13,9 @@ const FormSchema = z.object({
     .min(5),
 });
 
-const PREFETCH_DEBOUNCE_MS = 300;
-
 export default function SearchForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,10 +64,7 @@ export default function SearchForm() {
       </form>
 
       {error && (
-        <div
-          role="alert"
-          className={styles.error}
-        >
+        <div role="alert" className={styles.error}>
           {error}
         </div>
       )}

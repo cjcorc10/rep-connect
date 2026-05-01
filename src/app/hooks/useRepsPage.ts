@@ -18,7 +18,7 @@ import {
   computeStateRosterRows,
   filterStateHouseDistricts,
   filterStateSenateDistricts,
-} from "../reps/[zip]/repsPageDerivations";
+} from "../reps/[zip]/derivation";
 
 type UseRepsPageArgs = {
   payload: RepsLocationPayload;

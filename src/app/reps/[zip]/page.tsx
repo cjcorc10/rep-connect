@@ -5,11 +5,12 @@ import RepsPageWrapper from "@/app/components/repsPageWrapper";
 import MapSkeleton from "@/app/skeletons/mapSkeleton";
 
 type PageProps = {
-  params: Promise<{zip: string}>
+  params: Promise<{ zip: string }>;
 };
 
 export default async function Page({ params }: PageProps) {
   return (
+    <ViewTransition>
       <main>
         <Suspense fallback={<HeaderSkeleton />}>
           <HeaderWrapper params={params} />
@@ -18,5 +19,6 @@ export default async function Page({ params }: PageProps) {
           <RepsPageWrapper params={params} />
         </Suspense>
       </main>
+    </ViewTransition>
   );
 }
