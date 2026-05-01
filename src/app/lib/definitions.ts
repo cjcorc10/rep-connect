@@ -100,14 +100,19 @@ export type DistrictMapFeature = {
   };
 };
 
-export type RepsByAddressPayload = {
+/** Districts and reps from the geocoded area (no display label — that is built separately). */
+export type RepsLocationPayload = {
   data: RepsData;
-  cityStateLabel: string;
   districtGeoJson: DistrictMapFeatureCollection | null;
   mapFallback: {
     bounds?: Coordinates;
     location?: { lat: number; lng: number };
   };
+};
+
+export type RepsByAddressPayload = RepsLocationPayload & {
+  /** City and state only; ZIP comes from the route param, not this string. */
+  cityStateLabel: string;
 };
 
 // two letter state codes for FIPS codes

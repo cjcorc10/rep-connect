@@ -1,20 +1,21 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import { motion } from "framer-motion";
 import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./searchForm.module.scss";
+
+const FormSchema = z.object({
+  zip: z
+    .string()
+    .trim()
+    .regex(/^\d{5}(-\d{4})?$/)
+    .min(5),
+});
 
 export default function SearchForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const FormSchema = z.object({
-    zip: z
-      .string()
-      .regex(/^\d{5}(-\d{4})?$/)
-      .min(5),
-  });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,7 +30,10 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    router.push(`/reps/${zip}`);
+    router.push(`/reps/${zip}`, {
+      scroll: false,
+      // transitionTypes: ["nav-forward"],
+    });
   };
 
   return (
@@ -45,7 +49,7 @@ export default function SearchForm() {
             name="zip"
             inputMode="numeric"
             autoComplete="postal-code"
-            placeholder="Enter your ZIP code or street address"
+            placeholder="Enter your ZIP code"
             required
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
@@ -60,14 +64,9 @@ export default function SearchForm() {
       </form>
 
       {error && (
-        <motion.div
-          role="alert"
-          className={styles.error}
-          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-        >
+        <div role="alert" className={styles.error}>
           {error}
-        </motion.div>
+        </div>
       )}
     </div>
   );

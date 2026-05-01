@@ -1,23 +1,24 @@
-import { notFound } from "next/navigation";
-import { getRepsByLocationQuery } from "@/app/lib/reps";
-import RepsPageClient from "@/app/reps/[zip]/repsPageClient";
+import { Suspense, ViewTransition } from "react";
+import HeaderWrapper from "@/app/components/headerWrapper";
+import HeaderSkeleton from "../../skeletons/headerSkeleton";
+import RepsPageWrapper from "@/app/components/repsPageWrapper";
+import MapSkeleton from "@/app/skeletons/mapSkeleton";
 
-type Props = {
+type PageProps = {
   params: Promise<{ zip: string }>;
-  searchParams: Promise<{
-    [key: string]: string | string[] | undefined;
-  }>;
 };
 
-export default async function Page({ params }: Props) {
-  const { zip } = await params;
-  const payload = await getRepsByLocationQuery(zip);
-  if (!payload) notFound();
-  
+export default async function Page({ params }: PageProps) {
   return (
-    <RepsPageClient
-      zip={zip}
-      payload={payload}
-    />
+    <ViewTransition>
+      <main>
+        <Suspense fallback={<HeaderSkeleton />}>
+          <HeaderWrapper params={params} />
+        </Suspense>
+        <Suspense fallback={<MapSkeleton />}>
+          <RepsPageWrapper params={params} />
+        </Suspense>
+      </main>
+    </ViewTransition>
   );
 }

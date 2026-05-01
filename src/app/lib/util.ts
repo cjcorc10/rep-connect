@@ -5,6 +5,8 @@ import type {
   StateDistrict,
 } from "./definitions";
 import { fipsToState } from "./definitions";
+import { cacheLife } from "next/cache";
+import { cache } from "react";
 
 type AddressComponent = {
   long_name: string;
@@ -34,18 +36,26 @@ type GeocodeData = {
   results: GeocodeResult[];
 };
 
-export const getCoordinates = async (
-  address: string
-): Promise<GeocodeData | null> => {
-  const response = await fetch(
-    `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`
-  );
-  if (!response.ok) {
-    throw new Error("Failed to fetch district data");
-  }
+const transformCoords = (geoData: GeocodeData) => {
+  return geoData.results[0] 
+}
 
-  return await response.json();
-};
+export const getCoordinates = cache(
+  async (address: string): Promise<GeocodeResult> => {
+    "use cache";
+    cacheLife("weeks");
+    const response = await fetch(
+      `${process.env.GOOGLE_API_URL}${encodeURIComponent(address)}&key=${process.env.GOOGLE_API_KEY}`,
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch district data");
+    }
+  
+    const data = await response.json();
+
+    return transformCoords(data)
+  },
+);
 
 export function parseGeocodePlace(result: GeocodeResult): {
   city?: string;
@@ -76,10 +86,10 @@ export function parseGeocodePlace(result: GeocodeResult): {
   return { city, stateAbbrev };
 }
 
+/** City + state only (no postal code). ZIP is shown separately via the route `zip` prop / Address. */
 export function formatCityStateLabel(
   place: { city?: string; stateAbbrev?: string },
   resolvedState: string,
-  zipFallback: string
 ): string {
   if (place.city && place.stateAbbrev) {
     return `${place.city}, ${place.stateAbbrev}`;
@@ -93,11 +103,22 @@ export function formatCityStateLabel(
   if (resolvedState) {
     return resolvedState;
   }
-  return `ZIP ${zipFallback}`;
+  return "";
+}
+
+/**
+ * "City, ST" from one Google Geocoding API result.
+ * On the reps page, pass the same result you get from geocoding the ZIP (no extra API call).
+ */
+export function cityStateLabelFromGeocode(
+  result: GeocodeResult,
+): string {
+  const place = parseGeocodePlace(result);
+  return formatCityStateLabel(place, "");
 }
 
 export function getBoundsForDistrictQuery(
-  result: GeocodeResult
+  result: GeocodeResult,
 ): Coordinates | null {
   const g = result.geometry;
   if (g.bounds) {
@@ -159,7 +180,7 @@ export type StateDistrictResolution = {
 };
 
 export const getDistricts = async (
-  coordinates: Coordinates
+  coordinates: Coordinates,
 ): Promise<DistrictResolution> => {
   const url = constructDistrictUrl(coordinates, true, 54);
   const response = await fetch(url);
@@ -177,7 +198,7 @@ export const getDistricts = async (
 
   const districts = features.map(
     (feature: DistrictFeature) =>
-      feature.attributes.NAME.split(" ")[2]
+      feature.attributes.NAME.split(" ")[2],
   );
 
   const state = fipsToState[stateCode];
@@ -190,7 +211,7 @@ export const getDistricts = async (
 };
 
 export const getStateLegislativeDistricts = async (
-  coordinates: Coordinates
+  coordinates: Coordinates,
 ): Promise<StateDistrictResolution> => {
   const [upperRes, lowerRes] = await Promise.all([
     fetch(constructDistrictUrl(coordinates, true, 56)),
@@ -213,7 +234,7 @@ export const getStateLegislativeDistricts = async (
 
   const addFeatures = (
     features: DistrictFeature[],
-    chamberKey: "upper" | "lower"
+    chamberKey: "upper" | "lower",
   ) => {
     for (const feature of features) {
       const districtRaw =
@@ -256,7 +277,7 @@ export const getStateLegislativeDistricts = async (
 };
 
 function buildDistrictFeatureCollection(
-  features: DistrictFeature[]
+  features: DistrictFeature[],
 ): DistrictMapFeatureCollection | null {
   const out: DistrictMapFeature[] = [];
   for (const f of features) {
@@ -270,15 +291,13 @@ function buildDistrictFeatureCollection(
 function esriPolygonToGeoJSONFeature(
   feature: DistrictFeature,
   mapKey?: string,
-  nameOverride?: string
+  nameOverride?: string,
 ): DistrictMapFeature | null {
   const rings = feature.geometry?.rings;
   if (!rings?.length) return null;
 
   const coordinates = rings.map((ring: number[][]) => {
-    const mapped = ring.map(
-      ([x, y]) => [x, y] as [number, number]
-    );
+    const mapped = ring.map(([x, y]) => [x, y] as [number, number]);
     const first = mapped[0];
     const last = mapped[mapped.length - 1];
     if (
@@ -305,7 +324,7 @@ function esriPolygonToGeoJSONFeature(
 const constructDistrictUrl = (
   coordinates: Coordinates,
   includeGeometry: boolean,
-  layerId: number
+  layerId: number,
 ) => {
   const baseURL = process.env.DISTRICT_API_URL;
   if (!baseURL) {

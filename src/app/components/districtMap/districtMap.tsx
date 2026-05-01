@@ -1,6 +1,9 @@
 "use client";
 
-import type { Coordinates, DistrictMapFeatureCollection } from "@/app/lib/definitions";
+import type {
+  Coordinates,
+  DistrictMapFeatureCollection,
+} from "@/app/lib/definitions";
 import {
   districtFeatureName,
   districtNumberForMarker,
@@ -17,7 +20,6 @@ type MapFallback = {
 };
 
 type Props = {
-  apiKey: string;
   /**
    * Optional Google Cloud map ID. When set, district pins use {@link google.maps.marker.AdvancedMarkerElement}.
    * When omitted, pins use legacy {@link google.maps.Marker} (no extra console setup).
@@ -28,13 +30,12 @@ type Props = {
 };
 
 export default function DistrictMap({
-  apiKey,
   mapId = "",
   districtGeoJson,
   mapFallback,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
   const geoKey = districtGeoJson
     ? JSON.stringify(districtGeoJson)
     : "";
@@ -66,7 +67,10 @@ export default function DistrictMap({
         mapOptions.mapId = trimmedMapId;
       }
 
-      const map = new google.maps.Map(containerRef.current, mapOptions);
+      const map = new google.maps.Map(
+        containerRef.current,
+        mapOptions,
+      );
 
       const hasFeatures =
         districtGeoJson &&
@@ -76,14 +80,14 @@ export default function DistrictMap({
       if (hasFeatures) {
         map.data.addGeoJson(districtGeoJson);
         const styleRank = districtStyleIndexByName(
-          districtGeoJson.features
+          districtGeoJson.features,
         );
 
         let keyIdx = 0;
         map.data.forEach((feature) => {
           const mapKey = districtFeatureName(
             feature.getProperty("name"),
-            keyIdx
+            keyIdx,
           );
           feature.setProperty("_mapKey", mapKey);
           keyIdx++;
@@ -118,7 +122,9 @@ export default function DistrictMap({
 
           const markerPlaced = new Set<string>();
           map.data.forEach((feature) => {
-            const mapKey = String(feature.getProperty("_mapKey") ?? "");
+            const mapKey = String(
+              feature.getProperty("_mapKey") ?? "",
+            );
             if (!mapKey || markerPlaced.has(mapKey)) return;
             markerPlaced.add(mapKey);
 
@@ -134,7 +140,7 @@ export default function DistrictMap({
             const { stroke, fill } = paletteForDistrictRank(rank);
             const labelNum = districtNumberForMarker(
               feature.getProperty("name"),
-              rank
+              rank,
             );
 
             const pin = new PinElement({
@@ -156,7 +162,9 @@ export default function DistrictMap({
         } else {
           const markerPlaced = new Set<string>();
           map.data.forEach((feature) => {
-            const mapKey = String(feature.getProperty("_mapKey") ?? "");
+            const mapKey = String(
+              feature.getProperty("_mapKey") ?? "",
+            );
             if (!mapKey || markerPlaced.has(mapKey)) return;
             markerPlaced.add(mapKey);
 
@@ -172,7 +180,7 @@ export default function DistrictMap({
             const { stroke, fill } = paletteForDistrictRank(rank);
             const labelNum = districtNumberForMarker(
               feature.getProperty("name"),
-              rank
+              rank,
             );
 
             legacyMarkers.push(
@@ -205,7 +213,7 @@ export default function DistrictMap({
       } else if (mapFallback.bounds) {
         const b = new google.maps.LatLngBounds(
           mapFallback.bounds.southwest,
-          mapFallback.bounds.northeast
+          mapFallback.bounds.northeast,
         );
         map.fitBounds(b, 28);
       } else if (mapFallback.location) {

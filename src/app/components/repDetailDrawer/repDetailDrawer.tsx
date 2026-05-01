@@ -7,39 +7,32 @@ import { useLayoutEffect, useRef, useState } from "react";
 import type { Rep } from "@/app/lib/definitions";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import styles from "./repDetailDrawer.module.scss";
+import Image from "next/image";
 
-type ExternalLinkItem = { label: string; href: string };
+type ExternalLinkItem = { href: string; text: string };
 
 function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
   const links: ExternalLinkItem[] = [];
 
   if (rep.opensecrets_id?.trim()) {
     links.push({
-      label: "OpenSecrets",
       href: `https://www.opensecrets.org/members-of-congress/summary?cid=${encodeURIComponent(rep.opensecrets_id.trim())}`,
-    });
-  }
-
-  const twitterHandle = rep.twitter?.trim().replace(/^@/, "");
-  if (twitterHandle) {
-    links.push({
-      label: "Twitter",
-      href: `https://twitter.com/${encodeURIComponent(twitterHandle)}`,
+      text: "Who is funding this representative?",
     });
   }
 
   if (rep.govtrack_id != null) {
     links.push({
-      label: "GovTrack",
       href: `https://www.govtrack.us/congress/members/${rep.govtrack_id}`,
+      text: "Voting history and sponsored bills",
     });
   }
 
   if (rep.ballotpedia_id?.trim()) {
     const slug = rep.ballotpedia_id.trim().replace(/\s+/g, "_");
     links.push({
-      label: "Ballotpedia",
       href: `https://ballotpedia.org/${slug}`,
+      text: "Background and positions",
     });
   }
 
@@ -82,7 +75,11 @@ export default function RepDetailDrawer({
   const externalLinks = getRepExternalLinks(displayRep);
 
   return (
-    <Dialog.Root modal={false} open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root
+      modal={false}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <Dialog.Portal forceMount>
         <Dialog.Overlay forceMount asChild>
           <motion.div
@@ -106,14 +103,18 @@ export default function RepDetailDrawer({
             className={styles.panel}
             initial={{ transform: "translateX(100%)" }}
             animate={{
-              transform: open
-                ? "translateX(0%)"
-                : "translateX(100%)",
+              transform: open ? "translateX(0%)" : "translateX(100%)",
             }}
             transition={panelTransition}
             onAnimationComplete={handlePanelAnimationComplete}
           >
             <header className={styles.header}>
+              <Image
+                src={displayRep.image_url}
+                alt={displayRep.full_name}
+                width={150}
+                height={150}
+              />
               <div className={styles.headerText}>
                 <Dialog.Title className={styles.repName}>
                   {displayRep.full_name}
@@ -130,8 +131,7 @@ export default function RepDetailDrawer({
               <Dialog.Close
                 className={styles.closeButton}
                 aria-label="Close details"
-                type="button"  // refs for containers of elements
-
+                type="button"
               >
                 <X size={22} strokeWidth={2} aria-hidden />
               </Dialog.Close>
@@ -150,15 +150,15 @@ export default function RepDetailDrawer({
                     Links
                   </h2>
                   <ul className={styles.linksList}>
-                    {externalLinks.map(({ label, href }) => (
-                      <li key={`${label}-${href}`} className={styles.linksItem}>
+                    {externalLinks.map(({ href, text }) => (
+                      <li key={href} className={styles.linksItem}>
                         <a
                           href={href}
                           className={styles.externalLink}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {label}
+                          {text}
                         </a>
                       </li>
                     ))}
