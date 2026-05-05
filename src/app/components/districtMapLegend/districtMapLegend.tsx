@@ -1,6 +1,10 @@
 "use client";
 
-import type { Rep, StateDistrict, StateLegislator } from "@/app/lib/definitions";
+import type {
+  Rep,
+  StateDistrict,
+  StateLegislator,
+} from "@/app/lib/definitions";
 import { paletteForDistrictRank } from "@/app/lib/districtMapStyles";
 import {
   federalHouseLastName,
@@ -69,11 +73,7 @@ export default function DistrictMapLegend({
   federal,
   state: stateSlice,
 }: DistrictMapLegendProps) {
-  const {
-    districts,
-    houseReps,
-    districtRankByLabel,
-  } = federal;
+  const { districts, houseReps, districtRankByLabel } = federal;
   const {
     stateSenateDistricts,
     stateHouseDistricts,
@@ -86,7 +86,9 @@ export default function DistrictMapLegend({
 
       {level === "federal" ? (
         <>
-          <h3 className={styles.legendSubheader}>Federal</h3>
+          <h3 className={styles.legendSubheader}>
+            House of Representatives
+          </h3>
           <ul className={styles.legendList}>
             {districts.map((district, i) => {
               const rank =

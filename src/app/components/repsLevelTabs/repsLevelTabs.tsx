@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import styles from "./repsLevelTabs.module.scss";
+import { useLenis } from "lenis/react";
 
 export type RepsLevel = "federal" | "state";
 
@@ -10,8 +11,11 @@ type Props = {
   onChange: (level: RepsLevel) => void;
 };
 
-/** Federal vs state map/roster: skewed folder-style tab buttons. */
 export default function RepsLevelTabs({ value, onChange }: Props) {
+  const lenis = useLenis();
+  const scrollToTop = () => {
+    lenis?.scrollTo(0, { duration: 1.2 });
+  };
   return (
     <div
       className={styles.tabList}
@@ -26,7 +30,11 @@ export default function RepsLevelTabs({ value, onChange }: Props) {
           styles.tab,
           value === "federal" && styles.tabActive,
         )}
-        onClick={() => onChange("federal")}
+        onClick={() => {
+          if (value === "federal") return;
+          scrollToTop();
+          onChange("federal");
+        }}
       >
         Federal
       </button>
@@ -38,7 +46,11 @@ export default function RepsLevelTabs({ value, onChange }: Props) {
           styles.tab,
           value === "state" && styles.tabActive,
         )}
-        onClick={() => onChange("state")}
+        onClick={() => {
+          if (value === "state") return;
+          scrollToTop();
+          onChange("state");
+        }}
       >
         State
       </button>
