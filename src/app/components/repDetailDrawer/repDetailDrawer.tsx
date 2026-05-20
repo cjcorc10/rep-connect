@@ -8,6 +8,7 @@ import type { Rep } from "@/app/lib/definitions";
 import RepCardBottom from "../repCardBottom/repCardBottom";
 import styles from "./repDetailDrawer.module.scss";
 import Image from "next/image";
+import { BlockText } from "../blockText/blockText";
 
 type ExternalLinkItem = { href: string; text: string };
 
@@ -115,19 +116,25 @@ export default function RepDetailDrawer({
                 width={150}
                 height={150}
               />
-              <div className={styles.headerText}>
-                <Dialog.Title className={styles.repName}>
-                  {displayRep.full_name}
-                </Dialog.Title>
-                <p className={styles.repMeta}>
-                  {displayRep.party}
-                  {" · "}
-                  {displayRep.state}{" "}
-                  {displayRep.type === "sen"
-                    ? "Senator"
-                    : `District ${displayRep.district}`}
-                </p>
-              </div>
+              <BlockText
+                animateOnScroll={false}
+                stagger={0.05}
+                blockColor="var(--red-accent)"
+              >
+                <div className={styles.headerText}>
+                  <Dialog.Title className={styles.repName}>
+                    {displayRep.full_name}
+                  </Dialog.Title>
+                  <p className={styles.repMeta}>
+                    {displayRep.party}
+                    {" · "}
+                    {displayRep.state}{" "}
+                    {displayRep.type === "sen"
+                      ? "Senator"
+                      : `District ${displayRep.district}`}
+                  </p>
+                </div>
+              </BlockText>
               <Dialog.Close
                 className={styles.closeButton}
                 aria-label="Close details"
@@ -139,31 +146,38 @@ export default function RepDetailDrawer({
             <div className={styles.body}>
               <RepCardBottom rep={displayRep} />
               {externalLinks.length > 0 ? (
-                <section
-                  className={styles.linksSection}
-                  aria-labelledby="drawer-external-links-heading"
+                <BlockText
+                  delay={0.35}
+                  animateOnScroll={false}
+                  stagger={0.05}
+                  blockColor="var(--red-accent)"
                 >
-                  <h2
-                    id="drawer-external-links-heading"
-                    className={styles.linksHeading}
+                  <section
+                    className={styles.linksSection}
+                    aria-labelledby="drawer-external-links-heading"
                   >
-                    Links
-                  </h2>
-                  <ul className={styles.linksList}>
-                    {externalLinks.map(({ href, text }) => (
-                      <li key={href} className={styles.linksItem}>
-                        <a
-                          href={href}
-                          className={styles.externalLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {text}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
+                    <h2
+                      id="drawer-external-links-heading"
+                      className={styles.linksHeading}
+                    >
+                      Links
+                    </h2>
+                    <ul className={styles.linksList}>
+                      {externalLinks.map(({ href, text }) => (
+                        <li key={href} className={styles.linksItem}>
+                          <a
+                            href={href}
+                            className={styles.externalLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {text}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                </BlockText>
               ) : null}
             </div>
           </motion.div>

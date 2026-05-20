@@ -121,14 +121,13 @@
 
       .repNameNavHeader {
         --header-row-pad-y: clamp(0.85rem, 3vw, 1.35rem);
-
         display: grid;
         grid-column: 1 / -1;
         grid-template-columns: subgrid;
         align-items: stretch;
         box-sizing: border-box;
         background-color: var(--blue-accent);
-        font-size: 0.125em;
+        font-size: 0.175em;
         font-style: normal;
         font-weight: 800;
         letter-spacing: 0.14em;
@@ -170,7 +169,7 @@
       }
 
       .headerKey {
-        color: rgba(255, 255, 255, 0.55);
+        color: rgba(255, 255, 255);
       }
 
       .repNameNav {

@@ -6,6 +6,7 @@ import type { RepsData } from "@/app/lib/definitions";
 import { useRepStore } from "@/app/store/useRepStore";
 import type { RepsLevel } from "@/app/components/repsLevelTabs/repsLevelTabs";
 import { useEffect, type ComponentProps } from "react";
+import { Roster } from "./Roster";
 
 type RosterRows = ComponentProps<typeof RepRoster>["rows"];
 
@@ -29,8 +30,9 @@ export default function RepsPanel({
   const detailRep =
     detailBioguideId === null
       ? null
-      : (federalReps.find((r) => r.bioguide_id === detailBioguideId) ??
-        null);
+      : (federalReps.find(
+          (r) => r.bioguide_id === detailBioguideId,
+        ) ?? null);
 
   useEffect(() => {
     if (level === "state") closeRepDetail();
@@ -38,7 +40,7 @@ export default function RepsPanel({
 
   return (
     <>
-      <RepRoster
+      {/* <RepRoster
         rows={rosterRows}
         onRowDetails={
           level === "federal"
@@ -59,7 +61,8 @@ export default function RepsPanel({
             ? "State legislators are unavailable for this address right now."
             : undefined
         }
-      />
+      /> */}
+      <Roster rows={rosterRows} onClickRow={() => {}} />
       {level === "federal" ? (
         <RepDetailDrawer
           rep={detailRep}

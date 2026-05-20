@@ -95,15 +95,10 @@ function RosterColumnHeaders() {
       aria-label="Columns"
     >
       <span className={styles.headerKey}>Name</span>
-      <span className={styles.headerKey}>Image</span>
+      {/* <span className={styles.headerKey}>Image</span> */}
       <span className={meta}>Chamber</span>
       <span className={meta}>District</span>
-      <span
-        className={clsx(
-          meta,
-          styles.headerKeyTrailDesktop,
-        )}
-      >
+      <span className={clsx(meta, styles.headerKeyTrailDesktop)}>
         Term
       </span>
     </div>
@@ -115,17 +110,17 @@ function RosterRow({
   index,
   rowCount,
   onRowDetails,
-  isHovered,
-  onHoverChange,
-  showHoverPortrait,
+  // isHovered,
+  // onHoverChange,
+  // showHoverPortrait,
 }: {
   row: RepRosterRow;
   index: number;
   rowCount: number;
   onRowDetails?: (row: RepRosterRow) => void;
-  isHovered: boolean;
-  onHoverChange: (hovering: boolean) => void;
-  showHoverPortrait: boolean;
+  // isHovered: boolean;
+  // onHoverChange: (hovering: boolean) => void;
+  // showHoverPortrait: boolean;
 }) {
   const tel = row.phone?.trim().replace(/\s/g, "") ?? "";
   const detailsDisabled = isDetailsDisabled(row, onRowDetails);
@@ -133,7 +128,7 @@ function RosterRow({
     if (!detailsDisabled) onRowDetails?.(row);
   };
 
-  const hoverUrl = portraitUrlForHover(row);
+  // const hoverUrl = portraitUrlForHover(row);
   const floatAtBottom = index >= Math.ceil(rowCount / 2);
 
   const cell = styles.repNameNavCell;
@@ -143,18 +138,16 @@ function RosterRow({
     <div
       className={clsx(
         styles.repNameNav,
-        isHovered &&
-          showHoverPortrait &&
-          styles.repNameNavHoverLift,
+        // isHovered && showHoverPortrait && styles.repNameNavHoverLift,
       )}
-      onMouseEnter={() => onHoverChange(true)}
-      onMouseLeave={() => onHoverChange(false)}
-      onFocusCapture={() => onHoverChange(true)}
-      onBlurCapture={(e) => {
-        const next = e.relatedTarget;
-        if (next && e.currentTarget.contains(next as Node)) return;
-        onHoverChange(false);
-      }}
+      // onMouseEnter={() => onHoverChange(true)}
+      // onMouseLeave={() => onHoverChange(false)}
+      // onFocusCapture={() => onHoverChange(true)}
+      // onBlurCapture={(e) => {
+      //   const next = e.relatedTarget;
+      //   if (next && e.currentTarget.contains(next as Node)) return;
+      //   onHoverChange(false);
+      // }}
       onClick={(e) => {
         const el = e.target as HTMLElement | null;
         if (
@@ -170,7 +163,7 @@ function RosterRow({
       <div className={cell}>
         <span className={styles.colValue}>{row.shortName}</span>
       </div>
-      <div className={cell} aria-hidden="true">
+      {/* <div className={cell} aria-hidden="true">
         {isHovered && showHoverPortrait ? (
           <div
             className={clsx(
@@ -181,7 +174,7 @@ function RosterRow({
             <HoverPortrait imageUrl={hoverUrl} />
           </div>
         ) : null}
-      </div>
+      </div> */}
       <div className={desktop}>
         <span className={styles.colValue}>{row.chamber}</span>
       </div>
@@ -198,10 +191,7 @@ function RosterRow({
         </span>
       </div>
       <div
-        className={clsx(
-          desktop,
-          styles.repNameNavCellTrailDesktop,
-        )}
+        className={clsx(desktop, styles.repNameNavCellTrailDesktop)}
       >
         <span
           className={clsx(
@@ -289,6 +279,7 @@ export default function RepRoster({
   }
 
   const n = rows.length;
+  console.log(rows);
 
   return (
     <div className={styles.main}>

@@ -1,0 +1,104 @@
+.roster {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 0%,
+    var(--blue-accent) 16%,
+    color-mix(
+        in srgb,
+        var(--primary-color) 12%,
+        var(--blue-accent) 88%
+      )
+      32%,
+    color-mix(
+        in srgb,
+        var(--primary-color) 35%,
+        var(--blue-accent) 65%
+      )
+      48%,
+    color-mix(
+        in srgb,
+        var(--primary-color) 58%,
+        var(--blue-accent) 42%
+      )
+      64%,
+    color-mix(
+        in srgb,
+        var(--primary-color) 78%,
+        var(--blue-accent) 22%
+      )
+      80%,
+    color-mix(
+        in srgb,
+        var(--primary-color) 92%,
+        var(--blue-accent) 8%
+      )
+      92%,
+    var(--primary-color) 100%
+  );
+  .rosterColumnHeader {
+    display: flex;
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    background-color: var(--blue-accent);
+    justify-content: space-between;
+
+    .rosterColumnKey {
+      text-align: left;
+      flex: 1;
+    }
+
+    .keyGroup {
+      display: flex;
+      justify-content: space-between;
+
+      .rosterColumnKey {
+        width: 8rem;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.rosterRow {
+  display: flex;
+  padding: 0.4rem 2rem;
+  align-items: center;
+
+  .repName {
+    flex: 1;
+    font-size: 3rem;
+    color: var(--background-color);
+    font-family: montserrat, sans-serif;
+    font-style: italic;
+    font-weight: 1000;
+    letter-spacing: -0.07em;
+    font-size: clamp(2.4rem, 7vw, 6.4rem);
+    text-transform: uppercase;
+  }
+  .keyGroup {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.1rem;
+    color: white;
+
+    .rosterColumnValue {
+      font-size: 1.4rem;
+      width: 8rem;
+      text-align: center;
+      border: 1px rgba(255, 255, 255, 0.8) solid;
+      height: fit-content;
+
+      &:nth-child(even) {
+        border-radius: 9999rem;
+      }
+    }
+  }
+}
+
+.rosterRowSeparator {
+  height: 0.1rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 100vw;
+}
