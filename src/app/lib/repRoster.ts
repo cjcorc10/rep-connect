@@ -1,5 +1,9 @@
 import type { FederalHouseColorsByDistrict } from "./districtMapStyles";
-import type { Rep, StateDistrict, StateLegislator } from "./definitions";
+import type {
+  Rep,
+  StateDistrict,
+  StateLegislator,
+} from "./definitions";
 import { districtsMatch } from "@/app/reps/[zip]/helper";
 import { buildRepImageApiUrl } from "./repImageUrl";
 
@@ -8,7 +12,6 @@ export type RepRosterRow = {
   shortName: string;
   fullName: string;
   imageUrl: string;
-  /** Federal: `/api/rep-image?…` for next/image src (proxied image). */
   portraitSrc?: string;
   portraitProxyOcdId?: string;
   phone?: string;
@@ -20,7 +23,9 @@ export type RepRosterRow = {
   districtColorFill?: string;
 };
 
-export function nextMidtermElectionYear(from: Date = new Date()): number {
+export function nextMidtermElectionYear(
+  from: Date = new Date(),
+): number {
   let y = from.getFullYear();
   for (;;) {
     while (y % 4 !== 2) y += 1;
@@ -29,6 +34,26 @@ export function nextMidtermElectionYear(from: Date = new Date()): number {
     y += 4;
   }
 }
+
+export const toHoverImageItems = (rows: RepRosterRow[]) => {
+  return rows.map((row) => {
+    return {
+      id: row.id,
+      imageUrl: row.portraitSrc ?? row.imageUrl,
+    };
+  });
+};
+
+export const colorToGradiant = (color: string) => {
+  const offset = 8192;
+  const cleanedHex = color.replace("#", "");
+  const colorNum = parseInt(cleanedHex, 16);
+  const darkerColorNum = colorNum - offset;
+  const lighterColorNum = colorNum + offset;
+  const darkerColor = `#${darkerColorNum.toString(16)}`;
+  const lighterColor = `#${lighterColorNum.toString(16)}`;
+  return `linear-gradient(to top, ${darkerColor}, ${color}, ${lighterColor})`;
+};
 
 export function termEndsAtNextMidterm(
   termEnd: Date,

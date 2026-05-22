@@ -1,4 +1,8 @@
-import type { RepRosterRow } from "@/app/lib/repRoster";
+import {
+  colorToGradiant,
+  toHoverImageItems,
+  type RepRosterRow,
+} from "@/app/lib/repRoster";
 import styles from "./roster.module.scss";
 
 type RosterProps = {
@@ -8,9 +12,11 @@ type RosterProps = {
 
 export const Roster = ({ rows, onClickRow }: RosterProps) => {
   const numReps = rows.length;
+  const hoverImageItems = toHoverImageItems(rows);
 
   return (
     <div className={styles.roster}>
+      {/* <HoverImage items={hoverImageItems} /> */}
       <RosterColumnHeader />
       {rows.map((row, index) => (
         <div key={row.id}>
@@ -25,15 +31,28 @@ export const Roster = ({ rows, onClickRow }: RosterProps) => {
 };
 
 const RosterRow = ({ row }: { row: RepRosterRow }) => {
+  const date = new Date(row.termEndDisplay);
+  const year = date.getFullYear();
+  console.log(row);
+
+  const gradient = colorToGradiant(
+    row.districtColorFill || `#4e9bff`,
+  );
+
   return (
     <div className={styles.rosterRow}>
       <h1 className={styles.repName}>{row.shortName}</h1>
       <div className={styles.keyGroup}>
         <h3 className={styles.rosterColumnValue}>{row.chamber}</h3>
-        <h3 className={styles.rosterColumnValue}>{row.district}</h3>
-        <h3 className={styles.rosterColumnValue}>
-          {row.termEndDisplay}
+        <h3
+          className={styles.rosterColumnValue}
+          style={{
+            background: gradient,
+          }}
+        >
+          {row.district}
         </h3>
+        <h3 className={styles.rosterColumnValue}>{year}</h3>
       </div>
     </div>
   );

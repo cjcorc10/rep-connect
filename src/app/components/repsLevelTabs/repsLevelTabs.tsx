@@ -2,20 +2,26 @@
 
 import clsx from "clsx";
 import styles from "./repsLevelTabs.module.scss";
-import { useLenis } from "lenis/react";
 
 export type RepsLevel = "federal" | "state";
 
 type Props = {
   value: RepsLevel;
   onChange: (level: RepsLevel) => void;
+  ref: React.RefObject<HTMLDivElement | null>;
 };
 
-export default function RepsLevelTabs({ value, onChange }: Props) {
-  const lenis = useLenis();
-  const scrollToTop = () => {
-    lenis?.scrollTo(0, { duration: 1.2 });
+export default function RepsLevelTabs({
+  value,
+  onChange,
+  ref,
+}: Props) {
+  const handleClick = () => {
+    if (!ref.current) return;
+    const target = ref.current;
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
   };
+
   return (
     <div
       className={styles.tabList}
@@ -32,7 +38,7 @@ export default function RepsLevelTabs({ value, onChange }: Props) {
         )}
         onClick={() => {
           if (value === "federal") return;
-          scrollToTop();
+          handleClick();
           onChange("federal");
         }}
       >
@@ -48,7 +54,7 @@ export default function RepsLevelTabs({ value, onChange }: Props) {
         )}
         onClick={() => {
           if (value === "state") return;
-          scrollToTop();
+          handleClick();
           onChange("state");
         }}
       >

@@ -11,6 +11,7 @@ import Refine from "@/app/components/refine/refine";
 import { useRepsPage } from "../../hooks/useRepsPage";
 import { RepsLocationPayload } from "@/app/lib/definitions";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRef } from "react";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -26,6 +27,8 @@ export default function RepsPageClient({ payload }: Props) {
     refine,
   } = useRepsPage({ payload });
 
+  const mapSectionRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
       <main
@@ -37,9 +40,10 @@ export default function RepsPageClient({ payload }: Props) {
         <RepsLevelTabs
           value={activeLevel}
           onChange={setActiveLevel}
+          ref={mapSectionRef}
         />
         <section className={styles.headerSection}>
-          <div className={styles.mapContainer}>
+          <div ref={mapSectionRef} className={styles.mapContainer}>
             <div className={styles.mapWithLegend}>
               <AnimatePresence mode="popLayout">
                 <motion.div
