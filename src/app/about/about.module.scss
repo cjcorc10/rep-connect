@@ -1,0 +1,1012 @@
+// ══════════════════════════════════════════════════════════════
+//  Republic Design Tokens — About Page
+//  Edit values here to restyle the entire about page.
+// ══════════════════════════════════════════════════════════════
+
+// ── Brand Colors
+$republic-navy:           #082554;
+$republic-navy-mid:       #0f3369;
+$republic-navy-deep:      #13315f;
+$republic-navy-light:     rgba($republic-navy, 0.06);
+$republic-ink:            #1e1b16;
+$republic-red:            #d92d3a;
+$republic-red-mid:        #c12b3a;
+$republic-red-dark:       #ab2331;
+$republic-blue-glow:      #4e9bff;
+$republic-brand-red:      #e50000;
+
+// ── Text Colors
+$republic-text-body:      #5b6473;
+$republic-text-body-dark: #515c6d;
+$republic-text-body-hover:#4f5968;
+$republic-text-muted:     #8a919d;
+$republic-text-faint:     #b0b7c0;
+
+// ── Surface & Background Colors
+$republic-surface:        #fffdfa;
+$republic-bg-warm:        #f7f4f0;
+$republic-bg-photo:       #d9e4f5;
+$republic-bg-tan:         #f2eee8;
+$republic-bg-tan-dark:    #ece7e0;
+$republic-bg-faq:         #f6f4f1;
+$republic-bg-faq-dark:    #f1efeb;
+
+// ── Interactive
+$republic-focus:          rgba($republic-blue-glow, 0.45);
+
+// ── Layout
+$republic-max-width:      90rem;
+
+// ── Elevation (Box Shadows)
+$republic-shadow-card:    0 10px 24px rgba($republic-navy, 0.06);
+$republic-shadow-lift:    0 18px 34px rgba($republic-navy, 0.10);
+$republic-shadow-photo:   0 26px 46px rgba($republic-navy, 0.12);
+$republic-shadow-quote:   0 22px 40px rgba($republic-navy, 0.14);
+$republic-shadow-btn:     0 14px 28px rgba($republic-navy, 0.16);
+$republic-shadow-btn-hover: 0 18px 32px rgba($republic-navy, 0.20);
+
+// ── Transition Durations
+$republic-dur-fast:       0.2s;
+$republic-dur-subtle:     0.24s;
+$republic-dur-base:       0.28s;
+$republic-dur-medium:     0.3s;
+$republic-dur-frame:      0.32s;
+$republic-dur-slow:       0.45s;
+$republic-ease:           ease;
+
+// ══════════════════════════════════════════════════════════════
+//  Page Base
+// ══════════════════════════════════════════════════════════════
+
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100vh - 5rem);
+  overflow: clip;
+  background:
+    radial-gradient(40rem 24rem at 86% 12%, rgba($republic-brand-red, 0.08), transparent 70%),
+    radial-gradient(
+      34rem 20rem at 12% 78%,
+      rgba($republic-blue-glow, 0.08),
+      transparent 72%
+    ),
+    $republic-bg-warm;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+  }
+
+  &::before {
+    background:
+      radial-gradient(
+        30rem 20rem at 14% 18%,
+        rgba($republic-red, 0.06),
+        transparent 72%
+      ),
+      radial-gradient(
+        34rem 22rem at 82% 12%,
+        rgba($republic-blue-glow, 0.06),
+        transparent 74%
+      );
+  }
+
+  &::after {
+    background:
+      radial-gradient(
+        26rem 18rem at 78% 68%,
+        rgba($republic-red, 0.04),
+        transparent 72%
+      ),
+      radial-gradient(
+        32rem 20rem at 18% 80%,
+        rgba($republic-blue-glow, 0.05),
+        transparent 74%
+      );
+  }
+}
+
+.page > * {
+  position: relative;
+  z-index: 1;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Hero Section
+// ══════════════════════════════════════════════════════════════
+
+.hero {
+  min-height: calc(100vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+// ── Newspaper masthead banner
+.heroMasthead {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid $republic-red;
+}
+
+.heroMastheadTitle {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1rem, 1.4vw, 1.3rem);
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.14em;
+  color: $republic-navy;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.heroMastheadRule {
+  flex: 1;
+  height: 1px;
+  background: rgba($republic-navy, 0.20);
+}
+
+.heroMastheadMeta {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $republic-text-muted;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.heroInner {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+  position: relative;
+}
+
+// ── Column rule — injected as a positioned sibling, desktop only
+.heroColumnRule {
+  display: none;
+}
+
+.heroCopyColumn {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyebrowLine {
+  width: 4.8rem;
+  height: 2px;
+  background: $republic-red;
+  flex-shrink: 0;
+  transform-origin: left center;
+}
+
+.eyebrow {
+  margin: 0;
+  color: $republic-red;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.heroTitle {
+  margin: 0;
+  color: $republic-navy;
+  font-weight: 700;
+  font-size: clamp(4rem, 7.2vw, 7.6rem);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  max-width: 14ch;
+  text-wrap: pretty;
+}
+
+.heroCopy {
+  margin: 0;
+  max-width: 34rem;
+  color: $republic-text-body;
+  font-size: clamp(1.125rem, 1.3vw, 1.55rem);
+  line-height: 1.52;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  align-items: center;
+  padding-top: 0.4rem;
+}
+
+.primaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.75rem;
+  padding: 0.9rem 2rem;
+  background: $republic-navy;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: $republic-shadow-btn;
+  transition:
+    transform $republic-dur-fast $republic-ease,
+    box-shadow $republic-dur-fast $republic-ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $republic-shadow-btn-hover;
+  }
+
+  &:focus-visible {
+    outline: 3px solid $republic-focus;
+    outline-offset: 4px;
+  }
+}
+
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: $republic-navy;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: color $republic-dur-fast $republic-ease;
+
+  span {
+    transition: transform $republic-dur-fast $republic-ease;
+  }
+
+  &:hover span {
+    transform: translateX(2px);
+  }
+
+  &:hover {
+    color: $republic-navy-deep;
+  }
+
+  &:focus-visible {
+    outline: 3px solid $republic-focus;
+    outline-offset: 4px;
+  }
+}
+
+.heroVisualColumn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  will-change: transform;
+}
+
+.photoCard {
+  width: 100%;
+  aspect-ratio: 0.82;
+  overflow: hidden;
+  background: $republic-bg-photo;
+  box-shadow: $republic-shadow-photo;
+  transition:
+    transform $republic-dur-frame $republic-ease,
+    box-shadow $republic-dur-frame $republic-ease;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.28) sepia(0.3) contrast(0.82) brightness(1.08);
+  transition: transform $republic-dur-slow $republic-ease;
+}
+
+// ── Editorial pull-quote — sits below photo, newspaper style
+.quoteCard {
+  width: 100%;
+  padding: 1.1rem 1.4rem 1rem;
+  background: $republic-surface;
+  border-left: 4px solid $republic-red;
+  box-shadow: $republic-shadow-quote;
+}
+
+.quoteText {
+  margin: 0;
+  color: $republic-navy-deep;
+  font-size: clamp(1.15rem, 1.6vw, 1.6rem);
+  line-height: 1.28;
+  font-style: italic;
+}
+
+.quoteAuthor {
+  margin: 0.75rem 0 0;
+  color: $republic-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.heroVisualColumn:hover .photoCard {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 52px rgba($republic-navy, 0.16);
+}
+
+.heroVisualColumn:hover .photo {
+  transform: scale(1.02);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Mission Section
+// ══════════════════════════════════════════════════════════════
+
+.missionSection {
+  padding: clamp(2.2rem, 4vw, 4rem) clamp(1rem, 3vw, 2.5rem)
+    clamp(2.2rem, 4vw, 4rem);
+  background: linear-gradient(180deg, $republic-bg-tan 0%, $republic-bg-tan-dark 100%);
+  border-top: 1px solid rgba($republic-navy, 0.08);
+}
+
+.missionInner {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.8rem, 3vw, 3rem);
+  align-items: start;
+}
+
+.missionIntro {
+  display: grid;
+  gap: 1.15rem;
+
+  h2 {
+    margin: 0;
+    color: $republic-navy;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 3.2vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 0;
+    max-width: 35rem;
+    color: $republic-text-body-dark;
+    font-size: clamp(1.1rem, 1.1vw, 1.35rem);
+    line-height: 1.62;
+  }
+}
+
+.missionRule {
+  width: 5.6rem;
+  height: 4px;
+  background: $republic-red;
+  transform-origin: left center;
+}
+
+.missionGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.missionCard {
+  background: rgba(#fff, 0.78);
+  border: 1px solid rgba($republic-navy, 0.06);
+  padding: 2rem 2rem 1.9rem;
+  min-height: 15rem;
+  box-shadow: $republic-shadow-card;
+  transition:
+    transform $republic-dur-base $republic-ease,
+    box-shadow $republic-dur-base $republic-ease,
+    border-color $republic-dur-base $republic-ease,
+    background-color $republic-dur-base $republic-ease;
+
+  h3 {
+    margin: 0 0 0.85rem;
+    color: $republic-navy;
+    font-size: clamp(1.6rem, 1.4vw, 2.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    margin: 0;
+    color: $republic-text-body;
+    font-size: clamp(1rem, 0.8vw, 1.18rem);
+    line-height: 1.58;
+    max-width: 24ch;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    background: rgba(#fff, 0.92);
+    border-color: rgba($republic-navy, 0.12);
+    box-shadow: $republic-shadow-lift;
+  }
+}
+
+.missionIcon {
+  width: 1.55rem;
+  height: 1.55rem;
+  color: $republic-red-mid;
+  margin-bottom: 1.25rem;
+  transition:
+    transform $republic-dur-base $republic-ease,
+    color $republic-dur-base $republic-ease;
+}
+
+.missionCard:hover .missionIcon {
+  transform: translateY(-2px) scale(1.04);
+  color: $republic-red-dark;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  How It Works Section
+// ══════════════════════════════════════════════════════════════
+
+.howSection {
+  padding: clamp(2.2rem, 4vw, 4rem) clamp(1rem, 3vw, 2.5rem)
+    clamp(3rem, 5vw, 5rem);
+  background:
+    radial-gradient(32rem 18rem at 86% 18%, rgba($republic-brand-red, 0.05), transparent 72%),
+    radial-gradient(
+      26rem 16rem at 12% 72%,
+      rgba($republic-blue-glow, 0.06),
+      transparent 72%
+    ),
+    $republic-bg-warm;
+}
+
+.howInner {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(1.4rem, 2vw, 2rem);
+}
+
+.howHeader {
+  display: grid;
+  gap: 0.7rem;
+
+  h2 {
+    margin: 0;
+    color: $republic-navy;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 3.4vw, 4.4rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 0;
+    color: $republic-text-body;
+    font-size: clamp(1.08rem, 1vw, 1.32rem);
+    line-height: 1.55;
+  }
+}
+
+.howGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.howCard {
+  position: relative;
+  min-height: 16rem;
+  padding: 2rem 2rem 1.7rem;
+  background: rgba(#fff, 0.50);
+  border: 1px solid rgba($republic-navy, 0.04);
+  transition:
+    transform $republic-dur-base $republic-ease,
+    box-shadow $republic-dur-base $republic-ease,
+    border-color $republic-dur-base $republic-ease,
+    background-color $republic-dur-base $republic-ease;
+
+  h3 {
+    position: relative;
+    z-index: 1;
+    margin: 1rem 0 1rem;
+    color: $republic-navy;
+    font-size: clamp(1.65rem, 1.3vw, 2.3rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  p:last-child {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    max-width: 22ch;
+    color: $republic-text-body;
+    font-size: clamp(1.02rem, 0.82vw, 1.22rem);
+    line-height: 1.6;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    background: rgba(#fff, 0.76);
+    border-color: rgba($republic-navy, 0.10);
+    box-shadow: $republic-shadow-lift;
+  }
+}
+
+.howNumber {
+  position: absolute;
+  top: 0.15rem;
+  right: 1rem;
+  margin: 0;
+  color: rgba($republic-navy, 0.06);
+  font-size: clamp(4.2rem, 5vw, 6.4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  transition:
+    transform $republic-dur-base $republic-ease,
+    color $republic-dur-base $republic-ease;
+}
+
+.howCard:hover .howNumber {
+  transform: translate(-4px, -4px);
+  color: rgba($republic-navy, 0.10);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Founder Section
+// ══════════════════════════════════════════════════════════════
+
+.founderSection {
+  padding: clamp(2.2rem, 4vw, 4rem) clamp(1rem, 3vw, 2.5rem)
+    clamp(3.5rem, 5vw, 5rem);
+  background: linear-gradient(180deg, $republic-bg-tan 0%, $republic-bg-tan-dark 100%);
+}
+
+.founderInner {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.8rem, 3vw, 3rem);
+  align-items: start;
+}
+
+.founderIntro {
+  display: grid;
+  gap: 1.15rem;
+
+  h2 {
+    margin: 0;
+    color: $republic-navy;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 3.2vw, 4rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 0;
+    max-width: 35rem;
+    color: $republic-text-body-dark;
+    font-size: clamp(1.1rem, 1.1vw, 1.35rem);
+    line-height: 1.62;
+  }
+}
+
+.founderRule {
+  width: 5.6rem;
+  height: 4px;
+  background: $republic-red;
+  transform-origin: left center;
+}
+
+.founderProfile {
+  display: grid;
+  gap: 0;
+  justify-items: center;
+  width: min(100%, 22rem);
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.founderImageWrap {
+  width: min(100%, 15rem);
+  overflow: hidden;
+  box-shadow: $republic-shadow-quote;
+  transition:
+    transform $republic-dur-medium $republic-ease,
+    box-shadow $republic-dur-medium $republic-ease,
+    filter $republic-dur-medium $republic-ease;
+}
+
+.founderImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 0.82;
+  object-fit: cover;
+  filter: grayscale(100%);
+  transition:
+    transform $republic-dur-slow $republic-ease,
+    filter $republic-dur-slow $republic-ease;
+}
+
+.founderQuoteCard {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  --founder-card-x: 0px;
+  --founder-card-y: 0px;
+  width: min(20rem, 100%);
+  padding: 1.5rem 1.6rem 1.4rem;
+  background: $republic-surface;
+  box-shadow: $republic-shadow-quote;
+  border-left: 4px solid $republic-red;
+  transform: translate(var(--founder-card-x), var(--founder-card-y));
+  transition:
+    transform $republic-dur-base $republic-ease,
+    box-shadow $republic-dur-base $republic-ease;
+}
+
+.founderQuoteText {
+  margin: 0;
+  color: $republic-navy-deep;
+  font-size: clamp(0.9rem, 1.1vw, 1.15rem);
+  line-height: 1.28;
+  font-style: italic;
+}
+
+.founderQuoteAuthor {
+  margin: 1rem 0 0;
+  color: $republic-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.founderQuoteTitle {
+  color: $republic-text-faint;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+}
+
+.founderProfile:hover .founderImageWrap {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 48px rgba($republic-navy, 0.18);
+}
+
+.founderProfile:hover .founderImage {
+  transform: scale(1.025);
+  filter: grayscale(88%);
+}
+
+.founderProfile:hover .founderQuoteCard {
+  transform: translate(
+    calc(var(--founder-card-x) - 4px),
+    calc(var(--founder-card-y) - 4px)
+  );
+  box-shadow: 0 26px 44px rgba($republic-navy, 0.18);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  FAQ Section
+// ══════════════════════════════════════════════════════════════
+
+.faqSection {
+  padding: clamp(2.6rem, 4vw, 4.8rem) clamp(1rem, 3vw, 2.5rem)
+    clamp(3.2rem, 5vw, 5.8rem);
+  background: linear-gradient(180deg, $republic-bg-faq 0%, $republic-bg-faq-dark 100%);
+  border-top: 1px solid rgba($republic-navy, 0.09);
+}
+
+.faqInner {
+  width: min(100%, $republic-max-width);
+  margin: 0 auto;
+  place-content: center;
+  display: grid;
+  gap: clamp(1.8rem, 2vw, 2.4rem);
+}
+
+.faqHeader {
+  display: grid;
+  gap: 0.8rem;
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    color: $republic-navy;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 3.2vw, 4rem);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 0 auto;
+    color: $republic-text-body;
+    font-size: clamp(1.04rem, 1.02vw, 1.28rem);
+    line-height: 1.58;
+    // max-width: 50rem;
+  }
+}
+
+.faqList {
+  border-top: 1px solid rgba($republic-navy, 0.10);
+}
+
+.faqItem {
+  position: relative;
+  padding: clamp(1.55rem, 1.9vw, 2rem) clamp(0.8rem, 1.2vw, 1.25rem);
+  border-bottom: 1px solid rgba($republic-navy, 0.10);
+  transition:
+    border-color $republic-dur-subtle $republic-ease,
+    background-color $republic-dur-subtle $republic-ease,
+    box-shadow $republic-dur-subtle $republic-ease;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: clamp(0.3rem, 0.6vw, 0.55rem);
+    top: 1.25rem;
+    bottom: 1.25rem;
+    width: 3px;
+    background: linear-gradient(180deg, $republic-red 0%, $republic-navy 100%);
+    opacity: 0;
+    transform: scaleY(0.7);
+    transition:
+      opacity $republic-dur-subtle $republic-ease,
+      transform $republic-dur-subtle $republic-ease;
+  }
+
+  &:hover {
+    border-color: rgba($republic-navy, 0.14);
+    background: rgba(#fff, 0.26);
+    box-shadow: inset 0 0 0 1px rgba(#fff, 0.22);
+  }
+
+  &:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.faqQuestion {
+  color: $republic-navy;
+  margin: 0;
+  font-size: clamp(1.95rem, 2vw, 2.3rem);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  transform: translateX(0);
+  transition:
+    color $republic-dur-subtle $republic-ease,
+    transform $republic-dur-subtle $republic-ease;
+}
+
+.faqAnswer {
+  margin: 0.8rem 0 0;
+  color: $republic-text-body;
+  font-size: clamp(1.04rem, 0.96vw, 1.24rem);
+  line-height: 1.62;
+  transform: translateX(0);
+  transition:
+    color $republic-dur-subtle $republic-ease,
+    transform $republic-dur-subtle $republic-ease;
+  // max-width: 72ch;
+}
+
+.faqItem:hover .faqQuestion {
+  color: $republic-navy-mid;
+  transform: translateX(0.65rem);
+}
+
+.faqItem:hover .faqAnswer {
+  color: $republic-text-body-hover;
+  transform: translateX(0.65rem);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Responsive Breakpoints
+// ══════════════════════════════════════════════════════════════
+
+@media (max-width: 1024px) {
+  .hero {
+    padding: 1.5rem 1.25rem 2rem;
+  }
+
+  .heroMasthead {
+    margin-bottom: 1rem;
+  }
+
+  .heroInner {
+    gap: 2.2rem;
+  }
+
+  .heroCopyColumn {
+    text-align: center;
+    justify-items: center;
+  }
+
+  .eyebrowRow {
+    justify-content: center;
+  }
+
+  .heroActions {
+    justify-content: center;
+  }
+
+  .heroTitle {
+    font-size: clamp(3.4rem, 8vw, 5.8rem);
+    max-width: 12ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .heroCopy {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    min-height: auto;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .heroMasthead {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .heroMastheadMeta {
+    display: none;
+  }
+
+  .heroInner {
+    gap: 2rem;
+  }
+
+  .heroCopyColumn {
+    gap: 1.25rem;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .eyebrowRow {
+    justify-content: center;
+  }
+
+  .heroActions {
+    justify-content: center;
+  }
+
+  .heroTitle {
+    max-width: 12ch;
+    font-size: clamp(3rem, 14vw, 5.2rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .heroCopy {
+    max-width: 28rem;
+    font-size: 1.1rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .missionCard {
+    min-height: auto;
+    padding: 1.4rem 1.25rem;
+  }
+
+  .howCard {
+    min-height: auto;
+    padding: 1.4rem 1.25rem 1.3rem;
+  }
+
+  .founderProfile {
+    padding-bottom: 0;
+  }
+
+  .founderQuoteCard {
+    width: min(20rem, 100%);
+  }
+
+  .faqSection {
+    padding: 2.4rem 1rem 3.2rem;
+  }
+
+  .faqItem {
+    border-color: rgba($republic-navy, 0.10);
+    padding: 1.3rem 0.8rem;
+  }
+
+  .faqQuestion {
+    font-size: clamp(1.7rem, 7vw, 2.05rem);
+  }
+
+  .faqAnswer {
+    font-size: 1rem;
+    margin-top: 0.65rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1.1fr) minmax(22rem, 0.9fr);
+    gap: 2.5rem;
+  }
+
+  .heroColumnRule {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: rgba($republic-navy, 0.12);
+    pointer-events: none;
+  }
+
+  .missionInner {
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .missionGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .howGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .founderInner {
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .founderProfile {
+    grid-template-columns: minmax(12rem, 15rem) minmax(16rem, 20rem);
+    align-items: stretch;
+    justify-items: start;
+    justify-content: flex-start;
+    gap: 0;
+    width: auto;
+    margin: 0;
+  }
+
+  .founderQuoteCard {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    --founder-card-x: 0px;
+    --founder-card-y: 0px;
+  }
+}
+

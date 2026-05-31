@@ -99,7 +99,6 @@ body {
 
 html {
   scrollbar-gutter: stable;
-  scroll-behavior: smooth;
 }
 
 ::view-transition-old(.nav-forward) {
