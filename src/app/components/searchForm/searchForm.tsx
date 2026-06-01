@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
 import { BeautifulButton } from "../button/beautifulButton";
@@ -32,7 +32,6 @@ export default function SearchForm() {
     const { zip } = parsedData.data;
     router.push(`/reps/${zip}`, {
       scroll: false,
-      // transitionTypes: ["nav-forward"],
     });
   };
 

@@ -1,20 +1,20 @@
 "use client";
 
 import clsx from "clsx";
-import styles from "./repsLevelTabs.module.scss";
+import styles from "./govLevelTabs.module.scss";
 
-export type RepsLevel = "federal" | "state";
+export type GovLevel = "federal" | "state";
 
 type Props = {
-  value: RepsLevel;
-  onChange: (level: RepsLevel) => void;
   ref: React.RefObject<HTMLDivElement | null>;
+  currentLevel: GovLevel;
+  onChange: (level: GovLevel) => void;
 };
 
-export default function RepsLevelTabs({
-  value,
-  onChange,
+export default function GovLevelTabs({
   ref,
+  currentLevel,
+  onChange,
 }: Props) {
   const handleClick = () => {
     if (!ref.current) return;
@@ -31,13 +31,13 @@ export default function RepsLevelTabs({
       <button
         type="button"
         role="tab"
-        aria-selected={value === "federal"}
+        aria-selected={currentLevel === "federal"}
         className={clsx(
           styles.tab,
-          value === "federal" && styles.tabActive,
+          currentLevel === "federal" && styles.tabActive,
         )}
         onClick={() => {
-          if (value === "federal") return;
+          if (currentLevel === "federal") return;
           handleClick();
           onChange("federal");
         }}
@@ -47,13 +47,13 @@ export default function RepsLevelTabs({
       <button
         type="button"
         role="tab"
-        aria-selected={value === "state"}
+        aria-selected={currentLevel === "state"}
         className={clsx(
           styles.tab,
-          value === "state" && styles.tabActive,
+          currentLevel === "state" && styles.tabActive,
         )}
         onClick={() => {
-          if (value === "state") return;
+          if (currentLevel === "state") return;
           handleClick();
           onChange("state");
         }}

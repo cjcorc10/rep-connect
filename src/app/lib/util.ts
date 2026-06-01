@@ -37,8 +37,8 @@ type GeocodeData = {
 };
 
 const transformCoords = (geoData: GeocodeData) => {
-  return geoData.results[0] 
-}
+  return geoData.results[0];
+};
 
 export const getCoordinates = cache(
   async (address: string): Promise<GeocodeResult> => {
@@ -50,10 +50,10 @@ export const getCoordinates = cache(
     if (!response.ok) {
       throw new Error("Failed to fetch district data");
     }
-  
+
     const data = await response.json();
 
-    return transformCoords(data)
+    return transformCoords(data);
   },
 );
 

@@ -4,6 +4,7 @@ import type {
   Rep,
   RepsByAddressPayload,
   RepsLocationPayload,
+  StateLegislator,
 } from "@/app/lib/definitions";
 import { useRepStore } from "@/app/store/useRepStore";
 import { useEffect, useState } from "react";
@@ -19,6 +20,12 @@ import {
   filterStateHouseDistricts,
   filterStateSenateDistricts,
 } from "../reps/[zip]/derivation";
+import { buildPortraitUrlMap } from "../lib/repRoster";
+import {
+  buildFederalImageApiUrl,
+  buildStateImageApiURL,
+} from "../lib/repImageUrl";
+import { GovLevel } from "../components/govLevelTabs/govLevelTabs";
 
 type UseRepsPageArgs = {
   payload: RepsLocationPayload;
@@ -31,10 +38,8 @@ type RefineSuccessPayload = Pick<
 
 export function useRepsPage({ payload }: UseRepsPageArgs) {
   const { setReps } = useRepStore();
+  const [activeLevel, setActiveLevel] = useState<GovLevel>("federal");
 
-  const [activeLevel, setActiveLevel] = useState<"federal" | "state">(
-    "federal",
-  );
   const [view, setView] = useState<RepsLocationPayload>(
     () => payload,
   );
@@ -96,6 +101,17 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     alignedStateDistricts,
   );
 
+  const federalPortraitUrlMap = buildPortraitUrlMap(
+    view.data.senateReps.concat(view.data.houseReps),
+    buildFederalImageApiUrl,
+    (rep: Rep) => rep.bioguide_id,
+  );
+  const statePortraitUrlMap = buildPortraitUrlMap(
+    view.data.stateLegislators,
+    buildStateImageApiURL,
+    (rep: StateLegislator) => rep.id,
+  );
+
   const activeDistrictGeoJson =
     activeLevel === "state"
       ? alignedStateDistrictGeoJson
@@ -130,6 +146,10 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     repsData: view.data,
     rosterRows:
       activeLevel === "federal" ? federalRosterRows : stateRosterRows,
+    portraitUrlMap:
+      activeLevel === "federal"
+        ? federalPortraitUrlMap
+        : statePortraitUrlMap,
   };
 
   const refine = {

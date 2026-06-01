@@ -5,7 +5,7 @@ import type {
   StateLegislator,
 } from "./definitions";
 import { districtsMatch } from "@/app/reps/[zip]/helper";
-import { buildRepImageApiUrl } from "./repImageUrl";
+import { buildFederalImageApiUrl } from "./repImageUrl";
 
 export type RepRosterRow = {
   id: string;
@@ -34,15 +34,6 @@ export function nextMidtermElectionYear(
     y += 4;
   }
 }
-
-export const toHoverImageItems = (rows: RepRosterRow[]) => {
-  return rows.map((row) => {
-    return {
-      id: row.id,
-      imageUrl: row.portraitSrc ?? row.imageUrl,
-    };
-  });
-};
 
 export const colorToGradiant = (color: string) => {
   const offset = 8192;
@@ -99,7 +90,6 @@ export function repToRosterRow(
     shortName: `${rep.first_name[0]}.${rep.last_name}`,
     fullName: rep.full_name,
     imageUrl: rep.image_url?.trim() ?? "",
-    portraitSrc: buildRepImageApiUrl(rep),
     phone: rep.phone?.trim() || undefined,
     chamber,
     district,
@@ -185,3 +175,11 @@ export function stateLegislatorsToRosterRows(
     };
   });
 }
+
+export const buildPortraitUrlMap = <T extends Rep | StateLegislator>(
+  reps: T[],
+  buildImageApiUrl: (rep: T) => string,
+  getKey: (rep: T) => string,
+): Map<string, string> => {
+  return new Map(reps.map((r) => [getKey(r), buildImageApiUrl(r)]));
+};

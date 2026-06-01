@@ -1,14 +1,17 @@
-import type { Rep } from "./definitions";
+import type { Rep, StateLegislator } from "./definitions";
 
-/** Same-origin URL for GET /api/rep-image (proxied bytes; no separate URL fetch). */
-export function buildRepImageApiUrl(rep: Rep): string {
+export function buildFederalImageApiUrl(rep: Rep): string {
   const params = new URLSearchParams();
-  if (rep.wikipedia_id) {
-    params.set("wikipedia_id", rep.wikipedia_id);
-  }
   params.set("bioguide_id", rep.bioguide_id);
-  if (rep.image_url?.trim()) {
-    params.set("fallback", rep.image_url.trim());
-  }
+  if (rep.wikipedia_id) params.set("wikipedia_id", rep.wikipedia_id);
+  if (rep.image_url) params.set("fallback", rep.image_url);
   return `/api/rep-image?${params.toString()}`;
 }
+
+export const buildStateImageApiURL = (
+  rep: StateLegislator,
+): string => {
+  const params = new URLSearchParams();
+  if (rep.image_url) params.set("image_url", rep.image_url);
+  return `/api/state-legislator-portrait?${params.toString()}`;
+};

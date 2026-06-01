@@ -1,27 +1,47 @@
+"use client";
 import {
   colorToGradiant,
-  toHoverImageItems,
   type RepRosterRow,
 } from "@/app/lib/repRoster";
 import styles from "./roster.module.scss";
+import { useRef, useState } from "react";
+import { FloatingCarousel } from "../floatingCarousel/floatingCarousel";
 
 type RosterProps = {
   rows: RepRosterRow[];
   onClickRow: (row: RepRosterRow) => void;
+  repMap: Map<string, string>;
+  isFederal: boolean;
 };
 
-export const Roster = ({ rows, onClickRow }: RosterProps) => {
-  const numReps = rows.length;
-  const hoverImageItems = toHoverImageItems(rows);
+export const Roster = ({
+  rows,
+  onClickRow,
+  repMap,
+  isFederal,
+}: RosterProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<number>(0);
+  const rosterRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className={styles.roster}>
-      {/* <HoverImage items={hoverImageItems} /> */}
-      <RosterColumnHeader />
+    <div
+      className={styles.roster}
+      ref={rosterRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <FloatingCarousel
+        areaRef={rosterRef}
+        isHovered={isHovered}
+        repMap={repMap}
+        hoveredIndex={hoveredIndex}
+      />
+      <RosterColumnHeader isFederal={isFederal} />
       {rows.map((row, index) => (
-        <div key={row.id}>
-          <RosterRow row={row} />
-          {index !== numReps - 1 && (
+        <div key={row.id} onMouseEnter={() => setHoveredIndex(index)}>
+          <RosterRow row={row} isFederal={isFederal} />
+          {index !== rows.length - 1 && (
             <div className={styles.rosterRowSeparator} />
           )}
         </div>
@@ -30,10 +50,15 @@ export const Roster = ({ rows, onClickRow }: RosterProps) => {
   );
 };
 
-const RosterRow = ({ row }: { row: RepRosterRow }) => {
+const RosterRow = ({
+  row,
+  isFederal,
+}: {
+  row: RepRosterRow;
+  isFederal: boolean;
+}) => {
   const date = new Date(row.termEndDisplay);
   const year = date.getFullYear();
-  console.log(row);
 
   const gradient = colorToGradiant(
     row.districtColorFill || `#4e9bff`,
@@ -52,20 +77,28 @@ const RosterRow = ({ row }: { row: RepRosterRow }) => {
         >
           {row.district}
         </h3>
-        <h3 className={styles.rosterColumnValue}>{year}</h3>
+        {isFederal && (
+          <h3 className={styles.rosterColumnValue}>{year}</h3>
+        )}
       </div>
     </div>
   );
 };
 
-const RosterColumnHeader = () => {
+const RosterColumnHeader = ({
+  isFederal,
+}: {
+  isFederal: boolean;
+}) => {
   return (
     <div className={styles.rosterColumnHeader}>
       <span className={styles.rosterColumnKey}>Name</span>
       <div className={styles.keyGroup}>
         <span className={styles.rosterColumnKey}>Chamber</span>
         <span className={styles.rosterColumnKey}>District</span>
-        <span className={styles.rosterColumnKey}>Term</span>
+        {isFederal && (
+          <span className={styles.rosterColumnKey}>Term</span>
+        )}
       </div>
     </div>
   );
