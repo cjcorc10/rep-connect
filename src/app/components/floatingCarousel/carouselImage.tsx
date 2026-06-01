@@ -8,33 +8,43 @@ export const CarouselImage = ({
   numImages,
   index,
   imageHeight = 150,
+  isHovered,
 }: {
   repMap: [string, string];
   numImages: number;
   index: number;
   imageHeight?: number;
+  isHovered: boolean;
 }) => {
   const position = calculateCarouselPosition(numImages, index);
   const [id, url] = repMap;
+  const AnimationVariants = {
+    initial: {
+      x: 0,
+      z: -index * 20,
+      rotateY: index === 0 ? 0 : 180,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut" as const,
+      },
+    },
+    hydrated: {
+      x: position.x,
+      z: position.z,
+      rotateY: position.rotationY,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut" as const,
+        delay: 0.5,
+      },
+    },
+  };
 
-  console.log(url);
   return (
     <motion.div
       className={styles.imageCard}
-      initial={false}
-      animate={{
-        y: [15, -15, 15],
-        translateX: position.x,
-        translateZ: position.z,
-        rotateY: position.rotationY,
-      }}
-      transition={{
-        duration: 4,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "loop",
-        delay: index * 0.25,
-      }}
+      variants={AnimationVariants}
+      animate={isHovered ? "hydrated" : "initial"}
       style={
         {
           "--index": index,

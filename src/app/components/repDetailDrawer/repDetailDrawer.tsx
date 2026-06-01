@@ -100,7 +100,7 @@ export default function RepDetailDrawer({
           onInteractOutside={(e) => e.preventDefault()}
         >
           <motion.div
-            key={displayRep.id}
+            key={displayRep.bioguide_id}
             className={styles.panel}
             initial={{ transform: "translateX(100%)" }}
             animate={{

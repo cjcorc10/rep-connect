@@ -26,32 +26,36 @@ export const FloatingCarousel = ({
     <motion.div
       className={styles.carousel}
       style={{ x, y }}
-      animate={isHovered ? { opacity: 1, scale: 1 } : { scale: 0 }}
-      transition={{ ease: "easeOut", duration: 0.5 }}
+      initial={{ opacity: 0 }}
+      animate={
+        isHovered
+          ? { opacity: 1, scale: 1 }
+          : {
+              scale: 0.5,
+              filter: "blur(5px)",
+              opacity: 0,
+              transition: { delay: 0.5 },
+            }
+      }
+      transition={{ ease: "easeOut", duration: 0.17 }}
     >
       <motion.div
-        style={{ transformStyle: "preserve-3d" }}
-        initial={false}
-        animate={{ rotateY: isHovered ? 0 : 360 }}
-        transition={{ ease: "backOut", duration: 2 }}
+        animate={{ rotateY: -angleDegrees }}
+        transition={{
+          ease: "backOut",
+          duration: 0.7,
+        }}
+        className={styles.carouselStage}
       >
-        <motion.div
-          animate={{ rotateY: -angleDegrees }}
-          transition={{
-            ease: "backOut",
-            duration: 0.7,
-          }}
-          className={styles.carouselStage}
-        >
-          {Array.from(repMap.entries()).map(([id, url], index) => (
-            <CarouselImage
-              key={id}
-              repMap={[id, url]}
-              index={index}
-              numImages={repMap.size}
-            />
-          ))}
-        </motion.div>
+        {Array.from(repMap.entries()).map(([id, url], index) => (
+          <CarouselImage
+            key={id}
+            isHovered={isHovered}
+            repMap={[id, url]}
+            index={index}
+            numImages={repMap.size}
+          />
+        ))}
       </motion.div>
     </motion.div>
   );

@@ -3,7 +3,6 @@
 import DistrictMap from "@/app/components/districtMap/districtMap";
 import DistrictMapLegend from "@/app/components/districtMapLegend/districtMapLegend";
 import RepsPanel from "@/app/components/repsWrapper/repsPanel";
-import Banner from "@/app/components/banner/banner";
 import clsx from "clsx";
 import styles from "./repsPageClient.module.scss";
 import Refine from "@/app/components/refine/refine";

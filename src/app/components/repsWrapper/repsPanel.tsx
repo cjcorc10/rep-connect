@@ -38,7 +38,9 @@ export default function RepsPanel({
     <>
       <Roster
         rows={rosterRows}
-        onClickRow={() => {}}
+        onClickRow={(row) => {
+          openRepDetail(row.id);
+        }}
         repMap={portraitUrlMap}
         isFederal={isFederal}
       />

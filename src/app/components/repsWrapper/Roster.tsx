@@ -40,7 +40,11 @@ export const Roster = ({
       <RosterColumnHeader isFederal={isFederal} />
       {rows.map((row, index) => (
         <div key={row.id} onMouseEnter={() => setHoveredIndex(index)}>
-          <RosterRow row={row} isFederal={isFederal} />
+          <RosterRow
+            row={row}
+            isFederal={isFederal}
+            onClickRow={onClickRow}
+          />
           {index !== rows.length - 1 && (
             <div className={styles.rosterRowSeparator} />
           )}
@@ -53,9 +57,11 @@ export const Roster = ({
 const RosterRow = ({
   row,
   isFederal,
+  onClickRow,
 }: {
   row: RepRosterRow;
   isFederal: boolean;
+  onClickRow: (row: RepRosterRow) => void;
 }) => {
   const date = new Date(row.termEndDisplay);
   const year = date.getFullYear();
@@ -65,7 +71,7 @@ const RosterRow = ({
   );
 
   return (
-    <div className={styles.rosterRow}>
+    <div className={styles.rosterRow} onClick={() => onClickRow(row)}>
       <h1 className={styles.repName}>{row.shortName}</h1>
       <div className={styles.keyGroup}>
         <h3 className={styles.rosterColumnValue}>{row.chamber}</h3>
