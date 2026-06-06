@@ -4,18 +4,19 @@
   align-items: center;
   width: 100%;
   z-index: 100;
-  background-color: var(--primary-color);
 }
 
 .navList {
   display: flex;
+  font-family: montserrat;
+  font-size: 1.25rem;
   padding: 1rem 4rem;
-  color: var(--blue-accent);
+  color: var(--primary-color);
   .navLink {
     height: min-content;
-
+    transition: color 0.2s ease-in-out;
     &:hover {
-      color: #c0e2ff;
+      color: var(--blue-accent);
     }
   }
 }
@@ -24,9 +25,14 @@
   position: absolute;
   top: 2rem;
   left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  padding: 2rem;
-  z-index: 3;
-  overflow: hidden;
+  transform: translateX(-50%) skewX(-10deg);
+  font-family: montserrat;
+  font-size: 3rem;
+  font-weight: 200;
+  letter-spacing: 0.12em;
+  color: var(--primary-color);
+  transition: color 0.2s ease-in-out;
+  &:hover {
+    color: var(--blue-accent);
+  }
 }

@@ -1,0 +1,35 @@
+.accordionTrigger {
+  width: 100%;
+}
+
+.accordionContent {
+  width: 100%;
+  overflow: hidden;
+  // background: var(--);
+}
+
+.accordionContent[data-state="closed"] {
+  animation: slideUp 300ms ease-in-out;
+}
+
+.accordionContent[data-state="open"] {
+  animation: slideDown 500ms ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

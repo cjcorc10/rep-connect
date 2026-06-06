@@ -2,7 +2,7 @@
 
 import DistrictMap from "@/app/components/districtMap/districtMap";
 import DistrictMapLegend from "@/app/components/districtMapLegend/districtMapLegend";
-import RepsPanel from "@/app/components/repsWrapper/repsPanel";
+import RepsPanel from "@/app/components/roster/repsPanel";
 import clsx from "clsx";
 import styles from "./repsPageClient.module.scss";
 import Refine from "@/app/components/refine/refine";
@@ -10,9 +10,7 @@ import { useRepsPage } from "../../hooks/useRepsPage";
 import { RepsLocationPayload } from "@/app/lib/definitions";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
-import GovLevelTabs, {
-  GovLevel,
-} from "@/app/components/govLevelTabs/govLevelTabs";
+import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -40,11 +38,6 @@ export default function RepsPageClient({ payload }: Props) {
           styles.main,
         )}
       >
-        <GovLevelTabs
-          ref={mapSectionRef}
-          currentLevel={activeLevel}
-          onChange={(level: GovLevel) => setActiveLevel(level)}
-        />
         <section className={styles.headerSection}>
           <div ref={mapSectionRef} className={styles.mapContainer}>
             <div className={styles.mapWithLegend}>
@@ -100,8 +93,12 @@ export default function RepsPageClient({ payload }: Props) {
               </motion.div>
             </div>
           </div>
-          <Refine {...refine} />
+          {/* <Refine {...refine} /> */}
         </section>
+        <GovLevelTabs
+          currentLevel={activeLevel}
+          onChange={setActiveLevel}
+        />
       </main>
       {/* <Banner /> */}
       <RepsPanel isFederal={activeLevel === "federal"} {...panel} />

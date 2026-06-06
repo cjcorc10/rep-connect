@@ -42,7 +42,7 @@
     padding: 1rem 2rem;
     font-size: 0.8rem;
     letter-spacing: 0.12em;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255);
     background-color: var(--blue-accent);
     justify-content: space-between;
     font-family: montserrat, sans-serif;
@@ -68,9 +68,20 @@
 
 .rosterRow {
   display: flex;
-  padding: 0rem 2rem;
+  padding: 4rem 2rem;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  &:hover > .repName {
+    transform: translateX(-15px);
+    opacity: 0.7;
+  }
+  &:hover > .keyGroup {
+    transform: translateX(15px);
+    opacity: 0.7;
+  }
 
   .repName {
     color: var(--background-color);
@@ -84,14 +95,20 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    text-align: left;
     flex: 1;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
   }
   .keyGroup {
     display: flex;
     gap: 0.2rem;
     color: white;
     width: clamp(20rem, 35vw, 35rem);
-
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
     .rosterColumnValue {
       font-size: clamp(1.4rem, 2vw, 2.4rem);
       font-weight: 700;
@@ -108,9 +125,79 @@
     }
   }
 }
+.rowDetail {
+  display: flex;
+  color: #fff;
+  justify-content: center;
+  font-family: montserrat, sans-serif;
+  .detailContainer {
+    padding: 4rem 2rem;
+    display: flex;
+    max-width: 80vw;
+    align-items: center;
+    gap: 2rem;
+    // background: grey;
 
-.rosterRowSeparator {
-  height: 0.1rem;
-  background-color: rgba(255, 255, 255, 0.5);
-  width: 100vw;
+    .ImageContainer {
+      display: grid;
+      .imageBackground {
+        grid-area: 1/1;
+        width: 16vw;
+        border-radius: 2rem;
+        aspect-ratio: 1/1;
+        background: #252525;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+      }
+      .profileImage {
+        position: relative;
+        grid-area: 1/1;
+        width: 15vw;
+        aspect-ratio: 1/1;
+        background: #fff;
+        border-radius: 2rem;
+        overflow: hidden;
+      }
+    }
+    .personalInfo {
+      flex: 1;
+      font-size: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .textContainer {
+        line-height: 2;
+        white-space: nowrap;
+      }
+    }
+    .detailBody {
+      flex: 2;
+      font-size: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      .sectionTitle {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .linksSection {
+        a {
+          font-weight: 500;
+          line-height: 2;
+          text-decoration: underline;
+        }
+      }
+      .contactSection {
+        display: flex;
+        flex-direction: column;
+        a {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.rowDetail[data-state="open"] .detailContainer {
 }

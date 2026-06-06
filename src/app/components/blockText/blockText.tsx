@@ -3,6 +3,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { SplitText, ScrollTrigger } from "gsap/all";
 import styles from "./blockText.module.css";
+import clsx from "clsx";
 
 gsap.registerPlugin(SplitText, ScrollTrigger, useGSAP);
 
@@ -14,6 +15,7 @@ type BlockTextProps = {
   stagger?: number;
   duration?: number;
   ease?: string;
+  className?: string;
 };
 
 export const BlockText = ({
@@ -24,6 +26,7 @@ export const BlockText = ({
   stagger = 0.05,
   duration = 0.7,
   ease = "power2.out",
+  className,
 }: BlockTextProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const wrapperRefs = useRef<HTMLDivElement[]>([]);
@@ -39,6 +42,7 @@ export const BlockText = ({
     elements.forEach((el) => {
       const split = SplitText.create(el as HTMLElement, {
         type: "lines",
+        // autoSplit: true,
       });
       splitRefs.current.push(split);
 
@@ -57,8 +61,7 @@ export const BlockText = ({
         lineRefs.current.push(line);
       });
       gsap.set(blockRefs.current, {
-        backgroundColor: (index: number) =>
-          index % 2 === 0 ? "var(--red-accent)" : blockColor,
+        backgroundColor: blockColor,
       });
 
       const createAnimation = (
@@ -112,7 +115,10 @@ export const BlockText = ({
   });
 
   return (
-    <div ref={containerRef} className={styles.container}>
+    <div
+      ref={containerRef}
+      className={clsx(styles.container, className)}
+    >
       {children}
     </div>
   );

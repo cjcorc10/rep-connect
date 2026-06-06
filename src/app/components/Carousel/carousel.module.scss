@@ -1,0 +1,75 @@
+.cursorIndicator {
+  position: absolute;
+  inset: 0;
+  z-index: 1001;
+  pointer-events: none;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  perspective: 500px;
+
+  .textContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .textContent {
+      font-size: 1.2rem;
+      font-weight: 200;
+      text-transform: uppercase;
+      font-family: montserrat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      perspective-origin: center;
+    }
+  }
+}
+
+.followPointer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.carousel {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transform-origin: center;
+
+  .imageContainer {
+    z-index: 50;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #252525;
+    .imageHolder {
+      z-index: 100;
+      position: absolute;
+      width: 75%;
+      height: 50%;
+    }
+  }
+}
+
+.cursorText {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 200;
+  text-transform: uppercase;
+  font-family: montserrat;
+}

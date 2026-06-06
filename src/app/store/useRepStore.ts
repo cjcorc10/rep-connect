@@ -3,33 +3,18 @@ import { Rep } from "../lib/definitions";
 
 type State = {
   reps: Rep[];
-  activeRep: Rep | null;
-  detailBioguideId: string | null;
 };
 
 type Action = {
   setReps: (newReps: State["reps"]) => void;
   getReps: () => Rep[];
-  setActiveRep: (newActiveRep: Rep | null) => void;
-  openRepDetail: (bioguide: string) => void;
-  toggleRepDetail: (bioguide: string) => void;
-  closeRepDetail: () => void;
+  getRep: (bioguideId: string) => Rep | null;
 };
 
 export const useRepStore = create<State & Action>((set, get) => ({
   reps: [],
-  activeRep: null,
-  detailBioguideId: null,
   setReps: (newReps) => set(() => ({ reps: newReps })),
   getReps: () => get().reps,
-  setActiveRep: (newActiveRep) =>
-    set(() => ({ activeRep: newActiveRep })),
-  openRepDetail: (bioguide) =>
-    set(() => ({ detailBioguideId: bioguide })),
-  toggleRepDetail: (bioguide) =>
-    set((state) => ({
-      detailBioguideId:
-        state.detailBioguideId === bioguide ? null : bioguide,
-    })),
-  closeRepDetail: () => set(() => ({ detailBioguideId: null })),
+  getRep: (bioguideId) =>
+    get().reps.find((rep) => rep.bioguide_id === bioguideId) ?? null,
 }));

@@ -1,10 +1,13 @@
+"use client";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "./header.module.scss";
+import Island from "../island/island";
+import { RefObject, useRef } from "react";
 
 export default function Header() {
+  const sentinelRef = useRef<HTMLDivElement>(null);
   return (
-    <header className={styles.header}>
+    <header ref={sentinelRef} className={styles.header}>
       <div className={styles.navList}>
         <Link className={styles.navLink} href="/">
           Home
@@ -16,6 +19,12 @@ export default function Header() {
         </Link>
       </div>
       <Link href="/" className={styles.logo}>
+        REPCONNECT
+      </Link>
+      {/* <Island
+        sentinelRef={sentinelRef as RefObject<HTMLDivElement>}
+      /> */}
+      {/* <Link href="/" className={styles.logo}>
         <Image
           // src="/images/REPCONNECT (1).svg"
           src="/images/logo.svg"
@@ -23,7 +32,7 @@ export default function Header() {
           fill
           style={{ objectFit: "contain" }}
         />
-      </Link>
+      </Link> */}
     </header>
   );
 }

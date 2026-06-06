@@ -12,7 +12,7 @@ import { BlockText } from "../blockText/blockText";
 
 type ExternalLinkItem = { href: string; text: string };
 
-function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
+export function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
   const links: ExternalLinkItem[] = [];
 
   if (rep.opensecrets_id?.trim()) {

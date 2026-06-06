@@ -5,6 +5,7 @@ export function formatWikipediaId(id: string): string {
 
 // Type for Wikipedia API response
 export type WikipediaData = {
+  description?: string;
   extract?: string;
   thumbnail?: {
     source: string;
@@ -20,16 +21,16 @@ export type WikipediaData = {
 
 // Fetch Wikipedia data (both extract and image)
 export async function fetchWikipediaData(
-  wikipediaId: string
+  wikipediaId: string,
 ): Promise<WikipediaData | null> {
   try {
     const response = await fetch(
       `https://en.wikipedia.org/api/rest_v1/page/summary/${formatWikipediaId(
-        wikipediaId
+        wikipediaId,
       )}`,
       {
         next: { revalidate: 60 * 60 * 24 * 7 }, // Cache for 1 week
-      }
+      },
     );
 
     if (!response.ok) {
@@ -63,10 +64,7 @@ async function fetchWikipediaOriginalViaActionApi(
     if (!res.ok) return null;
     const data = (await res.json()) as {
       query?: {
-        pages?: Record<
-          string,
-          { original?: { source?: string } }
-        >;
+        pages?: Record<string, { original?: { source?: string } }>;
       };
     };
     const pages = data.query?.pages;
@@ -93,7 +91,8 @@ export async function fetchWikipediaBestImageUrl(
     return summary.originalimage.source.trim();
   }
 
-  const viaAction = await fetchWikipediaOriginalViaActionApi(wikipediaId);
+  const viaAction =
+    await fetchWikipediaOriginalViaActionApi(wikipediaId);
   if (viaAction) return viaAction;
 
   if (summary?.thumbnail?.source?.trim()) {
