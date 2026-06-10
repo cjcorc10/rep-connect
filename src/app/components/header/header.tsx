@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
 import styles from "./header.module.scss";
-import Island from "../island/island";
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 
 export default function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -21,18 +20,6 @@ export default function Header() {
       <Link href="/" className={styles.logo}>
         REPCONNECT
       </Link>
-      {/* <Island
-        sentinelRef={sentinelRef as RefObject<HTMLDivElement>}
-      /> */}
-      {/* <Link href="/" className={styles.logo}>
-        <Image
-          // src="/images/REPCONNECT (1).svg"
-          src="/images/logo.svg"
-          alt="Repconnect logo"
-          fill
-          style={{ objectFit: "contain" }}
-        />
-      </Link> */}
     </header>
   );
 }

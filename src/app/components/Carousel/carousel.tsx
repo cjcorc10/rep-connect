@@ -45,10 +45,12 @@ export const Carousel = ({
   openItem,
 }: FloatingPortraitProps) => {
   const transformX = useTransform(
-    () => x.get() - CAROUSEL_CONFIG.size.width / 2,
+    x,
+    (v) => v - CAROUSEL_CONFIG.size.width / 2,
   );
   const transformY = useTransform(
-    () => y.get() - CAROUSEL_CONFIG.size.height / 2,
+    y,
+    (v) => v - CAROUSEL_CONFIG.size.height / 2,
   );
   return (
     <FollowPointer

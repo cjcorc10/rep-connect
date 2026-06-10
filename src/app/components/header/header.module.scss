@@ -1,4 +1,7 @@
 .header {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,9 +12,9 @@
 .navList {
   display: flex;
   font-family: montserrat;
-  font-size: 1.25rem;
-  padding: 1rem 4rem;
-  color: var(--primary-color);
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+  padding: 1rem 2rem;
+  color: white;
   .navLink {
     height: min-content;
     transition: color 0.2s ease-in-out;
@@ -27,7 +30,7 @@
   left: 50%;
   transform: translateX(-50%) skewX(-10deg);
   font-family: montserrat;
-  font-size: 3rem;
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 200;
   letter-spacing: 0.12em;
   color: var(--primary-color);

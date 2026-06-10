@@ -5,11 +5,13 @@
 }
 
 .headerSection {
+  margin-top: 4rem;
+  padding: 0 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
-  max-width: 70vw;
+  max-width: max(75vw, 35rem);
   width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
@@ -29,45 +31,68 @@
 }
 
 /* Top-level so MapSkeleton can use mapContainer without a .headerSection parent. */
-.mapContainer {
+.main {
+  position: relative;
   width: 100%;
-  min-height: clamp(14rem, 50vh, 30rem);
   display: flex;
   flex-direction: column;
-  background-color: color-mix(
-    in srgb,
-    var(--background-color) 86%,
-    #000000 14%
-  );
-  transform-origin: bottom center;
-  overflow: hidden;
-  margin-bottom: 2rem;
+  align-items: center;
 
-  .mapWithLegend {
-    flex: 1 1 auto;
-    min-height: 0;
+  .mapSection {
     width: 100%;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(10rem, 20vw, 14rem);
-    grid-template-rows: minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: stretch;
-    padding: 0.5rem;
-    box-sizing: border-box;
-  }
-
-  .mapCanvas {
-    min-height: 0;
-    height: 100%;
+    max-width: max(75vw, 35rem);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-  }
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+    margin-top: 0.25rem;
 
-  @media (max-width: 768px) {
-    .mapWithLegend {
-      grid-template-columns: 1fr;
-      grid-template-rows: minmax(10rem, 1fr) auto;
+    .mapContainer {
+      width: 100%;
+      min-height: clamp(17rem, 65vh, 50rem);
+      display: flex;
+      flex-direction: column;
+      background-color: color-mix(
+        in srgb,
+        var(--background-color) 86%,
+        #000000 14%
+      );
+      transform-origin: bottom center;
+      overflow: hidden;
+      margin-bottom: 2rem;
+
+      .mapWithLegend {
+        flex: 1 1 auto;
+        min-height: 0;
+        width: 100%;
+        display: grid;
+        grid-template-columns: clamp(10rem, 20vw, 14rem) minmax(
+            0,
+            1fr
+          );
+        grid-template-rows: minmax(0, 1fr);
+        gap: 0.75rem;
+        align-items: stretch;
+        padding: 0.5rem;
+        box-sizing: border-box;
+      }
+
+      .mapCanvas {
+        min-height: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      @media (max-width: 768px) {
+        .mapWithLegend {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(10rem, 1fr);
+        }
+      }
     }
   }
 }

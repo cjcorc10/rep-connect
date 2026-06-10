@@ -1,6 +1,6 @@
 /* Fluid tokens: vw tracks viewport without JS; clamp caps min/max for performance. */
 .addressContainer {
-  --addr-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+  --addr-pad-y: clamp(0.7rem, 1.8vw, 0.75rem);
   --addr-pad-x: clamp(0.5rem, 2.2vw, 1rem);
   --addr-label-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
   --addr-zip-size: clamp(2.25rem, 8vw + 1.25rem, 7rem);

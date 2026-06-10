@@ -8,11 +8,12 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
   padding: 0.6rem;
   overflow: auto;
+  font-family: montserrat, sans-serif;
 }
 
 .legendTitle {
   margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -21,15 +22,11 @@
 
 .legendSubheader {
   margin: 0 0 0.4rem 0;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(
-    in srgb,
-    var(--primary-color) 78%,
-    transparent
-  );
+  color: color-mix(in srgb, var(--primary-color) 78%, transparent);
 }
 
 .legendChamber {
@@ -49,11 +46,7 @@
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(
-    in srgb,
-    var(--primary-color) 88%,
-    transparent
-  );
+  color: color-mix(in srgb, var(--primary-color) 88%, transparent);
 }
 
 .legendChamber:first-of-type .legendChamberTitle {
@@ -74,7 +67,7 @@
   align-items: center;
   gap: 0.45rem;
   color: var(--primary-color);
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.2;
   padding: 0.3rem 0;
 }

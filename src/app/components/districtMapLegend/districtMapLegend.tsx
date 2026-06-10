@@ -80,10 +80,10 @@ export default function DistrictMapLegend({
     stateDistrictRankByMapKey,
     stateLegislators,
   } = stateSlice;
+
   return (
     <aside className={styles.legend} aria-label="District legend">
       <h2 className={styles.legendTitle}>Districts</h2>
-
       {level === "federal" ? (
         <>
           <h3 className={styles.legendSubheader}>

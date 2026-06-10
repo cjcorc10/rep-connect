@@ -55,7 +55,6 @@ export default function SearchForm() {
           />
           <BeautifulButton
             content="SEARCH"
-            compact
             className={styles.shellButton}
           />
         </div>

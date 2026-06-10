@@ -3,7 +3,7 @@ import HeaderWrapper from "@/app/components/headerWrapper";
 import HeaderSkeleton from "../../skeletons/headerSkeleton";
 import RepsPageWrapper from "@/app/components/repsPageWrapper";
 import MapSkeleton from "@/app/skeletons/mapSkeleton";
-
+import styles from "./repsPageClient.module.scss";
 type PageProps = {
   params: Promise<{ zip: string }>;
 };
@@ -11,7 +11,7 @@ type PageProps = {
 export default async function Page({ params }: PageProps) {
   return (
     <ViewTransition>
-      <main>
+      <main className={styles.main}>
         <Suspense fallback={<HeaderSkeleton />}>
           <HeaderWrapper params={params} />
         </Suspense>

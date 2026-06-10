@@ -30,10 +30,12 @@ export const CursorIndicator = ({
   openItem: boolean;
 }) => {
   const transformX = useTransform(
-    () => x.get() - CURSOR_CONFIG.size.width / 2,
+    x,
+    (v) => v - CURSOR_CONFIG.size.width / 2,
   );
   const transformY = useTransform(
-    () => y.get() - CURSOR_CONFIG.size.height / 2,
+    y,
+    (v) => v - CURSOR_CONFIG.size.height / 2,
   );
   return (
     <FollowPointer
@@ -44,7 +46,7 @@ export const CursorIndicator = ({
       <motion.div
         variants={animationVariants}
         initial="initial"
-        animate={{ scale: openItem ? 0.5 : 1 }}
+        animate={{ scale: openItem ? 0.3 : 1 }}
         exit="initial"
         transition={{ ease: "easeOut", duration: 0.5 }}
         className={styles.cursorIndicator}

@@ -16,15 +16,26 @@ export default function Home() {
         />
       </div>
       <div className={styles.heroContainer}>
-        <h1 className={styles.heroTitle}>
-          Your voice matters beyond the ballot box.
-        </h1>
-        <p className={styles.heroSubtitle}>
-          Candidates run on a promise to represent their constituents.
-          Don&apos;t let them forget that promise once they get into
-          office. Call them today and pressure them to vote for your
-          community&apos;s interests.
-        </p>
+        <div className={styles.heroTextContainer}>
+          <h1 className={styles.heroTitle}>
+            Your voice matters beyond the ballot box.
+          </h1>
+        </div>
+
+        <div className={styles.heroSubtitleContainer}>
+          <p className={styles.heroSubtitle}>
+            Elections choose who represents you, but donors and
+            lobbyists don&apos;t stop working once the votes are
+            counted.{" "}
+          </p>
+          <br />
+          <p className={styles.heroSubtitle}>
+            Hold your representatives <b>accountable</b> to the people
+            they serve, not the interests that fund their campaigns.
+            Find and contact your reps by entering your ZIP code
+            below.
+          </p>
+        </div>
         <div className={styles.searchForm}>
           <SearchForm />
         </div>

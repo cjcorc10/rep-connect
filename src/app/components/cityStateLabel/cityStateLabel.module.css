@@ -1,9 +1,9 @@
 .container {
-  --city-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+  --city-pad-y: clamp(1.4rem, 1.8vw, 1.75rem);
   --city-pad-x: clamp(0.5rem, 2.2vw, 1rem);
-  --city-title-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
+  --city-title-size: clamp(1.8rem, 2.2vw + 0.55rem, 3rem);
 
-  flex: 1 1 140px;
+  flex: 1 1 200px;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
