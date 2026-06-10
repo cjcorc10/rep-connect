@@ -21,8 +21,8 @@ type MapFallback = {
 
 type Props = {
   /**
-   * Optional Google Cloud map ID. When set, district pins use {@link google.maps.marker.AdvancedMarkerElement}.
-   * When omitted, pins use legacy {@link google.maps.Marker} (no extra console setup).
+   * Google Cloud map ID (required for district pins via {@link google.maps.marker.AdvancedMarkerElement}).
+   * Defaults to `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`.
    */
   mapId?: string;
   districtGeoJson: DistrictMapFeatureCollection | null;
@@ -30,7 +30,7 @@ type Props = {
 };
 
 export default function DistrictMap({
-  mapId = "",
+  mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID ?? "",
   districtGeoJson,
   mapFallback,
 }: Props) {
@@ -46,9 +46,7 @@ export default function DistrictMap({
     if (!el || !apiKey) return;
 
     let cancelled = false;
-    const advancedMarkers: google.maps.marker.AdvancedMarkerElement[] =
-      [];
-    const legacyMarkers: google.maps.Marker[] = [];
+    const markers: google.maps.marker.AdvancedMarkerElement[] = [];
 
     setOptions({ key: apiKey, v: "weekly" });
 
@@ -151,57 +149,12 @@ export default function DistrictMap({
               scale: 1.05,
             });
 
-            const marker = new AdvancedMarkerElement({
-              map,
-              position: fb.getCenter(),
-              content: pin.element,
-              zIndex: 900 + rank,
-            });
-            advancedMarkers.push(marker);
-          });
-        } else {
-          const markerPlaced = new Set<string>();
-          map.data.forEach((feature) => {
-            const mapKey = String(
-              feature.getProperty("_mapKey") ?? "",
-            );
-            if (!mapKey || markerPlaced.has(mapKey)) return;
-            markerPlaced.add(mapKey);
-
-            const fb = new google.maps.LatLngBounds();
-            feature.getGeometry()?.forEachLatLng((latlng) => {
-              fb.extend(latlng);
-            });
-            if (fb.isEmpty()) return;
-
-            const rank = styleRank.has(mapKey)
-              ? styleRank.get(mapKey)!
-              : 0;
-            const { stroke, fill } = paletteForDistrictRank(rank);
-            const labelNum = districtNumberForMarker(
-              feature.getProperty("name"),
-              rank,
-            );
-
-            legacyMarkers.push(
-              new google.maps.Marker({
+            markers.push(
+              new AdvancedMarkerElement({
                 map,
                 position: fb.getCenter(),
+                content: pin.element,
                 zIndex: 900 + rank,
-                label: {
-                  text: labelNum,
-                  color: "#ffffff",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                },
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  scale: 15,
-                  fillColor: fill,
-                  fillOpacity: 1,
-                  strokeColor: stroke,
-                  strokeWeight: 2,
-                },
               }),
             );
           });
@@ -226,10 +179,9 @@ export default function DistrictMap({
 
     return () => {
       cancelled = true;
-      advancedMarkers.forEach((m) => {
+      markers.forEach((m) => {
         m.map = null;
       });
-      legacyMarkers.forEach((m) => m.setMap(null));
       el.replaceChildren();
     };
   }, [

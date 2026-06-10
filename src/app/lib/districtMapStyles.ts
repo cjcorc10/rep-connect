@@ -30,7 +30,7 @@ export const DISTRICT_PALETTE: ReadonlyArray<DistrictSwatch> = [
 
 export function districtFeatureName(
   raw: unknown,
-  fallbackIndex: number
+  fallbackIndex: number,
 ): string {
   if (raw != null && String(raw).trim() !== "") {
     return String(raw).trim();
@@ -49,7 +49,7 @@ function districtColorIndex(name: string): number {
 
 /** Stable color index per distinct district name (independent of feature order). */
 export function districtStyleIndexByName(
-  features: DistrictMapFeatureCollection["features"]
+  features: DistrictMapFeatureCollection["features"],
 ): Map<string, number> {
   const map = new Map<string, number>();
   features.forEach((f, i) => {
@@ -64,7 +64,7 @@ export function districtStyleIndexByName(
 /** Label text for map marker: congressional district number when parseable. */
 export function districtNumberForMarker(
   fullName: unknown,
-  rankZeroBased: number
+  rankZeroBased: number,
 ): string {
   const n = fullName != null ? String(fullName).trim() : "";
   if (!n) return String(rankZeroBased + 1);
