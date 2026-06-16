@@ -6,6 +6,8 @@ import {
   districtStyleIndexByName,
   federalHouseColorsForDistricts,
   paletteForDistrictRank,
+  stateDistrictPaletteSlotByMapKey,
+  statePaletteForSlot,
 } from "@/app/lib/districtMapStyles";
 import {
   buildFederalRosterRows,
@@ -82,29 +84,16 @@ export function computeAlignedStateDistrictGeoJson(
 export function computeStateDistrictRankByMapKey(
   stateGeo: ReturnType<typeof computeAlignedStateDistrictGeoJson>,
 ): Map<string, number> {
-  const rankByKey = new Map<string, number>();
-  if (!stateGeo) return rankByKey;
-
-  const styleIndexByName = districtStyleIndexByName(stateGeo.features);
-  stateGeo.features.forEach((feature, i) => {
-    const name = districtFeatureName(feature.properties?.name, i);
-    const rank = styleIndexByName.get(name);
-    if (rank == null) return;
-    const mapKey = String(feature.properties?.mapKey ?? "");
-    if (mapKey && !rankByKey.has(mapKey)) {
-      rankByKey.set(mapKey, rank);
-    }
-  });
-
-  return rankByKey;
+  if (!stateGeo?.features?.length) return new Map();
+  return stateDistrictPaletteSlotByMapKey(stateGeo.features);
 }
 
 export function computeStateDistrictColorFillByMapKey(
   stateDistrictRankByMapKey: Map<string, number>,
 ): Map<string, string> {
   const m = new Map<string, string>();
-  for (const [mapKey, rank] of stateDistrictRankByMapKey) {
-    m.set(mapKey, paletteForDistrictRank(rank).fill);
+  for (const [mapKey, slot] of stateDistrictRankByMapKey) {
+    m.set(mapKey, statePaletteForSlot(slot).fill);
   }
   return m;
 }

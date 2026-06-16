@@ -1,22 +1,32 @@
 import clsx from "clsx";
 import styles from "./beautifulButton.module.scss";
+import { motion } from "framer-motion";
 
 type BeautifulButtonProps = {
-  content: string;
+  children: React.ReactNode;
   className?: string;
-  type?: "button" | "submit" | "reset";
+  type?: "button" | "submit";
+  formId?: string;
+  onClick?: () => void;
 };
 
 export const BeautifulButton = ({
-  content,
+  children,
   className,
   type = "submit",
+  formId,
+  onClick,
 }: BeautifulButtonProps) => {
   return (
-    <button type={type} className={clsx(styles.button, className)}>
+    <button
+      type={type}
+      form={formId}
+      className={clsx(styles.button, className)}
+      onClick={onClick}
+    >
       <span className={styles.shadow} />
       <span className={styles.edge} />
-      <span className={styles.top}>{content}</span>
+      <motion.span className={styles.top}>{children}</motion.span>
     </button>
   );
 };

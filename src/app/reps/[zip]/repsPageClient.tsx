@@ -5,18 +5,19 @@ import DistrictMapLegend from "@/app/components/districtMapLegend/districtMapLeg
 import RepsPanel from "@/app/components/roster/repsPanel";
 import clsx from "clsx";
 import styles from "./repsPageClient.module.scss";
-import Refine from "@/app/components/refine/refine";
 import { useRepsPage } from "../../hooks/useRepsPage";
 import { RepsLocationPayload } from "@/app/lib/definitions";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
+import { Refine } from "@/app/components/refine/refine";
 
 type Props = {
   payload: RepsLocationPayload;
+  zip: string;
 };
 
-export default function RepsPageClient({ payload }: Props) {
+export default function RepsPageClient({ payload, zip }: Props) {
   const {
     mapSection,
     legend,
@@ -54,8 +55,10 @@ export default function RepsPageClient({ payload }: Props) {
                     duration: 0.3,
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
+                  className={styles.legendColumn}
                 >
                   <DistrictMapLegend {...legend} />
+                  <Refine {...refine} />
                 </motion.div>
                 <motion.div
                   className={styles.mapCanvas}
@@ -81,14 +84,15 @@ export default function RepsPageClient({ payload }: Props) {
                   }}
                 >
                   <DistrictMap
+                    searchZip={zip}
                     districtGeoJson={mapSection.districtGeoJson}
                     mapFallback={mapSection.mapFallback}
+                    level={mapSection.level}
                   />
                 </motion.div>
               </AnimatePresence>
             </div>
           </div>
-          {/* <Refine {...refine} /> */}
           <GovLevelTabs
             currentLevel={activeLevel}
             onChange={setActiveLevel}

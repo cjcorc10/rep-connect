@@ -5,7 +5,7 @@ import type {
   StateDistrict,
   StateLegislator,
 } from "@/app/lib/definitions";
-import { paletteForDistrictRank } from "@/app/lib/districtMapStyles";
+import { paletteForDistrictRank, statePaletteForSlot } from "@/app/lib/districtMapStyles";
 import {
   federalHouseLastName,
   formatStateDistrictDisplay,
@@ -121,9 +121,9 @@ export default function DistrictMapLegend({
               </h3>
               <ul className={styles.legendList}>
                 {stateSenateDistricts.map((d, i) => {
-                  const rank =
+                  const slot =
                     stateDistrictRankByMapKey.get(d.mapKey) ?? i;
-                  const color = paletteForDistrictRank(rank);
+                  const color = statePaletteForSlot(slot);
                   const last = stateLegislatorLastName(
                     stateLegislators,
                     "upper",
@@ -153,9 +153,9 @@ export default function DistrictMapLegend({
               </h3>
               <ul className={styles.legendList}>
                 {stateHouseDistricts.map((d, i) => {
-                  const rank =
+                  const slot =
                     stateDistrictRankByMapKey.get(d.mapKey) ?? i;
-                  const color = paletteForDistrictRank(rank);
+                  const color = statePaletteForSlot(slot);
                   const last = stateLegislatorLastName(
                     stateLegislators,
                     "lower",

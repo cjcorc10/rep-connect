@@ -31,11 +31,6 @@ type UseRepsPageArgs = {
   payload: RepsLocationPayload;
 };
 
-type RefineSuccessPayload = Pick<
-  RepsByAddressPayload,
-  "data" | "cityStateLabel" | "districtGeoJson" | "mapFallback"
->;
-
 export function useRepsPage({ payload }: UseRepsPageArgs) {
   const { setReps } = useRepStore();
   const [activeLevel, setActiveLevel] = useState<GovLevel>("federal");
@@ -72,6 +67,20 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     view.data.stateDistricts,
     view.data.stateLegislators,
   );
+
+  const refineByAddress = async (
+    address: string,
+  ): Promise<RepsByAddressPayload> => {
+    console.log("refineByAddress: ", address);
+    const res = await fetch("/api/reps", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ address }),
+    });
+    if (!res.ok) throw new Error("Failed to fetch reps");
+    const data = await res.json();
+    return data;
+  };
 
   const alignedStateDistrictGeoJson =
     computeAlignedStateDistrictGeoJson(
@@ -117,13 +126,14 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
       ? alignedStateDistrictGeoJson
       : view.districtGeoJson;
 
-  function onRefineSuccess(next: RefineSuccessPayload) {
+  const onRefineSuccess = (next: RepsLocationPayload) => {
     setView(next);
-  }
+  };
 
   const mapSection = {
     districtGeoJson: activeDistrictGeoJson,
     mapFallback: view.mapFallback,
+    level: activeLevel,
   };
 
   const legend = {
@@ -155,6 +165,7 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
   const refine = {
     multipleDistricts: payload.data.houseReps.length > 1,
     onRefineSuccess,
+    refineByAddress,
   };
 
   return {

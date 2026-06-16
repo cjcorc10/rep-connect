@@ -13,7 +13,7 @@ const StreetSchema = z.object({
 export default function StreetForm({
   refine,
 }: {
-  refine: (street: string, zip: string) => Promise<boolean>;
+  refine: (street: string, zip: string) => Promise<void>;
 }) {
   const { zip } = useParams();
   const [loading, setLoading] = useState(false);
@@ -42,11 +42,9 @@ export default function StreetForm({
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const res = await refine(street, zip);
+    await refine(street, zip);
     setLoading(false);
     if (inputRef.current) inputRef.current.value = "";
-    if (!res) setError("District not refined. Please try again.");
-    else setError(null);
   };
 
   return (

@@ -10,32 +10,35 @@ import {
 } from "@/app/lib/util";
 import { getHouseReps, getSenators } from "@/app/lib/db";
 import { fetchStateLegislatorsByLatLng } from "@/app/lib/openstates";
+import { Rep, RepsByAddressPayload } from "@/app/lib/definitions";
 
 /**
- * 
- * @api {post} /reps Resolve Legislative Data 
+ * @api {post} /reps Resolve Legislative Data
  * @description Coordinates geocoding and spatial lookups to identify
  * state, districts, and member information.
  * @access public
  */
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+): Promise<NextResponse<RepsByAddressPayload | { error: string }>> {
   try {
     const { address } = (await req.json()) as {
       address: string;
     };
-    if (!address)
+    if (!address) {
       return NextResponse.json(
         { error: "Address is required" },
-        { status: 400 }
+        { status: 400 },
       );
+    }
 
     const coordinates = await getCoordinates(address);
-        const box = getBoundsForDistrictQuery(coordinates);
+    const box = getBoundsForDistrictQuery(coordinates);
     if (!box) {
       return NextResponse.json(
         { error: "Failed to get coordinates" },
-        { status: 404 }
+        { status: 404 },
       );
     }
     const loc = coordinates.geometry.location;
@@ -43,17 +46,16 @@ export async function POST(req: Request) {
       { state, districts, districtGeoJson },
       stateLegResult,
       stateDistrictResult,
-    ] =
-      await Promise.all([
-        getDistricts(box),
-        loc
-          ? fetchStateLegislatorsByLatLng(loc.lat, loc.lng)
-          : Promise.resolve({ legislators: [] }),
-        getStateLegislativeDistricts(box).catch(() => ({
-          stateDistricts: [],
-          stateDistrictGeoJson: null,
-        })),
-      ]);
+    ] = await Promise.all([
+      getDistricts(box),
+      loc
+        ? fetchStateLegislatorsByLatLng(loc.lat, loc.lng)
+        : Promise.resolve({ legislators: [] }),
+      getStateLegislativeDistricts(box).catch(() => ({
+        stateDistricts: [],
+        stateDistrictGeoJson: null,
+      })),
+    ]);
 
     const [houseRepsResult, senateReps] = await Promise.all([
       getHouseReps(districts, state),
@@ -85,7 +87,7 @@ export async function POST(req: Request) {
     console.error("Error fetching reps:", error);
     return NextResponse.json(
       { error: "Failed to fetch representatives" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

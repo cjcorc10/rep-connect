@@ -53,10 +53,9 @@ export default function SearchForm() {
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
           />
-          <BeautifulButton
-            content="SEARCH"
-            className={styles.shellButton}
-          />
+          <BeautifulButton className={styles.shellButton}>
+            SEARCH
+          </BeautifulButton>
         </div>
         <input type="hidden" id="street" name="street" value="" />
       </form>

@@ -1,81 +1,198 @@
-@use "../../styles/typography" as *;
-
-.main {
-  /* Taller floor on narrow viewports so wrapped copy + button stay inside */
-  --refine-min-h: max(8rem, min(18rem, calc(14rem - 10vw)));
-
-  width: 100%;
-  min-height: var(--refine-min-h);
-  background-color: transparent;
-  border-top: 2px solid
-    color-mix(in srgb, var(--background-color) 45%, transparent);
-  position: relative;
-  color: var(--background-color);
+.refineContainer {
+  background: white;
 }
-
-.panel {
-  width: 100%;
-  min-height: var(--refine-min-h);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.button {
-  color: var(--background-color);
-  border: 2px solid var(--background-color);
-  width: 5rem;
-  height: 2.5rem;
-  margin: 0 auto;
-  cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0.3rem 0;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.contentWrapper,
-.status {
-  position: absolute;
-  inset: 0;
+.container {
+  background: white;
+  padding: 2rem 1rem;
+  flex: 1 1 0;
+  min-height: 0;
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.contentWrapper {
-  padding: 0.75rem 0.75rem;
+  box-sizing: border-box;
   overflow: hidden;
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
 }
 
-.contentWrapperIntro {
-  align-items: center;
-  position: static;
-  inset: auto;
-  width: fit-content;
-  height: auto;
-  margin: 0 auto;
+.phaseArea {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.buttonFooter {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 1rem;
 }
 
 .message {
-  margin: 0;
-  text-align: center;
-  max-width: 36rem;
+  font-size: 1.1rem;
+  font-weight: 200;
+}
+.buttonText {
+  background: red;
+  width: 100%;
 }
 
-.button p {
-  margin: 0;
-  line-height: 1;
+.button {
+  color: white;
 }
 
-.status {
-  background-color: var(--red-accent);
+.initialView {
+  height: 100%;
+}
+
+.buttonContainer {
+  display: flex;
   justify-content: center;
+  width: 100%;
+}
+
+.streetForm {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.formContainer {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formInput {
+    flex: 1 1 auto;
+    min-height: 3rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
+    background: rgb(255, 255, 255);
+    border: solid rgb(128, 127, 127) 1px;
+    border-radius: 0.5rem;
+    font: inherit;
+    line-height: 1.4;
+    resize: none;
+    transition: opacity 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  &.formContainerLoading .formInput {
+    opacity: 0.45;
+    cursor: wait;
+  }
+
+  .formError {
+    flex-shrink: 0;
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: #b42318;
+  }
+
+  .formButton {
+    cursor: pointer;
+  }
+}
+.formLoadingOverlay,
+.formStatusMessage {
+  position: absolute;
+  inset: 0;
+  flex: none;
+  width: 100%;
+  min-height: 3rem;
+  z-index: 1;
+  display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
+
+.formLoadingOverlay {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.formStatusMessage {
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.formStatusSuccess {
+  color: #067647;
+}
+
+.formStatusFailure {
+  color: #b42318;
+}
+
+.formSpinner {
+  width: 5rem;
+  height: 5rem;
+  overflow: visible;
+}
+
+.formSpinnerArc {
+  stroke: var(--red-accent);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  transform-origin: center;
+  transform: rotate(-90deg);
+  animation:
+    grow 1200ms infinite alternate,
+    spin 2400ms infinite alternate;
+}
+
+@keyframes grow {
+  from {
+    stroke-dasharray: 5 100;
+  }
+  to {
+    stroke-dasharray: 25 100;
+  }
+}
+
+@keyframes spin {
+  from {
+    stroke-dashoffset: 5;
+  }
+  to {
+    stroke-dashoffset: -95;
+  }
 }

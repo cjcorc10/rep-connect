@@ -1,197 +1,203 @@
-"use client";
-import StreetForm from "../streetForm";
-import RefineContainer from "./container/refineContainer";
+import { useEffect, useState } from "react";
+import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./refine.module.scss";
-import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { RefineContainer } from "./refineContainer";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, X } from "lucide-react";
-import type {
-  Coordinates,
-  DistrictMapFeatureCollection,
-  Rep,
-  RepsData,
-  StateDistrict,
-  StateLegislator,
-} from "../../lib/definitions";
+import {
+  RepsByAddressPayload,
+  RepsLocationPayload,
+} from "@/app/lib/definitions";
+import { useParams } from "next/navigation";
+import { REFINE_FORM_ID, RefineForm } from "./refineForm";
+import clsx from "clsx";
 
-type RefineProps = {
-  multipleDistricts: boolean;
-  onRefineSuccess?: (payload: {
-    data: RepsData;
-    cityStateLabel: string;
-    districtGeoJson: DistrictMapFeatureCollection | null;
-    mapFallback: {
-      bounds?: Coordinates;
-      location?: { lat: number; lng: number };
-    };
-  }) => void;
+type RefineAddressFormProps = {
+  refineByAddress: (address: string) => Promise<RepsByAddressPayload>;
+  onRefineSuccess: (next: RepsLocationPayload) => void;
 };
 
-export default function Refine({
-  multipleDistricts,
+type RefinePhase =
+  | "initial"
+  | "form"
+  | "loading"
+  | "success"
+  | "failure";
+
+const STATUS_TIMEOUT_MS = 3000;
+
+const STATUS_MESSAGE: Record<"success" | "failure", string> = {
+  success: "Refine successful",
+  failure: "Refine unsuccessful. Please try again",
+};
+
+const REFINE_BUTTON_LABEL = {
+  initial: "refine",
+  form: "submit",
+};
+
+const normalizeRepPayload = (
+  repPayload: RepsByAddressPayload,
+): RepsLocationPayload => {
+  return {
+    data: {
+      state: repPayload.state,
+      districts: repPayload.districts,
+      houseReps: repPayload.houseReps,
+      senateReps: repPayload.senateReps,
+      stateLegislators: repPayload.stateLegislators,
+      stateDistricts: repPayload.stateDistricts,
+      stateDistrictGeoJson: repPayload.stateDistrictGeoJson,
+    },
+    cityStateLabel: repPayload.cityStateLabel,
+    districtGeoJson: repPayload.districtGeoJson,
+    mapFallback: repPayload.mapFallback,
+  };
+};
+
+const isMultipleDistricts = (
+  repPayload: RepsByAddressPayload,
+): boolean => {
+  return repPayload.districts.length > 1;
+};
+
+export const Refine = ({
+  refineByAddress,
   onRefineSuccess,
-}: RefineProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showError, setShowError] = useState(false);
-  const [refined, setRefined] = useState<boolean | null>(null);
+}: RefineAddressFormProps) => {
+  const { zip } = useParams();
+  const [phase, setPhase] = useState<RefinePhase>("initial");
 
   useEffect(() => {
-    if (refined === false) {
-      setShowError(true);
-      const timer = setTimeout(() => {
-        setShowError(false);
-        setRefined(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [refined]);
+    if (phase !== "failure") return;
 
-  const handleRefine = async (
-    street: string,
-    zipCode: string,
-  ): Promise<boolean> => {
-    const address = `${street}, ${zipCode}`;
-    const res = await fetch("/api/reps", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ address }),
-    });
-    if (!res.ok) {
-      setRefined(false);
+    const timer = window.setTimeout(() => {
+      setPhase("form");
+    }, STATUS_TIMEOUT_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  const refineAddress = async (street: string): Promise<boolean> => {
+    try {
+      const repPayload = await refineByAddress(`${street}, ${zip}`);
+
+      if (isMultipleDistricts(repPayload)) {
+        return false;
+      }
+
+      onRefineSuccess(normalizeRepPayload(repPayload));
+      return true;
+    } catch (error) {
+      console.error("Failed to refine reps: ", error);
       return false;
     }
-    const data = (await res.json()) as {
-      state: string;
-      districts: string[];
-      houseReps?: Rep[];
-      senateReps?: Rep[];
-      stateLegislators?: StateLegislator[];
-      stateDistricts?: StateDistrict[];
-      stateDistrictGeoJson?: DistrictMapFeatureCollection | null;
-      cityStateLabel?: string;
-      districtGeoJson?: DistrictMapFeatureCollection | null;
-      mapFallback?: {
-        bounds?: Coordinates;
-        location?: { lat: number; lng: number };
-      };
-    };
-    const success =
-      Array.isArray(data.houseReps) && data.houseReps.length === 1;
-    if (success) {
-      setRefined(true);
-      onRefineSuccess?.({
-        data: {
-          state: data.state,
-          districts: data.districts,
-          houseReps: data.houseReps ?? [],
-          senateReps: data.senateReps ?? [],
-          stateLegislators: data.stateLegislators ?? [],
-          stateDistricts: data.stateDistricts ?? [],
-          stateDistrictGeoJson: data.stateDistrictGeoJson ?? null,
-        },
-        cityStateLabel: data.cityStateLabel ?? "",
-        districtGeoJson: data.districtGeoJson ?? null,
-        mapFallback: data.mapFallback ?? {},
-      });
-    } else {
-      setRefined(false);
-    }
-    return success;
   };
 
-  if (!multipleDistricts) return null;
+  const buttonLabel =
+    phase === "initial"
+      ? REFINE_BUTTON_LABEL.initial
+      : REFINE_BUTTON_LABEL.form;
 
   return (
-    <section
-      className={styles.main}
-      role="dialog"
-      aria-label="Refine district results"
-    >
-      <motion.div
-        className={styles.panel}
-        initial={{ opacity: 0, transform: "translateY(12px)" }}
-        animate={{ opacity: 1, transform: "translateY(0px)" }}
-        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <RefineContainer>
-          <AnimatePresence mode="popLayout">
-            {!isOpen ? (
-              <motion.div
-                key="popup"
-                className={clsx(
-                  styles.contentWrapper,
-                  styles.contentWrapperIntro,
-                )}
-              >
-                <motion.p
-                  exit={{ y: -80, opacity: 0 }}
-                  className={styles.message}
-                >
-                  Multiple districts were returned from your ZIP code.
-                  To refine results, click refine.
-                </motion.p>
-                <motion.button
-                  layoutId="refine-wrapper"
-                  className={styles.button}
-                  onClick={() => setIsOpen(true)}
-                >
-                  <motion.p layoutId="refine-text">refine</motion.p>
-                </motion.button>
-              </motion.div>
-            ) : (
-              <div>
-                <AnimatePresence mode="popLayout" initial={false}>
-                  {refined === true ? (
-                    <motion.div
-                      key="reps-refined"
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
-                      transition={{ ease: "easeOut" }}
-                      className={styles.status}
-                    >
-                      <p>Reps refined</p>
-                      <div className="flex justify-center items-center bg-black rounded-full p-2">
-                        <Check className="w-10 h-10 text-white" />
-                      </div>
-                    </motion.div>
-                  ) : showError ? (
-                    <motion.div
-                      key="unsuccessful"
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: 40, opacity: 0, filter: "blur(7px)" }}
-                      transition={{ ease: "easeOut" }}
-                      className={styles.status}
-                    >
-                      <p>Unsuccessful, please try again</p>
-                      <motion.div
-                        initial={{ scale: 0.75 }}
-                        animate={{ scale: 1 }}
-                        className="flex justify-center items-center bg-black rounded-full p-2"
-                      >
-                        <X className="w-7 h-7 text-white" />
-                      </motion.div>
-                      <p></p>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="street-form"
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ filter: "blur(7px)", opacity: 0 }}
-                      className={styles.contentWrapper}
-                    >
-                      <StreetForm refine={handleRefine} />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+    <RefineContainer>
+      <div className={styles.phaseArea}>
+        <AnimatePresence mode="popLayout" initial={false}>
+          {phase === "initial" && (
+            <motion.div
+              key="initial"
+              exit={{ x: "-100%", filter: "blur(7px)", opacity: 0 }}
+              transition={{ ease: "easeOut" }}
+              className={styles.initialView}
+            >
+              <div className={styles.message}>
+                <p>
+                  There were overlapping districts returned from your
+                  ZIP code.
+                </p>
+                <br />
+                <p>
+                  Click &quot;refine&quot; to enter your street
+                  address for a more accurate search.
+                </p>
               </div>
-            )}
-          </AnimatePresence>
-        </RefineContainer>
-      </motion.div>
-    </section>
+            </motion.div>
+          )}
+          {phase === "form" && (
+            <motion.div
+              initial={{ x: "100%", filter: "blur(7px)", opacity: 0 }}
+              animate={{ x: 0, filter: "blur(0px)", opacity: 1 }}
+              exit={{ x: "-100%", filter: "blur(7px)", opacity: 0 }}
+              transition={{ ease: "easeOut" }}
+              key="form"
+              className={styles.streetForm}
+            >
+              <RefineForm
+                setPhase={setPhase}
+                handleRefine={refineAddress}
+              />
+            </motion.div>
+          )}
+          {phase === "loading" ? (
+            <motion.div
+              key="refine-loading"
+              className={styles.formLoadingOverlay}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{
+                duration: 0.2,
+                ease: [0.25, 0.46, 0.45, 0.94],
+              }}
+              aria-live="polite"
+              aria-label="Loading results"
+            >
+              <svg
+                className={styles.formSpinner}
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <circle
+                  className={styles.formSpinnerArc}
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  pathLength="100"
+                  fill="none"
+                  strokeWidth="2"
+                />
+              </svg>
+            </motion.div>
+          ) : phase === "success" || phase === "failure" ? (
+            <>
+              <motion.p
+                key={phase}
+                className={styles.formStatusMessage}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{
+                  duration: 0.2,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                }}
+                role="status"
+              >
+                {STATUS_MESSAGE[phase]}
+              </motion.p>
+            </>
+          ) : null}
+        </AnimatePresence>
+      </div>
+      <div className={styles.buttonFooter}>
+        <BeautifulButton
+          type={phase === "form" ? "submit" : "button"}
+          formId={phase === "form" ? REFINE_FORM_ID : undefined}
+          onClick={
+            phase === "initial" ? () => setPhase("form") : () => {}
+          }
+        >
+          {buttonLabel}
+        </BeautifulButton>
+      </div>
+    </RefineContainer>
   );
-}
+};
