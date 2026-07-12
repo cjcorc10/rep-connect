@@ -2,7 +2,7 @@
 .nav {
     .navList {
         display: flex;
-        @include text-t1;
+        @include body1;
         gap: 3em;
         .listItem {
             z-index: 10;

@@ -7,35 +7,35 @@
     var(--blue-accent) 16%,
     color-mix(
         in srgb,
-        var(--primary-color) 12%,
+        var(--blue-secondary) 12%,
         var(--blue-accent) 88%
       )
       32%,
     color-mix(
         in srgb,
-        var(--primary-color) 35%,
+        var(--blue-secondary) 35%,
         var(--blue-accent) 65%
       )
       48%,
     color-mix(
         in srgb,
-        var(--primary-color) 58%,
+        var(--blue-secondary) 58%,
         var(--blue-accent) 42%
       )
       64%,
     color-mix(
         in srgb,
-        var(--primary-color) 78%,
+        var(--blue-secondary) 78%,
         var(--blue-accent) 22%
       )
       80%,
     color-mix(
         in srgb,
-        var(--primary-color) 92%,
+        var(--blue-secondary) 92%,
         var(--blue-accent) 8%
       )
       92%,
-    var(--primary-color) 100%
+    var(--blue-secondary) 100%
   );
   .rosterColumnHeader {
     display: flex;
@@ -46,7 +46,7 @@
     color: rgba(255, 255, 255);
     background-color: var(--blue-accent);
     justify-content: space-between;
-    font-family: montserrat, sans-serif;
+    font-family: var(--font-heading);
     font-weight: 700;
     text-transform: uppercase;
 
@@ -85,7 +85,7 @@
 
 .rosterRow {
   display: flex;
-  padding: 4rem 2rem;
+  padding: 8rem 2rem;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
@@ -112,7 +112,7 @@
   .repName {
     color: var(--background-color);
     width: 100%;
-    font-family: montserrat, sans-serif;
+    font-family: var(--font-heading);
     font-style: italic;
     font-weight: 1000;
     letter-spacing: -0.07em;
@@ -139,7 +139,7 @@
     .rosterColumnValue {
       font-size: clamp(1.4rem, 2vw, 2.4rem);
       font-weight: 700;
-      font-family: montserrat, sans-serif;
+      font-family: var(--font-heading);
       text-align: center;
       width: 100%;
       border: 1px rgba(255, 255, 255, 0.5) solid;
@@ -164,7 +164,7 @@
       color: white;
       border-radius: 9999rem;
       font-weight: 700;
-      font-family: montserrat, sans-serif;
+      font-family: var(--font-heading);
       border: 1px solid rgba(255, 255, 255, 0.5);
       padding: 1rem;
       width: 100%;
@@ -183,7 +183,7 @@
   display: flex;
   color: #fff;
   justify-content: center;
-  font-family: montserrat, sans-serif;
+  font-family: var(--font-heading);
 
   .detailContainer {
     padding: 4rem 2rem;

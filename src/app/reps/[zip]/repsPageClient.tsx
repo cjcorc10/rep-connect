@@ -1,23 +1,25 @@
 "use client";
 
-import DistrictMap from "@/app/components/districtMap/districtMap";
-import DistrictMapLegend from "@/app/components/districtMapLegend/districtMapLegend";
 import RepsPanel from "@/app/components/roster/repsPanel";
-import clsx from "clsx";
 import styles from "./repsPageClient.module.scss";
 import { useRepsPage } from "../../hooks/useRepsPage";
 import { RepsLocationPayload } from "@/app/lib/definitions";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRef } from "react";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
-import { Refine } from "@/app/components/refine/refine";
+import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
+import { ResultsSection } from "./resultsSection";
 
 type Props = {
   payload: RepsLocationPayload;
   zip: string;
+  label: string;
 };
 
-export default function RepsPageClient({ payload, zip }: Props) {
+export default function RepsPageClient({
+  payload,
+  zip,
+  label,
+}: Props) {
   const {
     mapSection,
     legend,
@@ -29,78 +31,68 @@ export default function RepsPageClient({ payload, zip }: Props) {
     payload,
   });
 
-  const mapSectionRef = useRef<HTMLDivElement>(null);
-
   return (
-    <>
-      <main className={styles.main}>
-        <section className={styles.mapSection}>
-          <div ref={mapSectionRef} className={styles.mapContainer}>
-            <div className={styles.mapWithLegend}>
-              <AnimatePresence mode="popLayout">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    filter: "blur(7px)",
-                    x: 50,
-                    y: 15,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    filter: "blur(0px)",
-                    x: 0,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.3,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }}
-                  className={styles.legendColumn}
-                >
-                  <DistrictMapLegend {...legend} />
-                  <Refine {...refine} />
-                </motion.div>
-                <motion.div
-                  className={styles.mapCanvas}
-                  key={`map-canvas-${activeLevel}`}
-                  initial={{
-                    opacity: 0,
-                    filter: "blur(7px)",
-                    y: 50,
-                    x: 15,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    filter: "blur(0px)",
-                    y: 0,
-                    x: 0,
-                  }}
-                  exit={{
-                    filter: "blur(7px)",
-                  }}
-                  transition={{
-                    duration: 0.3,
-                    ease: [0.25, 0.46, 0.45, 0.94],
-                  }}
-                >
-                  <DistrictMap
-                    searchZip={zip}
-                    districtGeoJson={mapSection.districtGeoJson}
-                    mapFallback={mapSection.mapFallback}
-                    level={mapSection.level}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
+    <main>
+      <div className={styles.resultsContainer}>
+        <div className={styles.govLevelTabsContainer}>
           <GovLevelTabs
             currentLevel={activeLevel}
             onChange={setActiveLevel}
           />
-        </section>
-      </main>
-      {/* <Banner /> */}
+        </div>
+        <FadeupContainer delay={1}>
+          <div className={styles.header}>
+            <h1>Search Results...</h1>
+          </div>
+        </FadeupContainer>
+
+        <FadeupContainer delay={0.75}>
+          <ResultsHeader zip={zip} label={label} />
+        </FadeupContainer>
+        <FadeupContainer delay={0.5}>
+          <ResultsSection
+            mapSection={mapSection}
+            zip={zip}
+            activeLevel={activeLevel}
+            legend={legend}
+            refine={refine}
+          />
+        </FadeupContainer>
+      </div>
+      <div
+        style={{
+          height: "100vh",
+          width: "100vw",
+          background: "var(--background-color)",
+          zIndex: "10",
+        }}
+      />
       <RepsPanel isFederal={activeLevel === "federal"} {...panel} />
-    </>
+    </main>
   );
 }
+
+const FadeupContainer = ({
+  delay,
+  children,
+}: {
+  delay: number;
+  children: React.ReactNode;
+}) => {
+  const animationVariants = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 10 },
+  };
+  return (
+    <motion.div
+      variants={animationVariants}
+      initial="initial"
+      animate="animate"
+      transition={{ delay, duration: 0.6, ease: "easeOut" }}
+      className={styles.sectionWrapper}
+    >
+      {children}
+    </motion.div>
+  );
+};

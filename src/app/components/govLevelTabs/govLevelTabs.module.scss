@@ -1,13 +1,15 @@
+@use "../../styles/typography" as *;
 .tabSelector {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
-  color: black;
+  color: color-mix(in srgb, var(--background-color) 35%, #000000 75%);
   text-transform: uppercase;
-  font-family: montserrat;
-  font-weight: 500;
+  @include body1;
+  line-height: 1;
+  font-size: 1rem;
   background-color: color-mix(
     in srgb,
     var(--background-color) 86%,

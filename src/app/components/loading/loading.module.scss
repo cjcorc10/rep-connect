@@ -1,0 +1,11 @@
+.loadingContainer {
+  height: 100vh;
+  width: 100vw;
+
+  &:first-child {
+    background-color: var(--blue-accent);
+  }
+  &:last-child {
+    background-color: var(--red-accent);
+  }
+}

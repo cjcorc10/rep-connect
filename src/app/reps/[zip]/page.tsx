@@ -1,24 +1,34 @@
-import { Suspense, ViewTransition } from "react";
-import HeaderWrapper from "@/app/components/headerWrapper";
-import HeaderSkeleton from "../../skeletons/headerSkeleton";
-import RepsPageWrapper from "@/app/components/repsPageWrapper";
-import MapSkeleton from "@/app/skeletons/mapSkeleton";
-import styles from "./repsPageClient.module.scss";
+import {
+  cityStateLabelFromGeocode,
+  getCoordinates,
+} from "@/app/lib/util";
+import { notFound } from "next/navigation";
+import { getRepsByLocationQuery } from "@/app/lib/reps";
+import RepsPageClient from "./repsPageClient";
+import Loading from "../../components/loading/loading";
+import { Suspense } from "react";
 type PageProps = {
   params: Promise<{ zip: string }>;
 };
 
-export default async function Page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
   return (
-    <ViewTransition>
-      <main className={styles.main}>
-        <Suspense fallback={<HeaderSkeleton />}>
-          <HeaderWrapper params={params} />
-        </Suspense>
-        <Suspense fallback={<MapSkeleton />}>
-          <RepsPageWrapper params={params} />
-        </Suspense>
-      </main>
-    </ViewTransition>
+    <Suspense fallback={<Loading />}>
+      <AsyncPage params={params} />
+    </Suspense>
   );
 }
+
+const AsyncPage = async ({
+  params,
+}: {
+  params: Promise<{ zip: string }>;
+}) => {
+  const { zip } = await params;
+  const coordinates = await getCoordinates(zip);
+  if (!coordinates) notFound();
+  const label = cityStateLabelFromGeocode(coordinates);
+  const payload = await getRepsByLocationQuery(coordinates);
+  if (!payload) notFound();
+  return <RepsPageClient payload={payload} zip={zip} label={label} />;
+};

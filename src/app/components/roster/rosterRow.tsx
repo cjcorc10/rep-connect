@@ -1,4 +1,4 @@
-import { colorToGradiant, RepRosterRow } from "@/app/lib/repRoster";
+import { RepRosterRow } from "@/app/lib/repRoster";
 import styles from "./roster.module.scss";
 
 export const RosterRow = ({
@@ -10,10 +10,6 @@ export const RosterRow = ({
 }) => {
   const date = new Date(row.termEndDisplay);
   const year = date.getFullYear();
-
-  const gradient = colorToGradiant(
-    row.districtColorFill || `#4e9bff`,
-  );
 
   return (
     <>
@@ -29,14 +25,7 @@ export const RosterRow = ({
       </div>
       <div className={styles.keyGroup}>
         <h3 className={styles.rosterColumnValue}>{row.chamber}</h3>
-        <h3
-          className={styles.rosterColumnValue}
-          style={{
-            background: gradient,
-          }}
-        >
-          {row.district}
-        </h3>
+        <h3 className={styles.rosterColumnValue}>{row.district}</h3>
         {isFederal && (
           <h3 className={styles.rosterColumnValue}>{year}</h3>
         )}

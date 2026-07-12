@@ -1,30 +1,21 @@
 .container {
   --city-pad-y: clamp(1.4rem, 1.8vw, 1.75rem);
   --city-pad-x: clamp(0.5rem, 2.2vw, 1rem);
-  --city-title-size: clamp(1.8rem, 2.2vw + 0.55rem, 3rem);
+  --city-title-size: clamp(1.3rem, 2.2vw + 0.55rem, 1.5rem);
 
-  flex: 1 1 200px;
-  min-width: 0;
+  font-family: var(--font-body);
   width: 100%;
-  box-sizing: border-box;
-
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 
-  padding: var(--city-pad-y) var(--city-pad-x);
-  background-color: var(--primary-color);
-  border-radius: 9999rem;
-
-  transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-origin: bottom right;
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+  }
 }
 
 .title {
-  margin: 0;
+  color: var(--red-accent);
   font-size: var(--city-title-size);
   line-height: 1.15;
-  font-weight: inherit;
-  text-align: center;
   transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }

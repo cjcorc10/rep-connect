@@ -1,112 +1,164 @@
-.main {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
+@use "../../styles/typography" as *;
+
+.govLevelTabsContainer {
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.headerSection {
-  margin-top: 4rem;
-  padding: 0 1rem;
+.resultsContainer {
+  padding: 12px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  max-width: max(75vw, 35rem);
-  width: 100%;
-  margin-inline: auto;
-  box-sizing: border-box;
-  gap: 0.5rem;
+  position: fixed;
+  inset: 0;
+  .sectionWrapper {
+    padding: 12px 0;
+    border-bottom: 1px solid #252525;
 
-  .header {
-    display: flex;
-    flex-wrap: wrap;
-    color: #fff;
-    justify-content: center;
-    align-items: stretch;
-    padding-top: clamp(2rem, 8vw, 5rem);
-    gap: clamp(2px, 0.4vw, 8px);
-    font-weight: 600;
-    width: 100%;
+    &:last-child {
+      flex: 1 1 auto;
+    }
   }
-}
-
-/* Top-level so MapSkeleton can use mapContainer without a .headerSection parent. */
-.main {
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .mapSection {
+  .header {
+    @include header2;
+    font-size: clamp(2rem, 5vw, 6rem);
     width: 100%;
-    max-width: max(75vw, 35rem);
+    color: var(--primary-color);
+    height: clamp(4rem, 12vw, 10rem);
+    margin-top: 4rem;
+  }
+  .resultsHeader {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0 1rem;
-    margin-bottom: 2rem;
-    margin-top: 0.25rem;
+    width: 100%;
+    height: clamp(7rem, 12vw, 14rem);
 
-    .mapContainer {
-      width: 100%;
-      min-height: clamp(17rem, 65vh, 50rem);
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+      justify-content: space-between;
+    }
+  }
+  .mapSectionContainer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    .districtSection {
+      flex: 3;
       display: flex;
       flex-direction: column;
-      background-color: color-mix(
-        in srgb,
-        var(--background-color) 86%,
-        #000000 14%
-      );
-      transform-origin: bottom center;
-      overflow: hidden;
-      margin-bottom: 2rem;
+      justify-content: start;
+      // gap: 12px;
+      padding-top: 1rem;
+      color: #35281d;
+      .title {
+        position: relative;
+        @include header1;
+        color: var(--red-accent);
 
-      .mapWithLegend {
-        flex: 1 1 auto;
-        min-height: 0;
+        padding-top: 1rem;
+        @media (max-height: 768px) and (max-width: 768px) {
+          display: none;
+        }
+      }
+      @media (max-width: 768px) {
+        flex: 0;
+      }
+    }
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+    }
+    .mapSection {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+      align-items: center;
+
+      .mapContainer {
         width: 100%;
-        display: grid;
-        grid-template-columns: clamp(10rem, 20vw, 14rem) minmax(
-            0,
-            1fr
-          );
-        grid-template-rows: minmax(0, 1fr);
-        gap: 0.75rem;
-        align-items: stretch;
-        padding: 0.5rem;
-        box-sizing: border-box;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background-color: color-mix(
+          in srgb,
+          var(--background-color) 86%,
+          #000000 14%
+        );
+        overflow: hidden;
 
-        .legendColumn {
-          display: flex;
-          flex-direction: column;
+        .mapWithLegend {
+          flex: 1 1 auto;
           min-height: 0;
-          height: 100%;
-          gap: 0.5rem;
+          width: 100%;
+          align-items: stretch;
+          padding: 0.5rem;
+          box-sizing: border-box;
+          overflow: hidden;
 
-          > * {
-            flex: 1 1 0;
+          .mapCanvas {
             min-height: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
           }
         }
       }
-
-      .mapCanvas {
-        min-height: 0;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      @media (max-width: 768px) {
-        .mapWithLegend {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto minmax(10rem, 1fr);
-        }
-      }
     }
   }
+}
+
+.logo {
+  aspect-ratio: 1;
+  @include header3;
+  font-size: 8rem;
+  &:nth-child(2) {
+    position: relative;
+    left: 6px;
+  }
+}
+
+.logoContainer {
+  height: 2rem;
+  aspect-ratio: 1;
+  position: relative;
+
+  .leftLogo,
+  .rightLogo {
+    height: 4rem;
+    aspect-ratio: 1;
+    display: flex;
+  }
+}
+
+.text {
+  @include header3;
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 0.4;
+  position: relative;
+  left: -1;
+}
+
+.letterR {
+  position: relative;
+  display: inline-block;
+  z-index: 100;
+}
+
+.letterC {
+  position: relative;
+}
+
+.letterC,
+.letterR {
+  height: 2rem;
+  transform-origin: center;
+  transform-box: fill-box;
+  // animation: rotate 2s linear infinite;
 }

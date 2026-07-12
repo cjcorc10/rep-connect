@@ -43,12 +43,12 @@
 
 .repName {
   margin: 0;
-  @include display-d2;
+  @include header2;
 }
 
 .repMeta {
   margin: 0.35rem 0 0;
-  @include display-d3;
+  @include header3;
   color: rgba(0, 0, 0, 0.65);
 }
 

@@ -2,16 +2,13 @@ import type {
   Coordinates,
   DistrictMapFeature,
   DistrictMapFeatureCollection,
+  MapFallback,
 } from "@/app/lib/definitions";
-import {
-  SEARCH_AREA,
-  searchAreaMapStyle,
-} from "./districtMapVisualConfig";
 
-type MapFallback = {
-  bounds?: Coordinates;
-  location?: { lat: number; lng: number };
-};
+const BOUNDS_PAD = 0.028;
+const FIT_PADDING = 40;
+/** Extra padding when framing all district polygons (zoomed out). */
+const DISTRICT_VIEW_FIT_PADDING = 64;
 
 /** Geocoded bounds, or a small pad around the point when bounds are missing. */
 export function resolveSearchAreaBounds(
@@ -19,15 +16,14 @@ export function resolveSearchAreaBounds(
 ): Coordinates | null {
   if (fallback.bounds) return fallback.bounds;
   if (!fallback.location) return null;
-  const pad = SEARCH_AREA.boundsPad;
   return {
     northeast: {
-      lat: fallback.location.lat + pad,
-      lng: fallback.location.lng + pad,
+      lat: fallback.location.lat + BOUNDS_PAD,
+      lng: fallback.location.lng + BOUNDS_PAD,
     },
     southwest: {
-      lat: fallback.location.lat - pad,
-      lng: fallback.location.lng - pad,
+      lat: fallback.location.lat - BOUNDS_PAD,
+      lng: fallback.location.lng - BOUNDS_PAD,
     },
   };
 }
@@ -43,13 +39,7 @@ function boundsRing(bounds: Coordinates): [number, number][] {
   ];
 }
 
-export function styleSearchAreaFeature(
-  feature: google.maps.Data.Feature,
-) {
-  if (feature.getProperty("_searchArea")) return searchAreaMapStyle();
-  return null;
-}
-
+/** Single-feature GeoJSON rectangle for the searched ZIP bounds. */
 export function buildSearchAreaOverlay(
   bounds: Coordinates,
 ): DistrictMapFeatureCollection {
@@ -68,50 +58,41 @@ export function buildSearchAreaOverlay(
   };
 }
 
-export function searchAreaCenter(bounds: Coordinates): {
-  lat: number;
-  lng: number;
-} {
-  return {
-    lat: (bounds.southwest.lat + bounds.northeast.lat) / 2,
-    lng: (bounds.southwest.lng + bounds.northeast.lng) / 2,
-  };
-}
-
-/** Geographic center of the searched area for the ZIP label. */
-export function searchAreaZipLabelPosition(bounds: Coordinates): {
-  lat: number;
-  lng: number;
-} {
-  return searchAreaCenter(bounds);
-}
-
-export function waitForMapIdle(map: google.maps.Map): Promise<void> {
-  return new Promise((resolve) => {
-    google.maps.event.addListenerOnce(map, "idle", () => resolve());
-  });
-}
-
-export function searchAreaLatLngBounds(
-  searchBounds: Coordinates,
-): google.maps.LatLngBounds {
-  return new google.maps.LatLngBounds(
-    searchBounds.southwest,
-    searchBounds.northeast,
-  );
+export function isSearchAreaFeature(
+  feature: google.maps.Data.Feature,
+): boolean {
+  return Boolean(feature.getProperty("_searchArea"));
 }
 
 /** Fit the map viewport to the searched area. */
 export function fitMapToSearchArea(
   map: google.maps.Map,
   searchBounds: Coordinates,
-  padding = SEARCH_AREA.fitPadding,
+  padding = FIT_PADDING,
 ): void {
-  map.fitBounds(searchAreaLatLngBounds(searchBounds), padding);
+  const bounds = new google.maps.LatLngBounds(
+    searchBounds.southwest,
+    searchBounds.northeast,
+  );
+  map.fitBounds(bounds, padding);
 }
 
-export function isSearchAreaOverlayFeature(
-  feature: google.maps.Data.Feature,
-): boolean {
-  return Boolean(feature.getProperty("_searchArea"));
+/** Frame every district polygon, optionally including the ZIP search bounds. */
+export function fitMapToDistrictView(
+  map: google.maps.Map,
+  districtBounds: google.maps.LatLngBounds,
+  searchBounds: Coordinates | null,
+  padding = DISTRICT_VIEW_FIT_PADDING,
+): void {
+  if (districtBounds.isEmpty()) return;
+
+  const viewBounds = new google.maps.LatLngBounds();
+  viewBounds.union(districtBounds);
+
+  if (searchBounds) {
+    viewBounds.extend(searchBounds.southwest);
+    viewBounds.extend(searchBounds.northeast);
+  }
+
+  map.fitBounds(viewBounds, padding);
 }

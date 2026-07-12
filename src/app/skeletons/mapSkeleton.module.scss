@@ -1,3 +1,5 @@
+@use "../styles/typography" as *;
+
 .fill {
   flex: 1 1 auto;
   min-height: 0;
@@ -22,15 +24,15 @@
   width: 2.25rem;
   height: 2.25rem;
   box-sizing: border-box;
-  border: 2px solid color-mix(in srgb, var(--primary-color) 22%, transparent);
+  border: 2px solid
+    color-mix(in srgb, var(--primary-color) 22%, transparent);
   border-top-color: var(--primary-color);
   border-radius: 50%;
   animation: mapSkeletonSpin 650ms linear infinite;
 }
 
 .label {
-  font-family: var(--typo-t1-font);
-  font-size: var(--typo-t2-size);
+  @include body2;
   font-weight: 500;
   color: var(--primary-color);
   margin: 0;
@@ -47,6 +49,7 @@
 @media (prefers-reduced-motion: reduce) {
   .spinner {
     animation: none;
-    border: 2px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--primary-color) 40%, transparent);
   }
 }

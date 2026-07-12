@@ -7,7 +7,7 @@ export default function CardSkeleton() {
       <Skeleton className="absolute inset-0 w-full h-full rounded-[3rem]" />
       {/* Gradient overlay simulation */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/50 rounded-[3rem]" />
-      {/* Name skeleton at bottom center - matches display-d2 typography */}
+      {/* Name skeleton at bottom center - matches header2 typography */}
       <Skeleton className="absolute bottom-5 left-1/2 -translate-x-1/2 h-8 w-48 rounded-full" />
     </div>
   );

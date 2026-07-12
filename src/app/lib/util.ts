@@ -2,6 +2,7 @@ import type {
   Coordinates,
   DistrictMapFeature,
   DistrictMapFeatureCollection,
+  MapFallback,
   StateDistrict,
 } from "./definitions";
 import { fipsToState } from "./definitions";
@@ -149,10 +150,9 @@ export function getBoundsForDistrictQuery(
   return null;
 }
 
-export function extractMapFallback(result: GeocodeResult): {
-  bounds?: Coordinates;
-  location?: { lat: number; lng: number };
-} {
+export function extractMapFallback(
+  result: GeocodeResult,
+): MapFallback {
   const bounds = getBoundsForDistrictQuery(result) ?? undefined;
   const location = result.geometry.location;
   return {

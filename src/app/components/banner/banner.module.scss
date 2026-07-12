@@ -5,7 +5,7 @@
   background-color: #e9e5cf;
   position: relative;
   height: clamp(5rem, 10vw, 10rem);
-  font-family: montserrat, sans-serif;
+  font-family: var(--font-heading);
   font-size: clamp(2rem, 5vw, 8rem);
   font-weight: 600;
   white-space: nowrap;

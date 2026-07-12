@@ -70,6 +70,11 @@ export const Roster = ({ rows, repMap, isFederal }: RosterProps) => {
             <Accordion.Header>
               <AccordionTrigger
                 className={styles.rosterRow}
+                onClick={(e) => {
+                  if (isFederal || !row.externalUrl) return;
+                  e.preventDefault();
+                  window.open(row.externalUrl, "_blank");
+                }}
                 onMouseEnter={() => {
                   setHoveredIndex(index);
                   if (isFederal) {

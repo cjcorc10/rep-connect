@@ -60,7 +60,7 @@ const isMultipleDistricts = (
   return repPayload.districts.length > 1;
 };
 
-export const Refine = ({
+export const RefineReps = ({
   refineByAddress,
   onRefineSuccess,
 }: RefineAddressFormProps) => {
@@ -110,15 +110,7 @@ export const Refine = ({
               className={styles.initialView}
             >
               <div className={styles.message}>
-                <p>
-                  There were overlapping districts returned from your
-                  ZIP code.
-                </p>
-                <br />
-                <p>
-                  Click &quot;refine&quot; to enter your street
-                  address for a more accurate search.
-                </p>
+                <p>Not sure what district you&apos;re in?</p>
               </div>
             </motion.div>
           )}
@@ -188,7 +180,8 @@ export const Refine = ({
         </AnimatePresence>
       </div>
       <div className={styles.buttonFooter}>
-        <BeautifulButton
+        <button className={styles.refineButton}>{buttonLabel}</button>
+        {/* <BeautifulButton
           type={phase === "form" ? "submit" : "button"}
           formId={phase === "form" ? REFINE_FORM_ID : undefined}
           onClick={
@@ -196,7 +189,7 @@ export const Refine = ({
           }
         >
           {buttonLabel}
-        </BeautifulButton>
+        </BeautifulButton> */}
       </div>
     </RefineContainer>
   );

@@ -14,5 +14,5 @@ export default async function RepsPageWrapper({
   const payload = await getRepsByLocationQuery(coordinates);
   if (!payload) notFound();
 
-  return <RepsPageClient payload={payload} zip={zip} />;
+  return <RepsPageClient payload={payload} zip={zip} label={label} />;
 }

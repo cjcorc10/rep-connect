@@ -2,24 +2,49 @@
 import Link from "next/link";
 import styles from "./header.module.scss";
 import { useRef } from "react";
+import { Logo } from "../logo/logo";
 
 export default function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const text = "bout";
   return (
     <header ref={sentinelRef} className={styles.header}>
-      <div className={styles.navList}>
-        <Link className={styles.navLink} href="/">
-          Home
-        </Link>
-      </div>
+      <Link href="/">
+        <div className={styles.logoContainer}>
+          <Logo />
+        </div>
+      </Link>
+
       <div className={styles.navList}>
         <Link className={styles.navLink} href="/about">
-          About
+          <div className={styles.navLinkIcon}>
+            <AboutIcon />
+          </div>
+          <p className={styles.navLinkText}>{text}</p>
         </Link>
       </div>
-      <Link href="/" className={styles.logo}>
-        REPCONNECT
-      </Link>
     </header>
   );
 }
+
+export const AboutIcon = () => {
+  return (
+    <svg viewBox="0 0 50 50" fill="none">
+      <path
+        d="M 40 24 v 18.5"
+        stroke="var(--blue-accent)"
+        strokeWidth="5"
+      />
+      <circle
+        cx="25"
+        cy="25"
+        r="15"
+        stroke="var(--blue-accent)"
+        strokeWidth="5"
+        pathLength="100"
+        strokeDasharray="85 15"
+        strokeDashoffset="-15"
+      />
+    </svg>
+  );
+};
