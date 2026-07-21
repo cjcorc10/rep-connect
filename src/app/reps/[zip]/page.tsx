@@ -5,17 +5,20 @@ import {
 import { notFound } from "next/navigation";
 import { getRepsByLocationQuery } from "@/app/lib/reps";
 import RepsPageClient from "./repsPageClient";
-import Loading from "../../components/loading/loading";
 import { Suspense } from "react";
+import { LoadingOverlay } from "@/app/components/loadingOverlay/loadingOverlay";
 type PageProps = {
   params: Promise<{ zip: string }>;
 };
 
 export default function Page({ params }: PageProps) {
   return (
-    <Suspense fallback={<Loading />}>
-      <AsyncPage params={params} />
-    </Suspense>
+    <>
+      <LoadingOverlay />
+      <Suspense fallback={null}>
+        <AsyncPage params={params} />
+      </Suspense>
+    </>
   );
 }
 

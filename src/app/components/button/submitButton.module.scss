@@ -1,0 +1,16 @@
+.submitButton {
+  background-color: var(--blue-accent);
+  position: relative;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
+  margin-right: 0.15rem;
+  cursor: pointer;
+  .submitButtonIcon {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+}
+.submitButton:active {
+  transform: scale(0.95);
+}

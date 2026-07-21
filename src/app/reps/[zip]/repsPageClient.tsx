@@ -8,6 +8,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
 import { ResultsSection } from "./resultsSection";
+import { useEffect } from "react";
+import { usePageTransition } from "@/app/store/usePageTransition";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -31,16 +33,22 @@ export default function RepsPageClient({
     payload,
   });
 
+  const { markResultsReady, isLoadingResults } = usePageTransition();
+  useEffect(() => {
+    markResultsReady();
+  }, [markResultsReady]);
+  if (isLoadingResults) return null;
+
   return (
     <main>
       <div className={styles.resultsContainer}>
-        <div className={styles.govLevelTabsContainer}>
-          <GovLevelTabs
-            currentLevel={activeLevel}
-            onChange={setActiveLevel}
-          />
-        </div>
         <FadeupContainer delay={1}>
+          <div className={styles.govLevelTabsContainer}>
+            <GovLevelTabs
+              currentLevel={activeLevel}
+              onChange={setActiveLevel}
+            />
+          </div>
           <div className={styles.header}>
             <h1>Search Results...</h1>
           </div>

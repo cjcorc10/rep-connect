@@ -3,8 +3,8 @@ import { usePageTransition } from "@/app/store/usePageTransition";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import z from "zod";
-import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./searchForm.module.scss";
+import SubmitButton from "../button/submitButton";
 
 const FormSchema = z.object({
   zip: z
@@ -56,9 +56,7 @@ export default function SearchForm() {
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
           />
-          <BeautifulButton className={styles.shellButton}>
-            SEARCH
-          </BeautifulButton>
+          <SubmitButton />
         </div>
         <input type="hidden" id="street" name="street" value="" />
       </form>

@@ -10,7 +10,6 @@ import { useEffect } from "react";
 export default function Home() {
   const router = useRouter();
   const { isExiting, targetHref, reset } = usePageTransition();
-  const [scope, animate] = useAnimate();
 
   useEffect(() => {
     reset();

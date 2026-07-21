@@ -18,7 +18,7 @@ export default function Header() {
       <div className={styles.navList}>
         <Link className={styles.navLink} href="/about">
           <div className={styles.navLinkIcon}>
-            <AboutIcon />
+            <Icon />
           </div>
           <p className={styles.navLinkText}>{text}</p>
         </Link>
@@ -27,7 +27,7 @@ export default function Header() {
   );
 }
 
-export const AboutIcon = () => {
+export const Icon = () => {
   return (
     <svg viewBox="0 0 50 50" fill="none">
       <path

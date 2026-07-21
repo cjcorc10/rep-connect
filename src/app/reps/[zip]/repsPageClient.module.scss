@@ -2,7 +2,6 @@
 
 .govLevelTabsContainer {
   position: absolute;
-  top: 2rem;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -22,6 +21,7 @@
       flex: 1 1 auto;
     }
   }
+
   .header {
     @include header2;
     font-size: clamp(2rem, 5vw, 6rem);
