@@ -4,7 +4,7 @@ import RepsPanel from "@/app/components/roster/repsPanel";
 import styles from "./repsPageClient.module.scss";
 import { useRepsPage } from "../../hooks/useRepsPage";
 import { RepsLocationPayload } from "@/app/lib/definitions";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
 import { ResultsSection } from "./resultsSection";
@@ -33,11 +33,11 @@ export default function RepsPageClient({
     payload,
   });
 
-  const { markResultsReady, isLoadingResults } = usePageTransition();
+  const { setPageReady, status } = usePageTransition();
   useEffect(() => {
-    markResultsReady();
-  }, [markResultsReady]);
-  if (isLoadingResults) return null;
+    setPageReady(true);
+  }, [status, setPageReady]);
+  if (status !== "idle") return null;
 
   return (
     <main>

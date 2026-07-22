@@ -4,13 +4,13 @@ import styles from "./page.module.scss";
 import SearchForm from "./components/searchForm/searchForm";
 import { useRouter } from "next/navigation";
 import { usePageTransition } from "./store/usePageTransition";
-import { motion, useAnimate } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
-  const { isExiting, targetHref, reset } = usePageTransition();
-
+  const { reset, targetHref, enterLoading } = usePageTransition();
+  const isExiting = targetHref !== null;
   useEffect(() => {
     reset();
   }, [reset]);
@@ -34,7 +34,8 @@ export default function Home() {
             ease: "easeInOut",
           }}
           onAnimationComplete={() => {
-            if (targetHref) router.push(targetHref);
+            if (isExiting) router.push(targetHref);
+            enterLoading();
           }}
         />
       </div>

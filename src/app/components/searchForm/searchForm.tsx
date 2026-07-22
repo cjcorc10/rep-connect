@@ -1,7 +1,6 @@
 "use client";
 import { usePageTransition } from "@/app/store/usePageTransition";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import z from "zod";
 import styles from "./searchForm.module.scss";
 import SubmitButton from "../button/submitButton";
@@ -15,8 +14,7 @@ const FormSchema = z.object({
 });
 
 export default function SearchForm() {
-  const startExit = usePageTransition((state) => state.startExit);
-  const router = useRouter();
+  const { startExit } = usePageTransition();
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,9 +30,6 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    // router.push(`/reps/${zip}`, {
-    //   scroll: false,
-    // });
     startExit(`/reps/${zip}`);
   };
 

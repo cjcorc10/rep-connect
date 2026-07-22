@@ -1,34 +1,23 @@
 import { create } from "zustand";
 
 type State = {
-  isExiting: boolean;
-  isLoadingResults: boolean;
-  isResultsReady: boolean;
+  status: "idle" | "loading" | "exiting";
+  pageReady: boolean;
   targetHref: string | null;
+  setPageReady: (ready: boolean) => void;
   startExit: (href: string) => void;
-  markResultsReady: () => void;
+  enterLoading: () => void;
   finishLoading: () => void;
   reset: () => void;
 };
 
 export const usePageTransition = create<State>((set) => ({
-  isExiting: false,
-  isLoadingResults: false,
-  isResultsReady: false,
+  status: "idle",
+  pageReady: false,
   targetHref: null,
-  startExit: (href) =>
-    set({
-      isExiting: true,
-      isLoadingResults: true,
-      targetHref: href,
-    }),
-  markResultsReady: () => set({ isResultsReady: true }),
-  finishLoading: () => set({ isLoadingResults: false }),
-  reset: () =>
-    set({
-      isExiting: false,
-      isLoadingResults: false,
-      isResultsReady: false,
-      targetHref: null,
-    }),
+  setPageReady: (ready) => set({ pageReady: ready }),
+  startExit: (href) => set({ targetHref: href }),
+  enterLoading: () => set({ status: "loading" }),
+  finishLoading: () => set({ status: "idle" }),
+  reset: () => set({ status: "idle", targetHref: null }),
 }));

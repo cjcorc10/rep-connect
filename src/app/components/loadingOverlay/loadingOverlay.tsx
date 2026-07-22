@@ -6,53 +6,54 @@ import { useAnimate } from "motion/react";
 import { usePageTransition } from "@/app/store/usePageTransition";
 
 export const LoadingOverlay = () => {
-  const { isLoadingResults, finishLoading } = usePageTransition();
+  const { pageReady, finishLoading, status } = usePageTransition();
+  const isLoading = status === "loading" || !pageReady;
   const [scope, animate] = useAnimate();
   useEffect(() => {
     const run = async () => {
-      while (!usePageTransition.getState().isResultsReady) {
-        const pathAnim = animate(
-          "[data-animate='path-red']",
-          {
-            d: ["M 10 43 v 0", "M 10 43 v -18"],
-          },
-          {
-            duration: 0.5,
-            ease: "linear",
-          },
-        );
-        const circleAnim = animate(
-          "[data-animate='circle-red']",
-          {
-            strokeDasharray: ["0 100", "85 15"],
-          },
-          {
-            delay: 0.5,
-            duration: 0.5,
-          },
-        );
-        await Promise.all([pathAnim, circleAnim]);
-      }
-      animate(
-        "[data-animate='group-red']",
+      const pathAnim = animate(
+        "[data-animate='path-red']",
         {
-          rotate: [0, 360],
+          d: ["M 10 43 v 0", "M 10 43 v -18"],
         },
         {
-          delay: 0.9,
-          type: "spring",
-          stiffness: 80,
-          damping: 10,
-          repeat: Infinity,
+          duration: 0.5,
+          ease: "linear",
         },
       );
+      const circleAnim = animate(
+        "[data-animate='circle-red']",
+        {
+          strokeDasharray: ["0 100", "85 15"],
+        },
+        {
+          delay: 0.5,
+          duration: 0.5,
+        },
+      );
+      await Promise.all([pathAnim, circleAnim]);
+      while (!pageReady) {
+        animate(
+          "[data-animate='group-red']",
+          {
+            rotate: [0, 360],
+          },
+          {
+            delay: 0.9,
+            type: "spring",
+            stiffness: 80,
+            damping: 10,
+            repeat: Infinity,
+          },
+        );
+      }
       finishLoading();
     };
     run();
-  }, [finishLoading, animate]);
+  }, [finishLoading, animate, pageReady]);
   return (
     <AnimatePresence>
-      {isLoadingResults && (
+      {isLoading && (
         <motion.div
           initial={{ opacity: 1, scale: 1 }}
           exit={{ scale: 30 }}
