@@ -16,15 +16,12 @@
     height: 10rem;
     display: flex;
 
-    .rowContainer {
-      display: flex;
-    }
     .svgContainer {
-      stroke-width: 5px;
       position: relative;
       height: 100%;
       width: 100%;
       fill: none;
+      stroke: var(--red-accent);
     }
   }
 }

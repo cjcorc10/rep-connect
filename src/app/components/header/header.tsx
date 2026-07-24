@@ -16,7 +16,7 @@ export default function Header() {
       </Link>
 
       <div className={styles.navList}>
-        <Link className={styles.navLink} href="/about">
+        <Link href="/about">
           <div className={styles.navLinkIcon}>
             <Icon />
           </div>

@@ -1,0 +1,22 @@
+.transitionContainer {
+  .transitionBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 1000;
+    &:nth-child(1) {
+      background-color: var(--background-color);
+      pointer-events: none;
+    }
+    &:nth-child(2) {
+      background-color: var(--primary-color);
+    }
+    &:nth-child(3) {
+      background-image: url("/images/redBg.webp");
+      background-size: cover;
+      pointer-events: none;
+    }
+  }
+}

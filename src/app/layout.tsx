@@ -4,6 +4,7 @@ import Header from "./components/header/header";
 import Container from "./components/container";
 import { ReactLenis } from "lenis/react";
 import { fontVariables, merriweatherSans } from "./fonts";
+import { ExitTransition } from "./components/transitionComponents/exitTransition/exitTransition";
 
 export const metadata: Metadata = {
   title: "RepConnect",
@@ -23,6 +24,7 @@ export default function RootLayout({
         <ReactLenis root />
 
         <Container>
+          <ExitTransition />
           <Header />
           {children}
         </Container>

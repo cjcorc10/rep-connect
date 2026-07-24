@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import z from "zod";
 import styles from "./searchForm.module.scss";
 import SubmitButton from "../button/submitButton";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   zip: z
@@ -14,7 +15,8 @@ const FormSchema = z.object({
 });
 
 export default function SearchForm() {
-  const { startExit } = usePageTransition();
+  const router = useRouter();
+  const { triggerPageTransition } = usePageTransition();
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,7 +32,7 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    startExit(`/reps/${zip}`);
+    triggerPageTransition(() => router.push(`/reps/${zip}`));
   };
 
   return (

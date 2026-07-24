@@ -1,109 +1,78 @@
 "use client";
 import styles from "./loadingOverlay.module.scss";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
-import { useAnimate } from "motion/react";
+import { motion } from "framer-motion";
 import { usePageTransition } from "@/app/store/usePageTransition";
 
-export const LoadingOverlay = () => {
-  const { pageReady, finishLoading, status } = usePageTransition();
-  const isLoading = status === "loading" || !pageReady;
-  const [scope, animate] = useAnimate();
-  useEffect(() => {
-    const run = async () => {
-      const pathAnim = animate(
-        "[data-animate='path-red']",
-        {
-          d: ["M 10 43 v 0", "M 10 43 v -18"],
-        },
-        {
-          duration: 0.5,
-          ease: "linear",
-        },
-      );
-      const circleAnim = animate(
-        "[data-animate='circle-red']",
-        {
-          strokeDasharray: ["0 100", "85 15"],
-        },
-        {
-          delay: 0.5,
-          duration: 0.5,
-        },
-      );
-      await Promise.all([pathAnim, circleAnim]);
-      while (!pageReady) {
-        animate(
-          "[data-animate='group-red']",
-          {
-            rotate: [0, 360],
-          },
-          {
-            delay: 0.9,
-            type: "spring",
-            stiffness: 80,
-            damping: 10,
-            repeat: Infinity,
-          },
-        );
-      }
-      finishLoading();
-    };
-    run();
-  }, [finishLoading, animate, pageReady]);
+const exitAnimationConfig = {
+  initial: { opacity: 1, scale: 1 },
+  exit: { scale: 30 },
+  transition: { duration: 0.7, ease: "easeInOut" as const },
+};
+
+export const LoadingOverlay = ({
+  duration,
+}: {
+  duration: number;
+}) => {
+  const { completeEntrance } = usePageTransition();
   return (
-    <AnimatePresence>
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 1, scale: 1 }}
-          exit={{ scale: 30 }}
-          transition={{ duration: 0.7, ease: "easeInOut" }}
-          className={styles.loadingOverlay}
-        >
-          <div
-            data-animate="container"
-            className={styles.loadingOverlayContainer}
-            ref={scope}
-          >
-            <LoadingLogo color={"red"} width={5} />
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <motion.div
+      initial={exitAnimationConfig.initial}
+      exit={exitAnimationConfig.exit}
+      transition={exitAnimationConfig.transition}
+      className={styles.loadingOverlay}
+    >
+      <div
+        data-animate="container"
+        className={styles.loadingOverlayContainer}
+      >
+        <LoadingLogo
+          duration={duration}
+          setFinished={completeEntrance}
+        />
+      </div>
+    </motion.div>
   );
 };
 
 const LoadingLogo = ({
-  color,
-  width,
+  duration,
+  setFinished,
 }: {
-  color: string;
-  width: number;
+  duration: number;
+  setFinished: () => void;
 }) => {
-  let stroke = "white";
-  if (color === "red") stroke = "var(--red-accent)";
   return (
     <svg className={styles.svgContainer} viewBox="0 0 50 50">
-      <g data-animate={`group-${color}`}>
-        <circle
+      <g data-animate="group">
+        <motion.circle
           cx="25"
           cy="25"
           r="15"
-          data-animate={`circle-${color}`}
-          strokeWidth={width}
+          initial={{ strokeDasharray: "0 100" }}
+          animate={{ strokeDasharray: ["0 100", "0 100", "85 15"] }}
+          transition={{
+            duration: duration,
+            ease: "easeOut" as const,
+            times: [0, 0.25, 1],
+          }}
+          onAnimationComplete={() => setFinished()}
           pathLength="100"
-          strokeDasharray="85 15"
           strokeDashoffset="-50"
-          stroke={stroke}
+          strokeWidth="5"
         />
-        <path
+        <motion.path
           d="M 10 43 v -18"
-          data-animate={`path-${color}`}
-          strokeWidth={width}
+          initial={{ strokeDasharray: "0 100" }}
+          animate={{ strokeDasharray: ["0 100", "100 0"] }}
+          transition={{
+            duration: duration,
+            ease: "easeIn" as const,
+            times: [0, 0.25],
+          }}
           pathLength="100"
           strokeDasharray="100"
-          strokeDashoffset="0"
-          stroke={stroke}
+          strokeWidth="5"
         />
       </g>
     </svg>
