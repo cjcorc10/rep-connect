@@ -1,9 +1,11 @@
 import type { RepsData, RepsLocationPayload } from "./definitions";
 import {
   extractMapFallback,
+  formatCityStateLabel,
   getBoundsForDistrictQuery,
   getDistricts,
   getStateLegislativeDistricts,
+  parseGeocodePlace,
   type GeocodeResult,
 } from "./util";
 import { getHouseReps, getSenators } from "./db";
@@ -57,5 +59,9 @@ export async function getRepsByLocationQuery(
     data,
     districtGeoJson,
     mapFallback: extractMapFallback(location),
+    cityStateLabel: formatCityStateLabel(
+      parseGeocodePlace(location),
+      state,
+    ),
   };
 }
