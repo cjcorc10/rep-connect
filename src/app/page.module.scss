@@ -1,17 +1,31 @@
+.setContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
 .backgroundReveal {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50vw;
-  height: 50vh;
   transform: translate(-50%, -50%);
   background-color: var(--primary-color);
   overflow: hidden;
+  --reveal-mid-w: 25vw;
+
+  @media (max-width: 768px) {
+    --reveal-mid-w: 75vw;
+  }
 
   .headerContainer {
     position: relative;
     height: fit-content;
     z-index: 10;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 
   .background {
@@ -43,13 +57,13 @@
 
 .heroContainer {
   pointer-events: none;
-  height: 100vh;
+  height: fit-content;
   display: flex;
 
-  padding: 4rem;
+  padding: 8rem 2rem;
   will-change: transform;
   flex-direction: column;
-  gap: 2rem;
+  gap: 4rem;
   justify-content: center;
 
   .heroTextContainer {
@@ -57,19 +71,18 @@
     display: flex;
     justify-content: left;
     align-items: end;
-    padding-top: 2rem;
 
     @media (max-width: 768px) {
       justify-content: center;
     }
     .heroTitle {
       font-family: var(--font-heading);
-      line-height: 1.2;
+      line-height: 1.25;
       text-transform: uppercase;
-      width: clamp(25rem, 80vw, 80rem);
+      width: clamp(20rem, 85vw, 80rem);
       color: white;
       font-weight: 600;
-      font-size: clamp(2.8rem, 5vw, 6rem);
+      font-size: clamp(2.5rem, 5vw, 6rem);
       letter-spacing: -0.05em;
 
       @media (max-width: 768px) {
@@ -81,7 +94,8 @@
     display: flex;
     flex-direction: column;
     align-items: left;
-    gap: 1rem;
+    gap: 2rem;
+    width: clamp(20rem, 80vw, 70rem);
 
     @media (max-width: 768px) {
       align-items: center;
@@ -89,11 +103,10 @@
   }
   .heroSubtitle {
     font-family: var(--font-heading);
-    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
     font-weight: 500;
-    color: var(--background-color);
-    width: clamp(20rem, 80vw, 70rem);
-    line-height: 1.5;
+    color: white;
+    line-height: 1.25;
 
     @media (max-width: 768px) {
       text-align: center;

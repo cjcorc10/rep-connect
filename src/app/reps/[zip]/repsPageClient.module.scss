@@ -5,7 +5,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 2000;
+  z-index: 100;
+  pointer-events: none;
 }
 .govLevelTabsContainer {
   position: absolute;
@@ -13,7 +14,7 @@
   transform: translateX(-50%);
 }
 .resultsContainer {
-  padding: 4rem 12px 12px 12px;
+  padding: 5rem 12px 12px 12px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,7 +31,7 @@
 
   .header {
     @include header2;
-    font-size: clamp(2rem, 5vw, 6rem);
+    font-size: clamp(2.5rem, 5vw, 6rem);
     width: 100%;
     color: var(--primary-color);
     height: clamp(6rem, 12vw, 8rem);

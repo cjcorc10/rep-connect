@@ -2,115 +2,107 @@
 import Image from "next/image";
 import styles from "./page.module.scss";
 import SearchForm from "./components/searchForm/searchForm";
-import { motion, type Variants } from "framer-motion";
-import Header from "./components/header/header";
+import { stagger, useAnimate } from "framer-motion";
 import { usePageEntrance } from "./hooks/usePageEntrance";
 import { useEffect } from "react";
+import { AnimatedLogo } from "./components/animatedLogo/animatedLogo";
+import { Logo } from "./components/logo/logo";
+import { MaskText } from "./components/maskText/maskText";
+import Header from "./components/header/header";
 
 export default function Home() {
-  const { isDestination, revealComplete, phase, transitionId } =
-    usePageEntrance();
+  const { isDestination, revealComplete } = usePageEntrance();
 
   useEffect(() => {
     if (isDestination) revealComplete();
   }, [isDestination, revealComplete]);
 
-  const coverVariants: Variants = {
-    initial: { height: "0vh", width: "0vw" },
-    animate: {
-      height: ["0vh", "25vh", "25vh", "100vh"],
-      width: ["0vw", "25vw", "25vw", "100vw"],
-      transition: {
-        duration: 2.5,
-        delay: 0.5,
+  const [scope, animate] = useAnimate();
+
+  useEffect(() => {
+    animate(
+      "[data-animate='cover']",
+      {
+        height: ["0vh", "25vh", "25vh", "100vh"],
+        width: [
+          "0vw",
+          "var(--reveal-mid-w)",
+          "var(--reveal-mid-w)",
+          "100vw",
+        ],
+      },
+      {
         ease: ["backOut", "easeOut", "easeOut"],
         times: [0, 0.25, 0.75, 1],
+        duration: 2.5,
+        delay: 0.25,
       },
-    },
-  };
-
-  const headerVariants = {
-    initial: { y: "-100%" },
-    animate: {
-      y: "0%",
-      transition: {
+    );
+    animate(
+      "[data-animate='header']",
+      {
+        y: ["-100%", "0%"],
+      },
+      {
         ease: "backOut" as const,
-        duration: 0.5,
-        delay: 1.5,
+        duration: 0.6,
+        delay: 1.25,
       },
-    },
-  };
-
-  const heroContainerVariants = {
-    animate: {
-      transition: {
-        delayChildren: 3.25,
-        staggerChildren: 0.15,
+    );
+    animate(
+      "[data-animate='hero-child']",
+      {
+        opacity: [0, 1],
+        y: ["10px", "0px"],
       },
-    },
-  };
-
-  const fadeUpVariants = {
-    initial: { opacity: 0, y: "5%" },
-    animate: {
-      opacity: 1,
-      y: "0%",
-      transition: {
+      {
         ease: "easeOut" as const,
         duration: 0.5,
+        staggerChildren: 0.5,
+        delay: stagger(0.15, { startDelay: 3 }),
       },
-    },
-  };
-
-  const animateState =
-    phase === "idle" || phase === "covering" ? "animate" : "initial";
+    );
+  }, [animate, scope]);
 
   return (
-    <main className="flex flex-col flex-1 min-h-0 relative">
-      <motion.div
-        key={`cover-${transitionId}`}
-        variants={coverVariants}
-        initial="initial"
-        animate={animateState}
-        className={styles.backgroundReveal}
-      >
-        <motion.div
-          className={styles.headerContainer}
-          variants={headerVariants}
-          initial="initial"
-          animate={animateState}
-        >
-          <Header />
-        </motion.div>
-        <div className={styles.background} data-animate="background">
-          <div className={styles.backgroundOverlay} />
-          <Image
-            src="/images/protest.jpg"
-            alt="kamran-abdullayev"
-            fill
-            style={{ objectFit: "cover" }}
-          />
+    <main ref={scope} className="flex flex-col relative">
+      <div className={styles.setContainer}>
+        <div data-animate="cover" className={styles.backgroundReveal}>
+          <div
+            data-animate="header"
+            className={styles.headerContainer}
+          >
+            <Header />
+          </div>
+          <div
+            className={styles.background}
+            data-animate="background"
+          >
+            <div className={styles.backgroundOverlay} />
+            <Image
+              src="/images/protest.jpg"
+              alt="kamran-abdullayev"
+              fill
+              style={{ objectFit: "cover" }}
+            />
+          </div>
         </div>
-      </motion.div>
-      <motion.div
-        key={`hero-${transitionId}`}
-        className={styles.heroContainer}
-        variants={heroContainerVariants}
-        initial="initial"
-        animate={animateState}
-      >
-        <motion.div
+      </div>
+      <div className={styles.heroContainer}>
+        <div
+          data-animate="hero-child"
           className={styles.heroTextContainer}
-          variants={fadeUpVariants}
         >
-          <h1 className={styles.heroTitle}>
-            Your voice matters beyond the ballot box.
-          </h1>
-        </motion.div>
+          <MaskText>
+            <h1 className={styles.heroTitle}>
+              Your voice matters beyond the ballot box.
+            </h1>
+          </MaskText>
+        </div>
 
-        <motion.div
+        <div
+          data-animate="hero-child"
           className={styles.heroSubtitleContainer}
-          variants={fadeUpVariants}
         >
           <p className={styles.heroSubtitle}>
             Elections choose who represents you, but donors and
@@ -124,14 +116,11 @@ export default function Home() {
             campaigns. Find and contact your reps by entering your ZIP
             code below.
           </p>
-        </motion.div>
-        <motion.div
-          className={styles.searchForm}
-          variants={fadeUpVariants}
-        >
+        </div>
+        <div data-animate="hero-child" className={styles.searchForm}>
           <SearchForm />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </main>
   );
 }

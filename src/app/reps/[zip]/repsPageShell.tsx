@@ -11,8 +11,6 @@ export const RepsPageShell = ({
 }: {
   children: React.ReactNode;
 }) => {
-  // Shell only mounts on /reps/* — derive destination without usePathname
-  // so this client tree can prerender under Cache Components.
   const phase = usePageTransition((s) => s.phase);
   const targetHref = usePageTransition((s) => s.targetHref);
   const transitionId = usePageTransition((s) => s.transitionId);
