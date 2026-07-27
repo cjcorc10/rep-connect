@@ -8,8 +8,8 @@ import { motion } from "framer-motion";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
 import { ResultsSection } from "./resultsSection";
-import { useEffect } from "react";
-import { usePageTransition } from "@/app/store/usePageTransition";
+import Header from "@/app/components/header/header";
+import { usePageEntrance } from "@/app/hooks/usePageEntrance";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -33,16 +33,18 @@ export default function RepsPageClient({
     payload,
   });
 
-  const { setPageReady, status } = usePageTransition();
-  useEffect(() => {
-    setPageReady(true);
-  }, [status, setPageReady]);
-  if (status !== "idle") return null;
+  const { transitionId, isDestination } = usePageEntrance();
+  if (isDestination) return null;
 
   return (
     <main>
+      <div className={styles.headerContainer}>
+        <FadeupContainer key={`h-${transitionId}`} delay={1.25}>
+          <Header />
+        </FadeupContainer>
+      </div>
       <div className={styles.resultsContainer}>
-        <FadeupContainer delay={1}>
+        <FadeupContainer key={`t-${transitionId}`} delay={1}>
           <div className={styles.govLevelTabsContainer}>
             <GovLevelTabs
               currentLevel={activeLevel}
@@ -54,10 +56,10 @@ export default function RepsPageClient({
           </div>
         </FadeupContainer>
 
-        <FadeupContainer delay={0.75}>
+        <FadeupContainer key={`r-${transitionId}`} delay={0.75}>
           <ResultsHeader zip={zip} label={label} />
         </FadeupContainer>
-        <FadeupContainer delay={0.5}>
+        <FadeupContainer key={`s-${transitionId}`} delay={0.5}>
           <ResultsSection
             mapSection={mapSection}
             zip={zip}

@@ -4,37 +4,43 @@ import { motion } from "framer-motion";
 import styles from "./exitTransition.module.scss";
 
 export const ExitTransition = () => {
-  const { completeExit, status } = usePageTransition();
-  const trigger = status === "exiting";
+  const phase = usePageTransition((s) => s.phase);
+  const coverComplete = usePageTransition((s) => s.coverComplete);
+
+  const holdUp = phase === "covering" || phase === "covered";
+  const wipeActive = phase !== "idle";
 
   return (
     <div className={styles.transitionContainer}>
       <motion.div
         className={styles.transitionBackground}
         initial={{ opacity: 0 }}
-        animate={trigger ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ delay: 0.4, duration: 0 }}
+        animate={{ opacity: holdUp ? 1 : 0 }}
+        transition={{
+          delay: holdUp ? 0.4 : 0,
+          duration: 0,
+        }}
       />
       <motion.div
         initial={{ y: "100%" }}
-        animate={trigger ? { y: "-100%" } : { y: "100%" }}
+        animate={wipeActive ? { y: "-100%" } : { y: "100%" }}
         transition={{
-          duration: trigger ? 0.6 : 0,
+          duration: phase === "covering" ? 0.6 : 0,
           ease: "easeInOut",
         }}
         className={styles.transitionBackground}
       />
       <motion.div
         initial={{ y: "100%" }}
-        animate={trigger ? { y: "-100%" } : { y: "100%" }}
+        animate={wipeActive ? { y: "-100%" } : { y: "100%" }}
         className={styles.transitionBackground}
         transition={{
-          duration: trigger ? 0.6 : 0,
-          delay: 0.15,
+          duration: phase === "covering" ? 0.6 : 0,
+          delay: phase === "covering" ? 0.15 : 0,
           ease: "easeInOut",
         }}
         onAnimationComplete={() => {
-          if (trigger) completeExit();
+          if (phase === "covering") coverComplete();
         }}
       />
     </div>

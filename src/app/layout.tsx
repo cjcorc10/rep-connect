@@ -5,6 +5,7 @@ import Container from "./components/container";
 import { ReactLenis } from "lenis/react";
 import { fontVariables, merriweatherSans } from "./fonts";
 import { ExitTransition } from "./components/transitionComponents/exitTransition/exitTransition";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "RepConnect",
@@ -25,7 +26,7 @@ export default function RootLayout({
 
         <Container>
           <ExitTransition />
-          <Header />
+          <Suspense fallback={null}>{/* <Header /> */}</Suspense>
           {children}
         </Container>
       </body>

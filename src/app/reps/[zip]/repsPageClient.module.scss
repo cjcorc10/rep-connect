@@ -1,13 +1,19 @@
 @use "../../styles/typography" as *;
 
+.headerContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+}
 .govLevelTabsContainer {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
-
 .resultsContainer {
-  padding: 12px;
+  padding: 4rem 12px 12px 12px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -27,9 +33,11 @@
     font-size: clamp(2rem, 5vw, 6rem);
     width: 100%;
     color: var(--primary-color);
-    height: clamp(4rem, 12vw, 10rem);
-    margin-top: 4rem;
+    height: clamp(6rem, 12vw, 8rem);
+    display: flex;
+    align-items: end;
   }
+
   .resultsHeader {
     display: flex;
     width: 100%;

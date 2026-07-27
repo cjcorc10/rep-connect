@@ -1,20 +1,20 @@
 "use client";
 import styles from "./loadingOverlay.module.scss";
 import { motion } from "framer-motion";
-import { usePageTransition } from "@/app/store/usePageTransition";
 
 const exitAnimationConfig = {
   initial: { opacity: 1, scale: 1 },
-  exit: { scale: 30 },
+  exit: { scale: 35 },
   transition: { duration: 0.7, ease: "easeInOut" as const },
 };
 
 export const LoadingOverlay = ({
   duration,
+  onFinished,
 }: {
   duration: number;
+  onFinished: () => void;
 }) => {
-  const { completeEntrance } = usePageTransition();
   return (
     <motion.div
       initial={exitAnimationConfig.initial}
@@ -26,10 +26,7 @@ export const LoadingOverlay = ({
         data-animate="container"
         className={styles.loadingOverlayContainer}
       >
-        <LoadingLogo
-          duration={duration}
-          setFinished={completeEntrance}
-        />
+        <LoadingLogo duration={duration} setFinished={onFinished} />
       </div>
     </motion.div>
   );
@@ -62,7 +59,7 @@ const LoadingLogo = ({
           strokeWidth="5"
         />
         <motion.path
-          d="M 10 43 v -18"
+          d="M 10 43 v -19"
           initial={{ strokeDasharray: "0 100" }}
           animate={{ strokeDasharray: ["0 100", "100 0"] }}
           transition={{

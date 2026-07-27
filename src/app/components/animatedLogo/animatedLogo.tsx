@@ -1,18 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "./logo.module.scss";
+"use client";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import styles from "./animatedLogo.module.scss";
 import { useAnimate } from "framer-motion";
 
-export const Logo = () => {
+export const AnimatedLogo = () => {
+  const pathname = usePathname();
+  return <LogoAnimation key={pathname} />;
+};
+
+const LogoAnimation = () => {
   const string1 = "ep";
   const string2 = "onnect";
   const letterSpacing = 38;
 
   const [scope, animate] = useAnimate();
 
-  const animationRun = useRef(false);
+  const [animationRun, setAnimationRun] = useState(false);
   const handleMouseEnter = () => {
-    if (animationRun.current) return;
-    animationRun.current = true;
+    if (animationRun) return;
+    setAnimationRun(true);
     animate(
       "[data-animate=shapes]",
       {
@@ -83,18 +90,18 @@ export const Logo = () => {
     });
   };
   return (
-    <div className={styles.logoContainer}>
+    <div
+      className={styles.logoContainer}
+      onMouseEnter={handleMouseEnter}
+      style={{ width: animationRun ? "fit-content" : "auto" }}
+    >
       <svg
         className={styles.logoSVG}
         viewBox="0 0 300 100"
         fill="none"
       >
         <g ref={scope}>
-          <g
-            data-animate="shapes"
-            className={styles.shapes}
-            onMouseEnter={handleMouseEnter}
-          >
+          <g data-animate="shapes" className={styles.shapes}>
             <circle
               className={styles.cCircle}
               data-animate="cCircle"
@@ -115,7 +122,7 @@ export const Logo = () => {
               <path
                 className={styles.rShaft}
                 data-animate="rShaft"
-                d="M 10 25 v 17"
+                d="M 10 23 v 19"
               />
             </g>
           </g>

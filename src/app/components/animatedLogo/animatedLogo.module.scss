@@ -2,13 +2,13 @@
 
 .logoContainer {
   position: relative;
-  width: 100%;
   height: 100%;
+  overflow: visible;
   .logoSVG {
     height: 100%;
-    width: 100%;
+    width: auto;
     overflow: hidden;
-
+    pointer-events: none;
     circle,
     path {
       stroke-width: 5;

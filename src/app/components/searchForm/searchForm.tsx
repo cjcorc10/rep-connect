@@ -16,7 +16,7 @@ const FormSchema = z.object({
 
 export default function SearchForm() {
   const router = useRouter();
-  const { triggerPageTransition } = usePageTransition();
+  const navigate = usePageTransition((s) => s.navigate);
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +32,8 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    triggerPageTransition(() => router.push(`/reps/${zip}`));
+    const href = `/reps/${zip}`;
+    navigate(href, () => router.push(href));
   };
 
   return (

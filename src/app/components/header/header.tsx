@@ -2,21 +2,35 @@
 import Link from "next/link";
 import styles from "./header.module.scss";
 import { useRef } from "react";
-import { Logo } from "../logo/logo";
+import { AnimatedLogo } from "../animatedLogo/animatedLogo";
+import { usePageTransition } from "@/app/store/usePageTransition";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Header() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const text = "bout";
+  const navigate = usePageTransition((s) => s.navigate);
+  const router = useRouter();
+  const pathname = usePathname();
+
   return (
     <header ref={sentinelRef} className={styles.header}>
-      <Link href="/">
-        <div className={styles.logoContainer}>
-          <Logo />
-        </div>
-      </Link>
+      <div className={styles.logoContainer}>
+        <button
+          className={styles.logoButton}
+          type="button"
+          aria-label="Home"
+          onClick={() => {
+            if (pathname === "/") return;
+            navigate("/", () => router.push("/"));
+          }}
+        >
+          <AnimatedLogo />
+        </button>
+      </div>
 
       <div className={styles.navList}>
-        <Link href="/about">
+        <Link href="/about" className={styles.navLink}>
           <div className={styles.navLinkIcon}>
             <Icon />
           </div>

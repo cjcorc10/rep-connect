@@ -9,33 +9,26 @@ export default function SubmitButton() {
     damping: 15,
   };
 
-  const shaft = scope.current?.querySelector(
-    '[data-attribute="shaft"]',
-  );
-  const point = scope.current?.querySelector(
-    '[data-attribute="point"]',
-  );
-
   const handleHover = () => {
     animate(
-      shaft as SVGPathElement,
+      '[data-attribute="shaft"]',
       { d: "M 5, 10 h 11" },
       SPRING_CONFIG as AnimationOptions,
     );
     animate(
-      point as SVGPathElement,
+      '[data-attribute="point"]',
       { d: "M 12, 7 l 4, 3 l -4, 3" },
       SPRING_CONFIG as AnimationOptions,
     );
 
     setTimeout(() => {
       animate(
-        shaft as SVGPathElement,
+        '[data-attribute="shaft"]',
         { d: "M 5, 10 h 8" },
         SPRING_CONFIG as AnimationOptions,
       );
       animate(
-        point as SVGPathElement,
+        '[data-attribute="point"]',
         { d: "M 10, 6 l 3, 4 l -3, 4" },
         SPRING_CONFIG as AnimationOptions,
       );

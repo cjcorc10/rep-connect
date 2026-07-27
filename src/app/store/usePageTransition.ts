@@ -1,58 +1,77 @@
 import { create } from "zustand";
 
-/** Called by the animating client when an exit/entrance animation finishes. */
-type AnimationResolve = () => void;
+type Resolve = () => void;
+
+type Phase = "idle" | "covering" | "covered";
 
 type State = {
-  status: "idle" | "loading" | "exiting";
-  pageReady: boolean;
-  exitResolver: AnimationResolve | null;
-  entranceResolver: AnimationResolve | null;
-  completeExit: () => void;
-  completeEntrance: () => void;
+  phase: Phase;
+  targetHref: string;
+  transitionId: number;
+  coverResolver: Resolve | null;
+  revealResolver: Resolve | null;
 
-  setPageReady: (ready: boolean) => void;
-  setExiting: (resolver: AnimationResolve) => void;
-  setLoading: (resolver: AnimationResolve) => void;
-  reset: () => void;
-  triggerPageTransition: (routerAction: () => void) => void;
+  coverComplete: () => void;
+  revealComplete: () => void;
+
+  navigate: (href: string, push: () => void) => Promise<void>;
 };
 
 export const usePageTransition = create<State>((set, get) => ({
-  status: "idle",
-  pageReady: false,
-  exitResolver: null,
-  entranceResolver: null,
-  completeExit: () => {
-    const { exitResolver } = get();
+  phase: "idle",
+  targetHref: "",
+  transitionId: 0,
+  coverResolver: null,
+  revealResolver: null,
 
-    if (exitResolver) exitResolver();
-    set({ exitResolver: null });
+  coverComplete: () => {
+    const { coverResolver, phase } = get();
+    if (phase !== "covering" || !coverResolver) return;
+    coverResolver();
+    set({ coverResolver: null });
   },
-  completeEntrance: () => {
-    const { entranceResolver } = get();
-    if (entranceResolver) entranceResolver();
-    set({ entranceResolver: null, status: "idle" });
+
+  revealComplete: () => {
+    const { revealResolver, phase } = get();
+    if (phase !== "covered" || !revealResolver) return;
+    revealResolver();
+    set({
+      revealResolver: null,
+      phase: "idle",
+      targetHref: "",
+    });
   },
-  setPageReady: (ready) => set({ pageReady: ready }),
-  setExiting: (resolver) =>
-    set({ status: "exiting", exitResolver: resolver }),
-  setLoading: (resolver) =>
-    set({ status: "loading", entranceResolver: resolver }),
-  reset: () => set({ status: "idle" }),
 
-  triggerPageTransition: async (routerAction: () => void) => {
-    const { setExiting, setLoading } = get();
+  navigate: async (href, push) => {
+    if (get().phase !== "idle") return;
 
-    const exitAnimation = new Promise<void>((resolve) =>
-      setExiting(resolve),
-    );
-    await exitAnimation;
+    // Do not bump transitionId here — source pages key Motion on it;
+    // bumping at cover start remounts them to `initial` and blinks.
+    set({
+      phase: "covering",
+      targetHref: href,
+    });
 
-    routerAction();
-    const entranceAnimation = new Promise<void>((resolve) =>
-      setLoading(resolve),
-    );
-    await entranceAnimation;
+    await new Promise<void>((resolve) => {
+      set({ coverResolver: resolve });
+    });
+
+    push();
+    set({
+      phase: "covered",
+      transitionId: get().transitionId + 1,
+    });
+
+    await new Promise<void>((resolve) => {
+      set({ revealResolver: resolve });
+    });
   },
 }));
+
+/** Whether the current location is the in-flight transition destination. */
+export function hrefMatches(pathname: string, targetHref: string) {
+  if (!targetHref) return false;
+  const path = targetHref.split("?")[0];
+  if (path === "/") return pathname === "/";
+  return pathname === path || pathname.startsWith(`${path}/`);
+}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./refine.module.scss";
 import { RefineContainer } from "./refineContainer";
 import { AnimatePresence, motion } from "framer-motion";
@@ -181,15 +180,6 @@ export const RefineReps = ({
       </div>
       <div className={styles.buttonFooter}>
         <button className={styles.refineButton}>{buttonLabel}</button>
-        {/* <BeautifulButton
-          type={phase === "form" ? "submit" : "button"}
-          formId={phase === "form" ? REFINE_FORM_ID : undefined}
-          onClick={
-            phase === "initial" ? () => setPhase("form") : () => {}
-          }
-        >
-          {buttonLabel}
-        </BeautifulButton> */}
       </div>
     </RefineContainer>
   );
