@@ -1,21 +1,17 @@
+import { MaskedText } from "../maskedText";
+import styles from "./logo.module.scss";
 export const Logo = () => {
+  const logoText1 = "repc";
+  const logoText2 = "nnect";
   return (
-    <svg viewBox="0 0 50 50" fill="none">
-      <path
-        d="M 40 24 v 18.5"
-        stroke="var(--blue-accent)"
-        strokeWidth="5"
-      />
-      <circle
-        cx="25"
-        cy="25"
-        r="15"
-        stroke="var(--blue-accent)"
-        strokeWidth="5"
-        pathLength="100"
-        strokeDasharray="85 15"
-        strokeDashoffset="-15"
-      />
-    </svg>
+    <div className={styles.logo} data-animate="logo">
+      <div className={styles.logoText}>
+        <MaskedText text={logoText1} name="logo" />
+      </div>
+      <div className={styles.logoText}>
+        <MaskedText text={logoText2} name="logo" />
+      </div>
+      <div className={styles.circle} data-animate="logo-circle" />
+    </div>
   );
 };

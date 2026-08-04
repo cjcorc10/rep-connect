@@ -1,0 +1,46 @@
+.logo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  column-gap: 2rem;
+  font-size: 2rem;
+  height: fit-content;
+
+  .logoText {
+    display: inline-block;
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    white-space: nowrap;
+    mix-blend-mode: difference;
+    color: white;
+
+    &:nth-child(1) {
+      justify-self: end;
+      text-align: right;
+      overflow: hidden;
+    }
+    &:nth-child(2) {
+      justify-self: start;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .logoChar {
+      display: inline-block;
+    }
+  }
+
+  .circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("/images/redBg.webp");
+    aspect-ratio: 1/1;
+    height: 50%;
+    background-position: center;
+    clip-path: circle(50% at 50% 50%);
+  }
+}

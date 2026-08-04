@@ -38,11 +38,11 @@ export default function RepsPageClient({
 
   return (
     <main>
-      <div className={styles.headerContainer}>
+      {/* <div className={styles.headerContainer}>
         <FadeupContainer key={`h-${transitionId}`} delay={1.25}>
           <Header />
         </FadeupContainer>
-      </div>
+      </div> */}
       <div className={styles.resultsContainer}>
         <FadeupContainer key={`t-${transitionId}`} delay={1}>
           <div className={styles.govLevelTabsContainer}>
@@ -69,14 +69,7 @@ export default function RepsPageClient({
           />
         </FadeupContainer>
       </div>
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          background: "var(--background-color)",
-          zIndex: "10",
-        }}
-      />
+
       <RepsPanel isFederal={activeLevel === "federal"} {...panel} />
     </main>
   );

@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "./components/header/header";
 import Container from "./components/container";
 import { ReactLenis } from "lenis/react";
-import { fontVariables, merriweatherSans } from "./fonts";
+import { fontVariables, publicSans } from "./fonts";
 import { ExitTransition } from "./components/transitionComponents/exitTransition/exitTransition";
 import { Suspense } from "react";
 
@@ -19,11 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={fontVariables}>
-      <body
-        className={`${merriweatherSans.className} overflow-y-scroll`}
-      >
+      <body className={`${publicSans.className} overflow-y-scroll`}>
         <ReactLenis root />
-
         <Container>
           <ExitTransition />
           <Suspense fallback={null}>{/* <Header /> */}</Suspense>

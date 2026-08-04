@@ -1,6 +1,7 @@
 "use client";
 import styles from "./submitButton.module.scss";
 import { AnimationOptions, useAnimate } from "framer-motion";
+
 export default function SubmitButton() {
   const [scope, animate] = useAnimate();
   const SPRING_CONFIG = {
@@ -11,25 +12,25 @@ export default function SubmitButton() {
 
   const handleHover = () => {
     animate(
-      '[data-attribute="shaft"]',
+      '[data-animate="shaft"]',
       { d: "M 5, 10 h 11" },
       SPRING_CONFIG as AnimationOptions,
     );
     animate(
-      '[data-attribute="point"]',
+      '[data-animate="point"]',
       { d: "M 12, 7 l 4, 3 l -4, 3" },
       SPRING_CONFIG as AnimationOptions,
     );
 
     setTimeout(() => {
       animate(
-        '[data-attribute="shaft"]',
-        { d: "M 5, 10 h 8" },
+        '[data-animate="shaft"]',
+        { d: "M 5, 10 h 9" },
         SPRING_CONFIG as AnimationOptions,
       );
       animate(
-        '[data-attribute="point"]',
-        { d: "M 10, 6 l 3, 4 l -3, 4" },
+        '[data-animate="point"]',
+        { d: "M 11, 6 l 3, 4 l -3, 4" },
         SPRING_CONFIG as AnimationOptions,
       );
     }, 200);
@@ -38,6 +39,7 @@ export default function SubmitButton() {
   return (
     <button
       type="submit"
+      data-animate="submit-button"
       className={styles.submitButton}
       ref={scope}
       onMouseEnter={handleHover}
@@ -49,16 +51,16 @@ export default function SubmitButton() {
         fill="none"
       >
         <path
-          data-attribute="shaft"
-          d="M 5, 10 h 8"
+          data-animate="shaft"
+          d="M 5, 10 h 9"
           stroke="white"
           fill="none"
           strokeWidth="1"
           strokeLinecap="round"
         />
         <path
-          data-attribute="point"
-          d="M 10, 6 l 3, 4 l -3, 4"
+          data-animate="point"
+          d="M 11, 6 l 3, 4 l -3, 4"
           stroke="white"
           fill="none"
           strokeWidth="1"

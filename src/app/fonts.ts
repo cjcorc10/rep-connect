@@ -1,22 +1,22 @@
-import { Montserrat, Merriweather_Sans } from "next/font/google";
+import { Archivo, Public_Sans } from "next/font/google";
 
-export const montserrat = Montserrat({
+export const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  variable: "--font-archivo",
   display: "swap",
 });
 
-export const merriweatherSans = Merriweather_Sans({
+export const publicSans = Public_Sans({
   subsets: ["latin"],
-  variable: "--font-merriweather-sans",
+  variable: "--font-public-sans",
   display: "swap",
 });
 
 /** Combined class names for applying next/font CSS variables on `<html>`. */
-export const fontVariables = `${montserrat.variable} ${merriweatherSans.variable}`;
+export const fontVariables = `${archivo.variable} ${publicSans.variable}`;
 
 /** Resolved font-family strings for inline / JS styling. */
 export const fontFamilies = {
-  heading: montserrat.style.fontFamily,
-  body: merriweatherSans.style.fontFamily,
+  heading: archivo.style.fontFamily,
+  body: publicSans.style.fontFamily,
 } as const;

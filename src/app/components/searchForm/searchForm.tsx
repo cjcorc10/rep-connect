@@ -39,10 +39,13 @@ export default function SearchForm() {
   return (
     <div className={styles.root}>
       <form onSubmit={onSubmit} className={styles.form}>
-        <label htmlFor="zip" className={styles.srOnly}>
-          ZIP code
-        </label>
-        <div className={styles.inputShell}>
+        <div
+          data-animate="search-form"
+          className={styles.inputContainer}
+        >
+          <label htmlFor="zip" className={styles.srOnly}>
+            ZIP code
+          </label>
           <input
             type="text"
             id="zip"
@@ -54,9 +57,9 @@ export default function SearchForm() {
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
           />
+          <input type="hidden" id="street" name="street" value="" />
           <SubmitButton />
         </div>
-        <input type="hidden" id="street" name="street" value="" />
       </form>
 
       {error && (

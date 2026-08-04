@@ -1,9 +1,73 @@
-.setContainer {
-  position: fixed;
+.logoContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: fit-content;
+  height: fit-content;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  z-index: 10;
+}
+.headerLine {
+  position: absolute;
+  top: 6rem;
+  left: 50%;
+  width: 98vw;
+  transform: translateX(-50%);
+
+  height: 1px;
+  background-color: #f0f0f0;
+  z-index: 10;
+  clip-path: inset(0% 100% 0% 0%);
+}
+.backgroundWipe {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  clip-path: inset(100% 0% 0% 0%);
+  background: var(--red-accent);
+}
+.backgroundWipe2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  clip-path: inset(100% 0% 0% 0%);
+  background: var(--primary-color);
+}
+.background {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  clip-path: inset(0% 0% 100% 0%);
+
+  .backgroundOverlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.75) 25%,
+      rgba(0, 0, 0, 0.55) 75%,
+      rgba(0, 0, 0, 0.45) 100%
+    );
+  }
+}
+
+.headerContainer {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: fit-content;
+  z-index: 5;
 }
 
 .backgroundReveal {
@@ -18,41 +82,6 @@
   @media (max-width: 768px) {
     --reveal-mid-w: 75vw;
   }
-
-  .headerContainer {
-    position: relative;
-    height: fit-content;
-    z-index: 10;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .background {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-
-    .backgroundOverlay {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 10;
-      pointer-events: none;
-      background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.58) 0%,
-        rgba(0, 0, 0, 0.38) 25%,
-        rgba(0, 0, 0, 0.68) 75%,
-        rgba(0, 0, 0, 0.88) 100%
-      );
-    }
-  }
 }
 
 .heroContainer {
@@ -60,7 +89,7 @@
   height: fit-content;
   display: flex;
 
-  padding: 8rem 2rem;
+  padding: 12rem 2rem;
   will-change: transform;
   flex-direction: column;
   gap: 4rem;
@@ -77,10 +106,10 @@
     }
     .heroTitle {
       font-family: var(--font-heading);
-      line-height: 1.25;
+      line-height: 1;
       text-transform: uppercase;
       width: clamp(20rem, 85vw, 80rem);
-      color: white;
+      color: #f0f0f0;
       font-weight: 600;
       font-size: clamp(2.5rem, 5vw, 6rem);
       letter-spacing: -0.05em;
@@ -102,25 +131,21 @@
     }
   }
   .heroSubtitle {
-    font-family: var(--font-heading);
+    font-family: var(--font-body);
     font-size: clamp(1.2rem, 2vw, 1.8rem);
-    font-weight: 500;
-    color: white;
+    font-weight: 300;
+    color: #f0f0f0;
     line-height: 1.25;
 
     @media (max-width: 768px) {
       text-align: center;
     }
   }
-  .searchForm {
-    max-width: 90%;
-    width: 30rem;
-    pointer-events: auto;
-  }
+
   @media (max-width: 768px) {
     align-items: center;
     justify-content: space-between;
-    padding: 6rem 0;
+    padding: 10rem 0;
   }
 }
 

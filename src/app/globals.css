@@ -9,10 +9,10 @@
   --blue-accent: #3185fc;
   --dark-accent: #343434;
 
-  --font-heading: var(--font-montserrat), sans-serif;
-  --font-body: var(--font-merriweather-sans), sans-serif;
+  --font-heading: var(--font-archivo), sans-serif;
+  --font-body: var(--font-public-sans), sans-serif;
 
-  /* Header scale (Montserrat) */
+  /* Header scale (Archivo) */
   --header1-weight: 700;
   --header1-size: clamp(5rem, 10vw, 12.5rem);
   --header1-line: 0.75;
@@ -29,7 +29,7 @@
   --header3-line: 1;
   --header3-spacing: normal;
 
-  /* Body scale (Merriweather Sans) */
+  /* Body scale (Public Sans) */
   --body1-weight: 400;
   --body1-size: 1.3rem;
   --body1-line: 1.5;
@@ -45,7 +45,7 @@
   --body3-line: 1.4;
   --body3-spacing: normal;
 
-  /* Micro scale (Merriweather Sans) */
+  /* Micro scale (Public Sans) */
   --micro1-weight: 400;
   --micro1-size: 0.6875rem;
   --micro1-line: 1.35;

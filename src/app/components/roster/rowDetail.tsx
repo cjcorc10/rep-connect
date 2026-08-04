@@ -8,7 +8,6 @@ import {
 import { useRepStore } from "@/app/store/useRepStore";
 import { Rep } from "@/app/lib/definitions";
 import { useWikipedia } from "@/app/hooks/useWikipedia";
-import { getRepExternalLinks } from "../repDetailDrawer/repDetailDrawer";
 import Image from "next/image";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -19,6 +18,36 @@ function twitterProfileUrl(rep: Rep): string | null {
   const handle = rep.twitter?.trim().replace(/^@/, "");
   if (!handle) return null;
   return `https://twitter.com/${encodeURIComponent(handle)}`;
+}
+
+type ExternalLinkItem = { href: string; text: string };
+
+export function getRepExternalLinks(rep: Rep): ExternalLinkItem[] {
+  const links: ExternalLinkItem[] = [];
+
+  if (rep.opensecrets_id?.trim()) {
+    links.push({
+      href: `https://www.opensecrets.org/members-of-congress/summary?cid=${encodeURIComponent(rep.opensecrets_id.trim())}`,
+      text: "Who is funding this representative?",
+    });
+  }
+
+  if (rep.govtrack_id != null) {
+    links.push({
+      href: `https://www.govtrack.us/congress/members/${rep.govtrack_id}`,
+      text: "Voting history and sponsored bills",
+    });
+  }
+
+  if (rep.ballotpedia_id?.trim()) {
+    const slug = rep.ballotpedia_id.trim().replace(/\s+/g, "_");
+    links.push({
+      href: `https://ballotpedia.org/${slug}`,
+      text: "Background and positions",
+    });
+  }
+
+  return links;
 }
 
 export const RowDetail = ({

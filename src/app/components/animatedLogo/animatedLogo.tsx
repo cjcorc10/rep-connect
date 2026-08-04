@@ -130,7 +130,7 @@ const LogoAnimation = () => {
             {string1.split("").map((letter, index) => (
               <text
                 key={index}
-                x={index * letterSpacing + 27}
+                x={index * letterSpacing + 34}
                 y="-14"
                 className={styles.text}
                 data-animate={`rText-${index}`}
@@ -141,7 +141,7 @@ const LogoAnimation = () => {
             {string2.split("").map((letter, index) => (
               <text
                 key={index}
-                x={index * letterSpacing + 39}
+                x={index * letterSpacing + 54}
                 y="150"
                 className={styles.text}
                 data-animate={`cText-${index}`}
