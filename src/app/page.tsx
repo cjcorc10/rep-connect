@@ -17,121 +17,196 @@ export default function Home() {
     .length;
   const middleIndex = Math.floor(charsCount / 2);
 
-  const { isDestination, revealComplete } = usePageEntrance();
+  usePageEntrance();
 
-  useEffect(() => {
-    if (isDestination) revealComplete();
-  }, [isDestination, revealComplete]);
-
+  const { phase } = usePageEntrance();
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
-    animate(
-      "[data-animate='logo-char-container']",
-      {
-        y: ["150%", "0%"],
-      },
-      {
-        ease: "easeOut",
-        duration: 0.4,
-        delay: (i) => Math.abs(i - middleIndex) * 0.05 + 0.1,
-      },
-    );
+    if (phase !== "idle") return;
+    let cancelled = false;
 
-    animate(
-      "[data-animate='logo-circle']",
-      {
-        clipPath: ["circle(0% at 50% 50%)", "circle(50% at 50% 50%)"],
-      },
-      {
-        ease: "easeOut",
-        delay: 1,
-      },
-    );
-    animate(
-      "[data-animate='logo']",
-      {
-        columnGap: ["0rem", "8rem", "8rem", "3rem"],
-        fontSize: ["6rem", "6rem", "6rem", "3rem"],
-      },
-      {
-        ease: ["easeOut", "easeOut", "easeOut", "easeOut"],
-        times: [0, 0.25, 0.7, 1],
-        duration: 1,
-        delay: 0.9,
-      },
-    );
-    animate(
-      "[data-animate='logo-container']",
-      {
-        top: ["30%", "5%"],
-      },
-      {
-        ease: "easeOut",
-        delay: 1.6,
-        duration: 0.15,
-      },
-    );
+    (async () => {
+      await animate(
+        "[data-animate='logo']",
+        { scale: 1, columnGap: "0em" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='logo-container']",
+        { top: "30%" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='logo-circle']",
+        { clipPath: "circle(0% at 50% 50%)" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='header-line']",
+        { clipPath: "inset(0% 100% 0% 0%)" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='background']",
+        { clipPath: "inset(100% 0% 0% 0%)" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='background-wipe']",
+        { clipPath: "inset(100% 0% 0% 0%)" },
+        { duration: 0 },
+      );
+      await animate(
+        "[data-animate='search-form']",
+        {
+          clipPath: "inset(0% 100% 100% 0% round 8px)",
+        },
+        {
+          duration: 0,
+        },
+      );
+      await animate(
+        "[data-animate='about-char']",
+        {
+          x: "-100%",
+        },
+        {
+          duration: 0,
+        },
+      );
+    })();
 
-    animate(
-      "[data-animate='background-wipe']",
-      {
-        clipPath: ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
-      },
-      {
-        ease: "easeInOut",
-        duration: 0.4,
-        delay: (i) => i * 0.5 + 1.6,
-      },
-    );
-    animate(
-      "[data-animate='background']",
-      {
-        clipPath: ["inset(0% 0% 100% 0%)", "inset(0% 0% 0% 0%)"],
-      },
-      {
-        ease: "easeInOut",
-        delay: 2.25,
-        duration: 0.3,
-      },
-    );
-    animate(
-      "[data-animate='header-line']",
-      {
-        clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
-      },
-      {
-        ease: "easeInOut",
-        duration: 1.7,
-        delay: 2,
-      },
-    );
-    animate(
-      "[data-animate='about-char']",
-      {
-        x: ["-100%", "0%"],
-      },
-      {
-        ease: "easeOut",
-        duration: 0.5,
-        delay: (i) => i * 0.05 + 3.3,
-      },
-    );
-    animate(
-      "[data-animate='search-form']",
-      {
-        clipPath: [
-          "inset(0% 100% 100% 0% round 8px)",
-          "inset(0% 0% 0% 0% round 8px)",
-        ],
-      },
-      {
-        ease: "easeOut",
-        duration: 0.7,
-        delay: 3,
-      },
-    );
-  }, [animate, scope, middleIndex]);
+    (async () => {
+      await animate(
+        "[data-animate='logo-char-container']",
+        {
+          y: ["150%", "0%"],
+        },
+        {
+          ease: "easeOut",
+          duration: 0.4,
+          delay: (i) => Math.abs(i - middleIndex) * 0.05 + 0.1,
+        },
+      );
+      if (cancelled) return;
+
+      await Promise.all([
+        animate(
+          "[data-animate='logo-circle']",
+          {
+            clipPath: [
+              "circle(0% at 50% 50%)",
+              "circle(35% at 50% 50%)",
+              "circle(35% at 50% 50%)",
+            ],
+          },
+          {
+            ease: "easeOut",
+            duration: 0.7,
+            delay: 0.5,
+          },
+        ),
+        animate(
+          "[data-animate='logo']",
+          {
+            columnGap: ["0em", "2em", "2em"],
+          },
+          {
+            ease: "easeOut",
+            duration: 0.7,
+            delay: 0.3,
+          },
+        ),
+      ]);
+      await Promise.all([
+        animate(
+          "[data-animate='logo']",
+          {
+            scale: 0.33,
+            columnGap: "1.5em",
+          },
+          {
+            ease: "easeOut",
+            duration: 0.3,
+          },
+        ),
+        animate(
+          "[data-animate='logo-container']",
+          {
+            top: ["30%", "5%"],
+          },
+          {
+            ease: "easeOut",
+            duration: 0.2,
+          },
+        ),
+        animate(
+          "[data-animate='background-wipe']",
+          {
+            clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"],
+          },
+          {
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+
+            delay: (i) => i * 0.5,
+          },
+        ),
+        animate(
+          "[data-animate='background']",
+          {
+            clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"],
+          },
+          {
+            type: "spring",
+            stiffness: 210,
+            damping: 30,
+            delay: 0.65,
+          },
+        ),
+      ]);
+
+      await Promise.all([
+        animate(
+          "[data-animate='header-line']",
+          {
+            clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
+          },
+          {
+            ease: "easeInOut",
+            duration: 1.7,
+          },
+        ),
+        animate(
+          "[data-animate='about-char']",
+          {
+            x: ["-100%", "0%"],
+          },
+          {
+            ease: "easeOut",
+            duration: 0.5,
+            delay: (i) => i * 0.05 + 1.2,
+          },
+        ),
+        animate(
+          "[data-animate='search-form']",
+          {
+            clipPath: ["inset(0% 0% 0% 0% round 8px)"],
+          },
+          {
+            ease: "easeOut",
+            delay: 1,
+            duration: 0.7,
+          },
+        ),
+      ]);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [animate, scope, middleIndex, phase]);
 
   return (
     <main ref={scope} className="flex flex-col relative h-screen">
@@ -167,7 +242,7 @@ export default function Home() {
           data-animate="hero-child"
           className={styles.heroTextContainer}
         >
-          <MaskText direction="down" delay={2.5} wordStagger={0.05}>
+          <MaskText direction="up" delay={3.4} wordStagger={0.05}>
             <h1 className={styles.heroTitle}>
               Your voice matters beyond the ballot box.
             </h1>
@@ -178,7 +253,7 @@ export default function Home() {
           data-animate="hero-child"
           className={styles.heroSubtitleContainer}
         >
-          <MaskText direction="down" delay={2.7}>
+          <MaskText direction="up" delay={3.7}>
             <p className={styles.heroSubtitle}>
               Elections choose who represents you, but donors and
               lobbyists don&apos;t stop working once the votes are

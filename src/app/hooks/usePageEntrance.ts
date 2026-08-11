@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
   hrefMatches,
@@ -11,17 +12,26 @@ export function usePageEntrance() {
   const phase = usePageTransition((s) => s.phase);
   const targetHref = usePageTransition((s) => s.targetHref);
   const transitionId = usePageTransition((s) => s.transitionId);
-  const revealComplete = usePageTransition((s) => s.revealComplete);
+  const markPageReady = usePageTransition((s) => s.markPageReady);
 
   const isDestination =
-    phase === "covered" && hrefMatches(pathname, targetHref);
+    phase === "loading" && hrefMatches(pathname, targetHref);
+
+  const syncHref = usePageTransition((s) => s.syncHref);
+
+  useEffect(() => {
+    if (phase === "idle" && pathname) syncHref(pathname);
+  }, [phase, pathname, syncHref]);
+  useEffect(() => {
+    if (isDestination) markPageReady();
+  }, [isDestination, markPageReady]);
 
   return {
     phase,
     targetHref,
     transitionId,
     isDestination,
-    revealComplete,
-    playEntrance: phase === "idle",
+    isReady: phase === "idle",
+    markReady: markPageReady,
   };
 }

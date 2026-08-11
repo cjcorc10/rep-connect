@@ -3,6 +3,7 @@ import { getCoordinates } from "@/app/lib/util";
 import { getRepsByLocationQuery } from "@/app/lib/reps";
 import { notFound } from "next/navigation";
 import RepsPageClient from "./repsPageClient";
+import { RouteWrapper } from "@/app/components/transitionComponents/routeWrapper";
 
 export const AsyncPage = async ({
   params,
@@ -15,5 +16,10 @@ export const AsyncPage = async ({
   const label = cityStateLabelFromGeocode(coordinates);
   const payload = await getRepsByLocationQuery(coordinates);
   if (!payload) notFound();
-  return <RepsPageClient payload={payload} zip={zip} label={label} />;
+
+  return (
+    <RouteWrapper>
+      <RepsPageClient payload={payload} zip={zip} label={label} />
+    </RouteWrapper>
+  );
 };

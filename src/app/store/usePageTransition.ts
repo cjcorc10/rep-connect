@@ -1,74 +1,93 @@
 import { create } from "zustand";
 
-type Resolve = () => void;
-
-type Phase = "idle" | "covering" | "covered";
+export type Phase = "idle" | "animating" | "loading";
 
 type State = {
   phase: Phase;
   targetHref: string;
+  lastHref: string;
   transitionId: number;
-  coverResolver: Resolve | null;
-  revealResolver: Resolve | null;
+  pageReady: boolean;
+  animDone: boolean;
+  pendingPush: (() => void) | null;
 
+  navigate: (href: string, push: () => void) => void;
   coverComplete: () => void;
-  revealComplete: () => void;
-
-  navigate: (href: string, push: () => void) => Promise<void>;
+  markPageReady: () => void;
+  loadingAnimComplete: () => void;
+  syncHref: (href: string) => void;
 };
+
+function tryReady(
+  get: () => State,
+  set: (partial: Partial<State>) => void,
+) {
+  const { phase, pageReady, animDone } = get();
+  if (phase === "loading" && pageReady && animDone) {
+    set({
+      phase: "idle",
+      pageReady: false,
+      animDone: false,
+      pendingPush: null,
+      lastHref: get().targetHref,
+      targetHref: "",
+    });
+  }
+}
 
 export const usePageTransition = create<State>((set, get) => ({
   phase: "idle",
   targetHref: "",
+  lastHref: "",
   transitionId: 0,
-  coverResolver: null,
-  revealResolver: null,
+  pageReady: false,
+  animDone: false,
+  pendingPush: null,
 
-  coverComplete: () => {
-    const { coverResolver, phase } = get();
-    if (phase !== "covering" || !coverResolver) return;
-    coverResolver();
-    set({ coverResolver: null });
+  syncHref: (href) => {
+    if (get().phase !== "idle") return;
+    if (get().lastHref === href) return;
+    set({ lastHref: href });
   },
-
-  revealComplete: () => {
-    const { revealResolver, phase } = get();
-    if (phase !== "covered" || !revealResolver) return;
-    revealResolver();
-    set({
-      revealResolver: null,
-      phase: "idle",
-      targetHref: "",
-    });
-  },
-
-  navigate: async (href, push) => {
+  navigate: (href, push) => {
     if (get().phase !== "idle") return;
 
-    // Do not bump transitionId here — source pages key Motion on it;
-    // bumping at cover start remounts them to `initial` and blinks.
     set({
-      phase: "covering",
+      phase: "animating",
       targetHref: href,
+      pageReady: false,
+      animDone: false,
+      pendingPush: push,
     });
+  },
 
-    await new Promise<void>((resolve) => {
-      set({ coverResolver: resolve });
-    });
+  coverComplete: () => {
+    const { phase, pendingPush, transitionId } = get();
+    if (phase !== "animating") return;
 
-    push();
     set({
-      phase: "covered",
-      transitionId: get().transitionId + 1,
+      phase: "loading",
+      transitionId: transitionId + 1,
+      pendingPush: null,
     });
+    pendingPush?.();
+  },
 
-    await new Promise<void>((resolve) => {
-      set({ revealResolver: resolve });
-    });
+  // loaded route is mounted and ready to enter
+  markPageReady: () => {
+    if (get().phase !== "loading") return;
+    set({ pageReady: true });
+    tryReady(get, set);
+  },
+
+  // loading logo animation complete and ready to reveal
+  loadingAnimComplete: () => {
+    if (get().phase !== "loading") return;
+    set({ animDone: true });
+    tryReady(get, set);
   },
 }));
 
-/** Whether the current location is the in-flight transition destination. */
 export function hrefMatches(pathname: string, targetHref: string) {
   if (!targetHref) return false;
   const path = targetHref.split("?")[0];

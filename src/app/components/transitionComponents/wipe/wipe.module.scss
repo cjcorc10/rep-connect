@@ -1,19 +1,16 @@
-.wipe1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url("/images/redBg.webp");
-  clip-path: inset(0% 0% 100% 0%);
-}
-
+.wipe1,
 .wipe2 {
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--primary-color);
   clip-path: inset(0% 0% 100% 0%);
+}
+
+.wipe1 {
+  background-image: url("/images/redBg.webp");
+}
+.wipe2 {
+  background-color: var(--primary-color);
 }

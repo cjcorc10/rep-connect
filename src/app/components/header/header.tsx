@@ -3,6 +3,7 @@ import styles from "./header.module.scss";
 import { useRef } from "react";
 import { usePageTransition } from "@/app/store/usePageTransition";
 import { usePathname, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { Logo } from "../logo/logo";
 
 export default function Header() {
@@ -14,12 +15,12 @@ export default function Header() {
   return (
     <header ref={sentinelRef} className={styles.header}>
       <div className={styles.navList}>
-        <a
+        <motion.a
           onClick={() => navigate("/", () => router.push("/"))}
           className={styles.navLink}
         >
           {pathname !== "/" && <Logo />}
-        </a>
+        </motion.a>
         <a
           onClick={() =>
             navigate("/about", () => router.push("/about"))

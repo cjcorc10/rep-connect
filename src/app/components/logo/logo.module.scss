@@ -3,8 +3,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  column-gap: 2rem;
-  font-size: 2rem;
+  column-gap: 0em;
+  font-size: inherit;
   height: fit-content;
 
   .logoText {
@@ -39,8 +39,8 @@
     transform: translate(-50%, -50%);
     background-image: url("/images/redBg.webp");
     aspect-ratio: 1/1;
-    height: 50%;
+    height: 100%;
     background-position: center;
-    clip-path: circle(50% at 50% 50%);
+    clip-path: circle(0% at 50% 50%);
   }
 }

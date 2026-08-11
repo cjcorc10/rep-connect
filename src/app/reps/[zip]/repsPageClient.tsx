@@ -9,7 +9,6 @@ import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
 import { ResultsSection } from "./resultsSection";
 import Header from "@/app/components/header/header";
-import { usePageEntrance } from "@/app/hooks/usePageEntrance";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -33,18 +32,19 @@ export default function RepsPageClient({
     payload,
   });
 
-  const { transitionId, isDestination } = usePageEntrance();
-  if (isDestination) return null;
-
   return (
     <main>
-      {/* <div className={styles.headerContainer}>
-        <FadeupContainer key={`h-${transitionId}`} delay={1.25}>
+      <div className={styles.headerContainer}>
+        {/* <FadeupContainer
+          key={`h-${transitionId}`}
+          delay={1.25}
+          play={playEntrance}
+        >
           <Header />
-        </FadeupContainer>
-      </div> */}
+        </FadeupContainer> */}
+      </div>
       <div className={styles.resultsContainer}>
-        <FadeupContainer key={`t-${transitionId}`} delay={1}>
+        <FadeupContainer delay={1}>
           <div className={styles.govLevelTabsContainer}>
             <GovLevelTabs
               currentLevel={activeLevel}
@@ -56,10 +56,10 @@ export default function RepsPageClient({
           </div>
         </FadeupContainer>
 
-        <FadeupContainer key={`r-${transitionId}`} delay={0.75}>
+        <FadeupContainer delay={0.75}>
           <ResultsHeader zip={zip} label={label} />
         </FadeupContainer>
-        <FadeupContainer key={`s-${transitionId}`} delay={0.5}>
+        <FadeupContainer delay={0.5}>
           <ResultsSection
             mapSection={mapSection}
             zip={zip}
@@ -77,9 +77,11 @@ export default function RepsPageClient({
 
 const FadeupContainer = ({
   delay,
+  play = true,
   children,
 }: {
   delay: number;
+  play?: boolean;
   children: React.ReactNode;
 }) => {
   const animationVariants = {
@@ -91,7 +93,7 @@ const FadeupContainer = ({
     <motion.div
       variants={animationVariants}
       initial="initial"
-      animate="animate"
+      animate={play ? "animate" : "initial"}
       transition={{ delay, duration: 0.6, ease: "easeOut" }}
       className={styles.sectionWrapper}
     >

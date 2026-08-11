@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { RepsPageShell } from "./repsPageShell";
 import { AsyncPage } from "./asyncPage";
 
 type PageProps = {
@@ -9,9 +8,7 @@ type PageProps = {
 export default function Page({ params }: PageProps) {
   return (
     <Suspense fallback={null}>
-      <RepsPageShell>
-        <AsyncPage params={params} />
-      </RepsPageShell>
+      <AsyncPage params={params} />
     </Suspense>
   );
 }
