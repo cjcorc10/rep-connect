@@ -9,17 +9,21 @@ import { Logo } from "./components/logo/logo";
 import { MaskText } from "./components/maskText/maskText";
 import { Wipe } from "./components/transitionComponents/wipe/wipe";
 import Header from "./components/header/header";
+import { type Phase } from "./store/usePageTransition";
 
 export default function Home() {
+  const { phase, transitionId } = usePageEntrance();
+
+  return <HomeEntrance key={transitionId} phase={phase} />;
+}
+
+const HomeEntrance = ({ phase }: { phase: Phase }) => {
   const title1 = "repc";
   const title2 = "nnect";
   const charsCount = [...title1.split(""), ...title2.split("")]
     .length;
   const middleIndex = Math.floor(charsCount / 2);
 
-  usePageEntrance();
-
-  const { phase } = usePageEntrance();
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
@@ -27,57 +31,27 @@ export default function Home() {
     let cancelled = false;
 
     (async () => {
-      await animate(
-        "[data-animate='logo']",
-        { scale: 1, columnGap: "0em" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='logo-container']",
-        { top: "30%" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='logo-circle']",
-        { clipPath: "circle(0% at 50% 50%)" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='header-line']",
-        { clipPath: "inset(0% 100% 0% 0%)" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='background']",
-        { clipPath: "inset(100% 0% 0% 0%)" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='background-wipe']",
-        { clipPath: "inset(100% 0% 0% 0%)" },
-        { duration: 0 },
-      );
-      await animate(
-        "[data-animate='search-form']",
-        {
-          clipPath: "inset(0% 100% 100% 0% round 8px)",
-        },
-        {
-          duration: 0,
-        },
-      );
-      await animate(
-        "[data-animate='about-char']",
-        {
-          x: "-100%",
-        },
-        {
-          duration: 0,
-        },
-      );
-    })();
+      await Promise.all([
+        animate(
+          "[data-animate='about-char']",
+          {
+            x: "-100%",
+          },
+          {
+            duration: 0,
+          },
+        ),
+        animate(
+          "[data-animate='logo-char-container']",
+          {
+            y: "0%",
+          },
+          {
+            duration: 0,
+          },
+        ),
+      ]);
 
-    (async () => {
       await animate(
         "[data-animate='logo-char-container']",
         {
@@ -85,8 +59,8 @@ export default function Home() {
         },
         {
           ease: "easeOut",
-          duration: 0.4,
-          delay: (i) => Math.abs(i - middleIndex) * 0.05 + 0.1,
+          duration: 0.5,
+          delay: (i) => Math.abs(i - middleIndex) * 0.07 + 0.15,
         },
       );
       if (cancelled) return;
@@ -96,14 +70,14 @@ export default function Home() {
           "[data-animate='logo-circle']",
           {
             clipPath: [
-              "circle(0% at 50% 50%)",
-              "circle(35% at 50% 50%)",
-              "circle(35% at 50% 50%)",
+              "circle(0 at 50% 50%)",
+              "circle(0.5em at 50% 50%)",
+              "circle(0.5em at 50% 50%)",
             ],
           },
           {
             ease: "easeOut",
-            duration: 0.7,
+            duration: 0.6,
             delay: 0.5,
           },
         ),
@@ -114,8 +88,8 @@ export default function Home() {
           },
           {
             ease: "easeOut",
-            duration: 0.7,
-            delay: 0.3,
+            duration: 0.6,
+            delay: 0.4,
           },
         ),
       ]);
@@ -123,8 +97,8 @@ export default function Home() {
         animate(
           "[data-animate='logo']",
           {
-            scale: 0.33,
             columnGap: "1.5em",
+            scale: 0.6,
           },
           {
             ease: "easeOut",
@@ -134,7 +108,7 @@ export default function Home() {
         animate(
           "[data-animate='logo-container']",
           {
-            top: ["30%", "5%"],
+            top: "0%",
           },
           {
             ease: "easeOut",
@@ -193,7 +167,10 @@ export default function Home() {
         animate(
           "[data-animate='search-form']",
           {
-            clipPath: ["inset(0% 0% 0% 0% round 8px)"],
+            clipPath: [
+              "inset(0% 100% 0% 0% round 8px)",
+              "inset(0% 0% 0% 0% round 8px)",
+            ],
           },
           {
             ease: "easeOut",
@@ -215,6 +192,10 @@ export default function Home() {
         className={styles.logoContainer}
       >
         <Logo />
+        <div
+          data-animate="header-line"
+          className={styles.headerLine}
+        />
       </div>
       <div
         className={styles.headerContainer}
@@ -223,7 +204,6 @@ export default function Home() {
         <Header />
       </div>
       <Wipe />
-      <div data-animate="header-line" className={styles.headerLine} />
       <div className={styles.background} data-animate="background">
         <div className={styles.backgroundOverlay} />
         <Image
@@ -260,27 +240,17 @@ export default function Home() {
               counted. Hold your representatives accountable to the
               people they serve. Find and contact your reps by
               entering your ZIP code below.
-            </p>
+            </p>{" "}
           </MaskText>
         </div>
 
-        <div className={styles.searchForm}>
+        <div
+          className={styles.searchFormContainer}
+          data-animate="search-form"
+        >
           <SearchForm />
         </div>
       </div>
     </main>
-  );
-}
-
-const HighlightText = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  return (
-    <span className={styles.highlightTextContainer}>
-      <span className={styles.highlighter} />
-      <span className={styles.highlightText}>{children}</span>
-    </span>
   );
 };

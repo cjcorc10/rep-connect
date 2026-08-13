@@ -39,10 +39,7 @@ export default function SearchForm() {
   return (
     <div className={styles.root}>
       <form onSubmit={onSubmit} className={styles.form}>
-        <div
-          data-animate="search-form"
-          className={styles.inputContainer}
-        >
+        <div className={styles.inputContainer}>
           <label htmlFor="zip" className={styles.srOnly}>
             ZIP code
           </label>

@@ -162,6 +162,10 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
       activeLevel === "federal"
         ? federalPortraitUrlMap
         : statePortraitUrlMap,
+    prefetchPortraitUrls: [
+      ...federalPortraitUrlMap.values(),
+      ...statePortraitUrlMap.values(),
+    ],
   };
 
   const refine = {

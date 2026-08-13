@@ -35,11 +35,7 @@ export default function RepsPageClient({
   return (
     <main>
       <div className={styles.headerContainer}>
-        {/* <FadeupContainer
-          key={`h-${transitionId}`}
-          delay={1.25}
-          play={playEntrance}
-        >
+        {/* <FadeupContainer delay={1.25}>
           <Header />
         </FadeupContainer> */}
       </div>

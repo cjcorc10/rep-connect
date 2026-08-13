@@ -9,7 +9,8 @@ import { fetchWikipediaBestImageUrl } from "@/app/lib/wikipedia";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const wikipediaId = searchParams.get("wikipedia_id");
-  const bioguideId = searchParams.get("id");
+  const bioguideId =
+    searchParams.get("bioguide_id") ?? searchParams.get("id");
   const fallbackImage = searchParams.get("fallback");
 
   if (!wikipediaId && !bioguideId) {

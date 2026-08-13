@@ -10,9 +10,7 @@ import {
 } from "framer-motion";
 export const CircleLogo = ({
   setFinished,
-  variant,
 }: {
-  variant: "loading" | "resting";
   setFinished?: () => void;
 }) => {
   // element refs used for animatint the text around the circle
@@ -96,14 +94,7 @@ export const CircleLogo = ({
             pathLength="100"
           />
         </defs>
-        <g
-          className={styles.group}
-          style={
-            {
-              "--animation-duration": `${variant === "loading" ? 2 : 4}s`,
-            } as React.CSSProperties
-          }
-        >
+        <g className={styles.group}>
           <text>
             <textPath
               ref={textARef}

@@ -2,29 +2,29 @@
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  width: 100%;
   column-gap: 0em;
   font-size: inherit;
+  width: 100vw;
+  overflow: hidden;
   height: fit-content;
+  transform-origin: top center;
 
   .logoText {
     display: inline-block;
     text-transform: uppercase;
     font-family: var(--font-heading);
-    font-weight: 600;
+    font-weight: 300;
     white-space: nowrap;
     mix-blend-mode: difference;
     color: white;
 
     &:nth-child(1) {
       justify-self: end;
-      text-align: right;
-      overflow: hidden;
+      align-self: start;
     }
     &:nth-child(2) {
       justify-self: start;
-      text-align: left;
-      overflow: hidden;
+      align-self: start;
     }
 
     .logoChar {
@@ -41,6 +41,6 @@
     aspect-ratio: 1/1;
     height: 100%;
     background-position: center;
-    clip-path: circle(0% at 50% 50%);
+    clip-path: circle(0em at 50% 50%);
   }
 }

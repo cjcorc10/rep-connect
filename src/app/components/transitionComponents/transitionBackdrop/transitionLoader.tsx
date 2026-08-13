@@ -27,20 +27,22 @@ export const TransitionLoader = ({
       opacity: [0, 1],
       top: "50%",
       left: "50%",
-      transform: "translate(-50%, -50%)",
+      x: "-50%",
+      y: "-50%",
     },
     resting: {
       top: 0,
-      left: 0,
-      transform: "translate(5%, 5%)",
+      left: "50%",
+      x: "-50%",
+      y: 0,
       transition: park,
+      scale: 0.3,
+      transformOrigin: "top",
     },
   };
   const wrapperVariants = {
     loading: { height: "100%", width: "100%" },
     resting: {
-      height: "30%",
-      width: "30%",
       transition: park,
       pointerEvents: "auto",
       cursor: "pointer",
@@ -60,7 +62,7 @@ export const TransitionLoader = ({
         className={styles.loaderWrapper}
         onClick={() => navigate("/", () => router.push("/"))}
       >
-        <CircleLogo setFinished={onFinished} variant={variant} />
+        <CircleLogo setFinished={onFinished} />
       </motion.div>
     </motion.div>
   );

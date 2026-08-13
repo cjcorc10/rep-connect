@@ -1,10 +1,5 @@
 @use "../../styles/typography" as *;
 
-.circleLogo {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
 .headerContainer {
   position: fixed;
   top: 0;
@@ -19,7 +14,7 @@
   transform: translateX(-50%);
 }
 .resultsContainer {
-  padding: 4rem 12px 12px 12px;
+  padding: 8rem 12px 12px 12px;
   display: flex;
   flex-direction: column;
   .sectionWrapper {

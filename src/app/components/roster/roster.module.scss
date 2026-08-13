@@ -94,11 +94,11 @@
   @media (min-width: 768px) {
     &:hover > .repName {
       transform: translateX(-15px);
-      opacity: 0.7;
+      opacity: 0.5;
     }
     &:hover > .keyGroup {
       transform: translateX(15px);
-      opacity: 0.7;
+      opacity: 0.5;
     }
   }
 
