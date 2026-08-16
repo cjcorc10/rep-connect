@@ -4,7 +4,6 @@
   grid-template-columns: 1fr 1fr;
   column-gap: 0em;
   font-size: inherit;
-  width: 100vw;
   overflow: hidden;
   height: fit-content;
   transform-origin: top center;
@@ -13,7 +12,7 @@
     display: inline-block;
     text-transform: uppercase;
     font-family: var(--font-heading);
-    font-weight: 300;
+    font-weight: 700;
     white-space: nowrap;
     mix-blend-mode: difference;
     color: white;
@@ -32,6 +31,11 @@
     }
   }
 
+  [data-animate="logo-char-container"] {
+    overflow: hidden;
+    transform: translateY(150%);
+  }
+
   .circle {
     position: absolute;
     top: 50%;
@@ -42,5 +46,29 @@
     height: 100%;
     background-position: center;
     clip-path: circle(0em at 50% 50%);
+  }
+}
+
+.header {
+  overflow: visible;
+  transition: column-gap 0.3s 0.15s ease-out;
+
+  .logoText {
+    mix-blend-mode: normal;
+    color: var(--primary-color);
+  }
+
+  [data-animate="logo-char-container"] {
+    overflow: visible;
+    transform: none;
+  }
+  .circle {
+    transition: clip-path 0.3s 0.2s ease-out;
+  }
+  &:hover .circle {
+    clip-path: circle(0.4em at 50% 50%);
+  }
+  &:hover {
+    column-gap: 1em;
   }
 }

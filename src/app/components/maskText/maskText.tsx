@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import styles from "./maskText.module.scss";
 import clsx from "clsx";
 import { useElementInView } from "@/app/hooks/useElementInView";
@@ -83,6 +83,19 @@ export const MaskText = ({
     delay,
     duration,
   ]);
+
+  useEffect(() => {
+    const parent = parentRef.current;
+    if (!parent) return;
+
+    const observer = new ResizeObserver(() => {
+      getIndices(parent);
+    });
+    observer.observe(parent);
+    getIndices(parent);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div

@@ -1,10 +1,18 @@
 import { MaskedText } from "../maskedText";
 import styles from "./logo.module.scss";
-export const Logo = () => {
+
+type LogoProps = {
+  variant?: "hero" | "header";
+};
+
+export const Logo = ({ variant = "hero" }: LogoProps) => {
   const logoText1 = "repc";
   const logoText2 = "nnect";
   return (
-    <div className={styles.logo} data-animate="logo">
+    <div
+      className={`${styles.logo} ${variant === "header" ? styles.header : ""}`}
+      data-animate="logo"
+    >
       <div className={styles.logoText}>
         <MaskedText text={logoText1} name="logo" />
       </div>

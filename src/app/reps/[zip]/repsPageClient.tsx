@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import GovLevelTabs from "@/app/components/govLevelTabs/govLevelTabs";
 import ResultsHeader from "@/app/reps/[zip]/resultsHeader";
 import { ResultsSection } from "./resultsSection";
-import Header from "@/app/components/header/header";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -34,11 +33,6 @@ export default function RepsPageClient({
 
   return (
     <main>
-      <div className={styles.headerContainer}>
-        {/* <FadeupContainer delay={1.25}>
-          <Header />
-        </FadeupContainer> */}
-      </div>
       <div className={styles.resultsContainer}>
         <FadeupContainer delay={1}>
           <div className={styles.govLevelTabsContainer}>

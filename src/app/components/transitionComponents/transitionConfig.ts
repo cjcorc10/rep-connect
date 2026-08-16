@@ -6,8 +6,7 @@ export const TIMING = {
   wipeDuration: 0.8,
   wipeDelay: 0.15,
   holdDelay: 0.4,
-  logoParkDuration: 1.2,
-  loaderMinMs: 2500,
+  loaderMinMs: 3000,
 } as const;
 
 export const EASE = {

@@ -19,9 +19,7 @@ export const TransitionBackdrop = () => {
   );
   const ui = TRANSITION_UI[phase];
   const loaderHref = phase == "idle" ? lastHref : targetHref;
-  const loaderVisible =
-    phase !== "animating" && showLoader(loaderHref);
-  const loaderVariant = phase === "loading" ? "loading" : "resting";
+  const loaderVisible = phase === "loading" && showLoader(loaderHref);
 
   useEffect(() => {
     if (phase === "loading" && !loaderVisible) loadingAnimComplete();
@@ -36,10 +34,7 @@ export const TransitionBackdrop = () => {
         onCoverComplete={coverComplete}
       />
       {loaderVisible && (
-        <TransitionLoader
-          variant={loaderVariant}
-          onFinished={loadingAnimComplete}
-        />
+        <TransitionLoader onFinished={loadingAnimComplete} />
       )}
     </div>
   );

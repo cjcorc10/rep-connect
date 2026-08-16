@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import styles from "./circleLogo.module.scss";
 import {
@@ -8,11 +8,14 @@ import {
   useMotionValueEvent,
   useTransform,
 } from "framer-motion";
+import { EASE, TIMING } from "../transitionConfig";
+
 export const CircleLogo = ({
   setFinished,
 }: {
   setFinished?: () => void;
 }) => {
+  const [stage, setStage] = useState<"enter" | "exit">("enter");
   // element refs used for animatint the text around the circle
   const pathRef = useRef<SVGPathElement>(null);
   const textARef = useRef<SVGTextPathElement>(null);
@@ -64,23 +67,38 @@ export const CircleLogo = ({
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setFinished?.();
-    }, 2500);
+      setStage("exit");
+    }, TIMING.loaderMinMs);
     return () => window.clearTimeout(timer);
-  }, [setFinished]);
+  }, []);
+
+  const isExit = stage === "exit";
+
   return (
     <div className={styles.main}>
       <motion.div
         className={styles.circle}
         initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        animate={{ scale: isExit ? 0 : 1 }}
+        transition={
+          isExit
+            ? { delay: 0.35, duration: 0.4, ease: EASE.logo }
+            : { duration: 0.5, ease: "easeOut" }
+        }
         data-animate="circle"
+        onAnimationComplete={() => {
+          if (isExit) setFinished?.();
+        }}
       />
       <motion.svg
         initial={{ scale: 0 }}
-        animate={{ scale: 1, rotate: -90 }}
-        transition={{ delay: 0.25, duration: 0.7, ease: "easeOut" }}
+        animate={{ scale: isExit ? 0 : 1.2, rotate: -90 }}
+        transition={
+          isExit
+            ? { duration: 0.8, ease: EASE.logo }
+            : { delay: 0.25, duration: 0.8, ease: "easeOut" }
+        }
+        style={{ transformOrigin: "center" }}
         className={styles.svgContainer}
         viewBox="0 0 50 50"
       >

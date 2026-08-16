@@ -44,7 +44,7 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
         animate(
           "[data-animate='logo-char-container']",
           {
-            y: "0%",
+            y: "150%",
           },
           {
             duration: 0,
@@ -98,7 +98,7 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
           "[data-animate='logo']",
           {
             columnGap: "1.5em",
-            scale: 0.6,
+            scale: 0.4,
           },
           {
             ease: "easeOut",

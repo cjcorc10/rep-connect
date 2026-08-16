@@ -8,6 +8,7 @@
   display: flex;
   justify-content: center;
   height: 8rem;
+  width: 100vw;
   padding-top: 2rem;
   font-size: clamp(2rem, 10vw, 6rem);
 }
@@ -26,6 +27,7 @@
   position: fixed;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
   clip-path: inset(100% 0% 0% 0%);
 
   .backgroundOverlay {
@@ -51,7 +53,7 @@
   top: 0;
   width: 100%;
   height: fit-content;
-  z-index: 5;
+  z-index: 20;
 }
 
 .heroContainer {
@@ -59,7 +61,7 @@
   height: fit-content;
   display: flex;
 
-  padding: 12rem 2rem;
+  padding: 10rem 2rem;
   will-change: transform;
   flex-direction: column;
   gap: 4rem;
@@ -115,7 +117,7 @@
   @media (max-width: 768px) {
     align-items: center;
     justify-content: space-between;
-    padding: 6rem 0;
+    padding: 8rem 0;
   }
 }
 
