@@ -1,4 +1,16 @@
 .map {
+  --district-1: #362c28;
+  --district-2: #db6c79;
+  --district-3: #558b6e;
+
+  --republican-1: #6a040f;
+  --republican-2: #9d0208;
+  --republican-3: #d00000;
+
+  --democrat-1: #03045e;
+  --democrat-2: #0096c7;
+  --democrat-3: #90e0ef;
+
   width: 100%;
   min-height: 0;
   flex: 1 1 auto;
@@ -8,10 +20,33 @@
 }
 
 .fallback {
-  composes: map;
   min-height: clamp(12rem, 28vh, 20rem);
   background-color: #e9e5cf;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.districtLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 0.3em 0.55em;
+  border-radius: 999px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+.districtLabelState {
+  background: #ffffff;
+  color: #000000;
 }

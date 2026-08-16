@@ -1,90 +1,147 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"); */
 @import "tailwindcss";
 @import "tw-animate-css";
 
 :root {
   --background-color: #f3f0e0;
-  --primary-color: #002163;
-  --secondary-color: #e50000;
-  --blue-accent: #4e9bff;
-  --red-accent: #ff4e4e;
+  --primary-color: #1d3557;
+  --red-accent: #e63946;
+  --blue-secondary: #1e90ff;
+  --blue-accent: #3185fc;
+  --dark-accent: #343434;
 
-  /* Typography - single source of truth for both .css and .scss */
-  --typo-d1-font: "Montserrat", sans-serif;
-  --typo-d1-weight: 600;
-  --typo-d1-size: 124px;
-  --typo-d1-line: normal;
-  --typo-d1-spacing: normal;
+  --font-heading: var(--font-archivo), sans-serif;
+  --font-body: var(--font-public-sans), sans-serif;
 
-  --typo-d2-font: "Montserrat", sans-serif;
-  --typo-d2-weight: 600;
-  --typo-d2-size: 32px;
-  --typo-d2-line: normal;
-  --typo-d2-spacing: normal;
+  /* Header scale (Archivo) */
+  --header1-weight: 700;
+  --header1-size: clamp(5rem, 10vw, 12.5rem);
+  --header1-line: 0.75;
+  --header1-spacing: -0.05em;
 
-  --typo-d3-font: "Montserrat", sans-serif;
-  --typo-d3-weight: 600;
-  --typo-d3-size: 24px;
-  --typo-d3-line: normal;
-  --typo-d3-spacing: normal;
+  --header2-weight: 700;
+  --header2-size: clamp(3rem, 5vw, 6rem);
+  --header2-line: 0.8;
+  --header2-spacing: -0.05em;
 
-  --typo-t1-font: "Merriweather Sans", serif;
-  --typo-t1-weight: 400;
-  --typo-t1-size: 16px;
-  --typo-t1-line: normal;
-  --typo-t1-spacing: normal;
+  --header3-weight: 500;
+  --header3-size: clamp(2rem, 4vw, 2.5rem);
 
-  --typo-t2-font: "Merriweather Sans", serif;
-  --typo-t2-weight: 300;
-  --typo-t2-size: 12px;
-  --typo-t2-line: normal;
-  --typo-t2-spacing: normal;
+  --header3-line: 1;
+  --header3-spacing: normal;
+
+  /* Body scale (Public Sans) */
+  --body1-weight: 400;
+  --body1-size: 1.3rem;
+  --body1-line: 1.5;
+  --body1-spacing: normal;
+
+  --body2-weight: 400;
+  --body2-size: 0.875rem;
+  --body2-line: 1.45;
+  --body2-spacing: normal;
+
+  --body3-weight: 300;
+  --body3-size: 0.75rem;
+  --body3-line: 1.4;
+  --body3-spacing: normal;
+
+  /* Micro scale (Public Sans) */
+  --micro1-weight: 400;
+  --micro1-size: 0.6875rem;
+  --micro1-line: 1.35;
+  --micro1-spacing: 0.01em;
+
+  --micro2-weight: 400;
+  --micro2-size: 0.625rem;
+  --micro2-line: 1.3;
+  --micro2-spacing: 0.02em;
+
+  --micro3-weight: 300;
+  --micro3-size: 0.5625rem;
+  --micro3-line: 1.25;
+  --micro3-spacing: 0.03em;
 }
 
 body {
-  font-family: "Merriweather Sans", serif;
+  font-family: var(--font-body);
+  font-weight: var(--body1-weight);
+  font-size: var(--body1-size);
+  line-height: var(--body1-line);
+  letter-spacing: var(--body1-spacing);
 }
 
-/* Typography System - utility classes use CSS variables */
+/* Typography utility classes */
 @layer utilities {
-  .display-d1 {
-    font-family: var(--typo-d1-font);
-    font-weight: var(--typo-d1-weight);
-    font-size: var(--typo-d1-size);
-    line-height: var(--typo-d1-line);
-    letter-spacing: var(--typo-d1-spacing);
+  .header1 {
+    font-family: var(--font-heading);
+    font-weight: var(--header1-weight);
+    font-size: var(--header1-size);
+    line-height: var(--header1-line);
+    letter-spacing: var(--header1-spacing);
   }
 
-  .display-d2 {
-    font-family: var(--typo-d2-font);
-    font-weight: var(--typo-d2-weight);
-    font-size: var(--typo-d2-size);
-    line-height: var(--typo-d2-line);
-    letter-spacing: var(--typo-d2-spacing);
+  .header2 {
+    font-family: var(--font-heading);
+    font-weight: var(--header2-weight);
+    font-size: var(--header2-size);
+    line-height: var(--header2-line);
+    letter-spacing: var(--header2-spacing);
   }
 
-  .display-d3 {
-    font-family: var(--typo-d3-font);
-    font-weight: var(--typo-d3-weight);
-    font-size: var(--typo-d3-size);
-    line-height: var(--typo-d3-line);
-    letter-spacing: var(--typo-d3-spacing);
+  .header3 {
+    font-family: var(--font-heading);
+    font-weight: var(--header3-weight);
+    font-size: var(--header3-size);
+    line-height: var(--header3-line);
+    letter-spacing: var(--header3-spacing);
   }
 
-  .text-t1 {
-    font-family: var(--typo-t1-font);
-    font-weight: var(--typo-t1-weight);
-    font-size: var(--typo-t1-size);
-    line-height: var(--typo-t1-line);
-    letter-spacing: var(--typo-t1-spacing);
+  .body1 {
+    font-family: var(--font-body);
+    font-weight: var(--body1-weight);
+    font-size: var(--body1-size);
+    line-height: var(--body1-line);
+    letter-spacing: var(--body1-spacing);
   }
 
-  .text-t2 {
-    font-family: var(--typo-t2-font);
-    font-weight: var(--typo-t2-weight);
-    font-size: var(--typo-t2-size);
-    line-height: var(--typo-t2-line);
-    letter-spacing: var(--typo-t2-spacing);
+  .body2 {
+    font-family: var(--font-body);
+    font-weight: var(--body2-weight);
+    font-size: var(--body2-size);
+    line-height: var(--body2-line);
+    letter-spacing: var(--body2-spacing);
+  }
+
+  .body3 {
+    font-family: var(--font-body);
+    font-weight: var(--body3-weight);
+    font-size: var(--body3-size);
+    line-height: var(--body3-line);
+    letter-spacing: var(--body3-spacing);
+  }
+
+  .micro1 {
+    font-family: var(--font-body);
+    font-weight: var(--micro1-weight);
+    font-size: var(--micro1-size);
+    line-height: var(--micro1-line);
+    letter-spacing: var(--micro1-spacing);
+  }
+
+  .micro2 {
+    font-family: var(--font-body);
+    font-weight: var(--micro2-weight);
+    font-size: var(--micro2-size);
+    line-height: var(--micro2-line);
+    letter-spacing: var(--micro2-spacing);
+  }
+
+  .micro3 {
+    font-family: var(--font-body);
+    font-weight: var(--micro3-weight);
+    font-size: var(--micro3-size);
+    line-height: var(--micro3-line);
+    letter-spacing: var(--micro3-spacing);
   }
 }
 

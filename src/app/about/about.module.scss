@@ -1,0 +1,45 @@
+@use "../styles/typography" as *;
+
+.page {
+  padding: 7rem 2rem 4rem;
+  color: var(--primary-color);
+}
+
+.column {
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.title {
+  @include header2;
+  text-transform: uppercase;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.heading {
+  @include header3;
+}
+
+.body {
+  @include body1;
+}
+
+.repoLink {
+  @include body1;
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  width: fit-content;
+  transition: opacity 200ms ease;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}

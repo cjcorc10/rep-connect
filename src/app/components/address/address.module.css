@@ -1,72 +1,51 @@
-/* Fluid tokens: vw tracks viewport without JS; clamp caps min/max for performance. */
 .addressContainer {
-  --addr-pad-y: clamp(0.4rem, 1.8vw, 0.75rem);
+  --addr-pad-y: clamp(0.7rem, 1.8vw, 0.75rem);
   --addr-pad-x: clamp(0.5rem, 2.2vw, 1rem);
-  --addr-label-size: clamp(1rem, 2.2vw + 0.55rem, 3rem);
-  --addr-zip-size: clamp(2.25rem, 8vw + 1.25rem, 7rem);
+  --addr-label-size: clamp(0.5rem, 2.2vw + 0.55rem, 1.5rem);
+  --addr-zip-size: clamp(1.25rem, 8vw + 1.25rem, 5rem);
 
-  /* Flex child of reps header row */
-  flex: 1 1 200px;
   min-width: 0;
   width: 100%;
-  box-sizing: border-box;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-
-  padding: var(--addr-pad-y) var(--addr-pad-x);
-  background-color: var(--blue-accent);
-  color: #fff;
+  color: var(--red-accent);
 
   transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  overflow: hidden;
-  transform-origin: bottom left;
+  display: flex;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+  }
 }
 
-.label {
-  margin: 0;
-  font-size: var(--addr-label-size);
-  line-height: 1.1;
-  font-weight: inherit;
-  transition: font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+.addressContent {
+  display: flex;
+  align-items: center;
 }
 
 .form {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  width: fit-content;
+  background: var(--primary-color);
+  border-radius: 999rem;
 }
 
 .inputWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  max-width: 100%;
 }
 
 .addressTitle {
-  margin: 0;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-
-  font-family: montserrat, sans-serif;
   font-style: italic;
-  font-weight: 200;
-  font-size: var(--addr-zip-size);
-  line-height: 1;
+  text-align: center;
+  font-weight: 500;
+  font-size: var(--header2-size);
   letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
+  width: clamp(16rem, 30vw, 26rem);
+  font-family: var(--font-heading);
 
-  color: inherit;
-  background: transparent;
-  border: 0;
   outline: none;
-  padding: 0;
 
   transition:
     font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),

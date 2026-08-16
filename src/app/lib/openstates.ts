@@ -192,6 +192,7 @@ function extractRoleTermEnd(
 function normalizePerson(person: OsPerson): StateLegislator | null {
   const id = person.id?.trim();
   const name = person.name?.trim();
+
   if (!id || !name) return null;
 
   const picked = pickStateLegislativeRole(person);

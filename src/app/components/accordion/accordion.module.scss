@@ -1,0 +1,34 @@
+.accordionTrigger {
+  width: 100%;
+}
+
+.accordionContent {
+  width: 100%;
+  overflow: hidden;
+}
+
+.accordionContent[data-state="closed"] {
+  animation: slideUp 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.accordionContent[data-state="open"] {
+  animation: slideDown 0.7s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

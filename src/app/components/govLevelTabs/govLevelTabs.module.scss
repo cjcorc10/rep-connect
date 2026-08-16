@@ -1,0 +1,42 @@
+@use "../../styles/typography" as *;
+.tabSelector {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+  color: color-mix(in srgb, var(--background-color) 35%, #000000 75%);
+  text-transform: uppercase;
+  @include body1;
+  line-height: 1;
+  font-size: 1rem;
+  background-color: color-mix(
+    in srgb,
+    var(--background-color) 86%,
+    #000000 14%
+  );
+  border-radius: 999rem;
+  cursor: pointer;
+
+  .list {
+    display: flex;
+    position: relative;
+    .tab {
+      padding: 0.5rem 1.5rem;
+    }
+  }
+
+  .clipPathOverlay {
+    clip-path: inset(0% 40% 0% 0% round 50px);
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    color: white;
+    transition: clip-path ease 0.3s;
+    width: 100%;
+
+    .overlay {
+      background: var(--red-accent);
+    }
+  }
+}

@@ -1,28 +1,72 @@
 "use client";
-import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import styles from "./submitButton.module.css";
+import styles from "./submitButton.module.scss";
+import { AnimationOptions, useAnimate } from "framer-motion";
 
 export default function SubmitButton() {
+  const [scope, animate] = useAnimate();
+  const SPRING_CONFIG = {
+    type: "spring",
+    stiffness: 250,
+    damping: 15,
+  };
+
+  const handleHover = () => {
+    animate(
+      '[data-animate="shaft"]',
+      { d: "M 5, 10 h 11" },
+      SPRING_CONFIG as AnimationOptions,
+    );
+    animate(
+      '[data-animate="point"]',
+      { d: "M 12, 7 l 4, 3 l -4, 3" },
+      SPRING_CONFIG as AnimationOptions,
+    );
+
+    setTimeout(() => {
+      animate(
+        '[data-animate="shaft"]',
+        { d: "M 5, 10 h 9" },
+        SPRING_CONFIG as AnimationOptions,
+      );
+      animate(
+        '[data-animate="point"]',
+        { d: "M 11, 6 l 3, 4 l -3, 4" },
+        SPRING_CONFIG as AnimationOptions,
+      );
+    }, 200);
+  };
+
   return (
-    <div className={styles.submitButtonWrapper}>
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        className={styles.submitButton}
-        layoutId="button"
-        onClick={(e) => e.stopPropagation()}
+    <button
+      type="submit"
+      data-animate="submit-button"
+      className={styles.submitButton}
+      ref={scope}
+      onMouseEnter={handleHover}
+      onClick={handleHover}
+    >
+      <svg
+        viewBox="0 0 20 20"
+        className={styles.submitButtonIcon}
+        fill="none"
       >
-        <div className={styles.buttonShadow}></div>
-        <div className={styles.buttonEdge}></div>
-        <motion.div
-          initial={{ filter: "blur(4px)" }}
-          animate={{ filter: "blur(0)" }}
-          exit={{ filter: "blur(4px)" }}
-          transition={{ duration: 0.5 }}
-        >
-          <ArrowRight size={48} color="white" />
-        </motion.div>
-      </motion.button>
-    </div>
+        <path
+          data-animate="shaft"
+          d="M 5, 10 h 9"
+          stroke="white"
+          fill="none"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+        <path
+          data-animate="point"
+          d="M 11, 6 l 3, 4 l -3, 4"
+          stroke="white"
+          fill="none"
+          strokeWidth="1"
+          strokeLinecap="round"
+        />
+      </svg>
+    </button>
   );
 }

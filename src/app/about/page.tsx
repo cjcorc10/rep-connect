@@ -1,7 +1,10 @@
-import React from 'react'
+import { RouteWrapper } from "@/app/components/transitionComponents/routeWrapper";
+import AboutPage from "./aboutPage";
 
 export default function Page() {
   return (
-    <div>About...</div>
-  )
+    <RouteWrapper>
+      <AboutPage />
+    </RouteWrapper>
+  );
 }

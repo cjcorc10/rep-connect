@@ -1,9 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePageTransition } from "@/app/store/usePageTransition";
+import React, { useState } from "react";
 import z from "zod";
-import { BeautifulButton } from "../button/beautifulButton";
 import styles from "./searchForm.module.scss";
+import SubmitButton from "../button/submitButton";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   zip: z
@@ -15,6 +16,7 @@ const FormSchema = z.object({
 
 export default function SearchForm() {
   const router = useRouter();
+  const navigate = usePageTransition((s) => s.navigate);
   const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -30,19 +32,17 @@ export default function SearchForm() {
     }
 
     const { zip } = parsedData.data;
-    router.push(`/reps/${zip}`, {
-      scroll: false,
-      // transitionTypes: ["nav-forward"],
-    });
+    const href = `/reps/${zip}`;
+    navigate(href, () => router.push(href));
   };
 
   return (
     <div className={styles.root}>
       <form onSubmit={onSubmit} className={styles.form}>
-        <label htmlFor="zip" className={styles.srOnly}>
-          ZIP code
-        </label>
-        <div className={styles.inputShell}>
+        <div className={styles.inputContainer}>
+          <label htmlFor="zip" className={styles.srOnly}>
+            ZIP code
+          </label>
           <input
             type="text"
             id="zip"
@@ -54,13 +54,9 @@ export default function SearchForm() {
             aria-invalid={error ? "true" : "false"}
             className={styles.input}
           />
-          <BeautifulButton
-            content="SEARCH"
-            compact
-            className={styles.shellButton}
-          />
+          <input type="hidden" id="street" name="street" value="" />
+          <SubmitButton />
         </div>
-        <input type="hidden" id="street" name="street" value="" />
       </form>
 
       {error && (

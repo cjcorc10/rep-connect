@@ -1,9 +1,12 @@
 "use client";
 
 import type {
-  Rep,
+  Legend,
+  MapSection,
   RepsByAddressPayload,
   RepsLocationPayload,
+  Rep,
+  StateLegislator,
 } from "@/app/lib/definitions";
 import { useRepStore } from "@/app/store/useRepStore";
 import { useEffect, useState } from "react";
@@ -11,30 +14,29 @@ import {
   computeAlignedStateDistrictGeoJson,
   computeAlignedStateDistricts,
   computeFederalDistrictRankByLabel,
-  computeFederalHouseColors,
+  computeFederalLegendColorFillByLabel,
   computeFederalRosterRows,
-  computeStateDistrictColorFillByMapKey,
   computeStateDistrictRankByMapKey,
+  computeStateLegendColorFillByMapKey,
   computeStateRosterRows,
   filterStateHouseDistricts,
   filterStateSenateDistricts,
 } from "../reps/[zip]/derivation";
+import { buildPortraitUrlMap } from "../lib/repRoster";
+import {
+  buildFederalImageApiUrl,
+  buildStateImageApiURL,
+} from "../lib/repImageUrl";
+import { GovLevel } from "../components/govLevelTabs/govLevelTabs";
 
 type UseRepsPageArgs = {
   payload: RepsLocationPayload;
 };
 
-type RefineSuccessPayload = Pick<
-  RepsByAddressPayload,
-  "data" | "cityStateLabel" | "districtGeoJson" | "mapFallback"
->;
-
 export function useRepsPage({ payload }: UseRepsPageArgs) {
   const { setReps } = useRepStore();
+  const [activeLevel, setActiveLevel] = useState<GovLevel>("federal");
 
-  const [activeLevel, setActiveLevel] = useState<"federal" | "state">(
-    "federal",
-  );
   const [view, setView] = useState<RepsLocationPayload>(
     () => payload,
   );
@@ -53,20 +55,32 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     view.districtGeoJson,
   );
 
-  const federalHouseColors = computeFederalHouseColors(
-    view.data.districts,
-    districtRankByLabel,
-  );
+  const federalLegendColorFillByLabel =
+    computeFederalLegendColorFillByLabel(
+      view.districtGeoJson,
+      view.data.houseReps,
+    );
 
-  const federalRosterRows = computeFederalRosterRows(
-    view.data,
-    federalHouseColors,
-  );
+  const federalRosterRows = computeFederalRosterRows(view.data);
 
   const alignedStateDistricts = computeAlignedStateDistricts(
     view.data.stateDistricts,
     view.data.stateLegislators,
   );
+
+  const refineByAddress = async (
+    address: string,
+  ): Promise<RepsByAddressPayload> => {
+    console.log("refineByAddress: ", address);
+    const res = await fetch("/api/reps", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ address }),
+    });
+    if (!res.ok) throw new Error("Failed to fetch reps");
+    const data = await res.json();
+    return data;
+  };
 
   const alignedStateDistrictGeoJson =
     computeAlignedStateDistrictGeoJson(
@@ -79,13 +93,11 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     alignedStateDistrictGeoJson,
   );
 
-  const stateDistrictColorFillByMapKey =
-    computeStateDistrictColorFillByMapKey(stateDistrictRankByMapKey);
+  const stateLegendColorFillByMapKey =
+    computeStateLegendColorFillByMapKey(alignedStateDistrictGeoJson);
 
   const stateRosterRows = computeStateRosterRows(
     view.data.stateLegislators,
-    alignedStateDistricts,
-    stateDistrictColorFillByMapKey,
   );
 
   const stateSenateDistricts = filterStateSenateDistricts(
@@ -96,33 +108,49 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     alignedStateDistricts,
   );
 
+  const federalPortraitUrlMap = buildPortraitUrlMap(
+    view.data.senateReps.concat(view.data.houseReps),
+    buildFederalImageApiUrl,
+    (rep: Rep) => rep.bioguide_id,
+  );
+  const statePortraitUrlMap = buildPortraitUrlMap(
+    view.data.stateLegislators,
+    buildStateImageApiURL,
+    (rep: StateLegislator) => rep.id,
+  );
+
   const activeDistrictGeoJson =
     activeLevel === "state"
       ? alignedStateDistrictGeoJson
       : view.districtGeoJson;
 
-  function onRefineSuccess(next: RefineSuccessPayload) {
+  const onRefineSuccess = (next: RepsLocationPayload) => {
     setView(next);
-  }
-
-  const mapSection = {
-    districtGeoJson: activeDistrictGeoJson,
-    mapFallback: view.mapFallback,
   };
 
-  const legend = {
+  const mapSection: MapSection = {
+    districtGeoJson: activeDistrictGeoJson,
+    mapFallback: view.mapFallback,
+    level: activeLevel,
+    houseReps:
+      activeLevel === "federal" ? view.data.houseReps : undefined,
+  };
+
+  const legend: Legend = {
     level: activeLevel,
     stateCode: view.data.state,
     federal: {
       districts: view.data.districts,
       houseReps: view.data.houseReps,
       districtRankByLabel,
+      districtColorFillByLabel: federalLegendColorFillByLabel,
     },
     state: {
       stateSenateDistricts,
       stateHouseDistricts,
       stateDistrictRankByMapKey,
       stateLegislators: view.data.stateLegislators,
+      districtColorFillByMapKey: stateLegendColorFillByMapKey,
     },
   };
 
@@ -130,11 +158,20 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     repsData: view.data,
     rosterRows:
       activeLevel === "federal" ? federalRosterRows : stateRosterRows,
+    portraitUrlMap:
+      activeLevel === "federal"
+        ? federalPortraitUrlMap
+        : statePortraitUrlMap,
+    prefetchPortraitUrls: [
+      ...federalPortraitUrlMap.values(),
+      ...statePortraitUrlMap.values(),
+    ],
   };
 
   const refine = {
     multipleDistricts: payload.data.houseReps.length > 1,
     onRefineSuccess,
+    refineByAddress,
   };
 
   return {

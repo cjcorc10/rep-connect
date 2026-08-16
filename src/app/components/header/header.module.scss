@@ -1,32 +1,53 @@
 .header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  z-index: 500;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  z-index: 100;
-  background-color: var(--primary-color);
-}
-
-.navList {
-  display: flex;
-  padding: 1rem 4rem;
-  color: var(--blue-accent);
-  .navLink {
-    height: min-content;
-
-    &:hover {
-      color: #c0e2ff;
-    }
-  }
-}
-
-.logo {
-  position: absolute;
-  top: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
+  pointer-events: none;
   padding: 2rem;
-  z-index: 3;
-  overflow: hidden;
+}
+
+.homeLink {
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: clamp(1rem, 5vw, 1.5rem);
+  align-self: center;
+}
+
+.navLink {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: clamp(1rem, 5vw, 1.5rem);
+  text-transform: uppercase;
+  text-align: right;
+  pointer-events: auto;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.navLinkOnDark {
+  color: #f0f0f0;
+}
+
+.navLinkOnLight {
+  color: var(--primary-color);
+}
+
+.navLinkCurrent {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.navLink:hover {
+  animation: hueRotate 1s ease-out forwards;
+}
+
+@keyframes hueRotate {
+  to {
+    filter: hue-rotate(180deg);
+  }
 }

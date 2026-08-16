@@ -1,0 +1,10 @@
+.submitButton {
+  background-color: var(--blue-accent);
+  border-radius: 8px;
+  cursor: pointer;
+  pointer-events: auto;
+  .submitButtonIcon {
+    height: 2.5rem;
+    width: 4rem;
+  }
+}

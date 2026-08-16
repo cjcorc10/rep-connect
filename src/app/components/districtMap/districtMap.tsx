@@ -1,38 +1,88 @@
 "use client";
 
 import type {
-  Coordinates,
   DistrictMapFeatureCollection,
+  MapFallback,
+  Rep,
 } from "@/app/lib/definitions";
 import {
-  districtFeatureName,
+  resolveDistrictFeatureMapKey,
   districtNumberForMarker,
-  districtStyleIndexByName,
-  paletteForDistrictRank,
 } from "@/app/lib/districtMapStyles";
-import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
+import { formatStateDistrictDisplay } from "@/app/reps/[zip]/helper";
 import { useEffect, useRef } from "react";
+import { loadGoogleMaps } from "./districtMapLoader";
+import {
+  attachDistrictLabel,
+  boundsCenterFromFeature,
+  type DistrictMapLabel,
+} from "./districtMapLabels";
+import {
+  buildSearchAreaOverlay,
+  fitMapToDistrictView,
+  fitMapToSearchArea,
+  isSearchAreaFeature,
+  resolveSearchAreaBounds,
+} from "./districtMapSearchArea";
 import styles from "./districtMap.module.scss";
+import {
+  buildFederalPartyColorByMapKey,
+  buildStateDistrictColorByMapKey,
+  districtPolygonStyle,
+  readPartyPalettes,
+  readStateDistrictColors,
+  searchAreaPolygonStyle,
+} from "./districtMapVisualConfig";
 
-type MapFallback = {
-  bounds?: Coordinates;
-  location?: { lat: number; lng: number };
-};
+type GovLevel = "federal" | "state";
+
+function districtLabelText(
+  level: GovLevel,
+  mapKey: string,
+  featureName: unknown,
+  rank: number,
+): string {
+  if (level === "state") {
+    const district = mapKey.split(":")[1];
+    if (district) return formatStateDistrictDisplay(district);
+  }
+  return districtNumberForMarker(featureName, rank);
+}
+
+function districtLabelClassName(level: GovLevel): string {
+  return level === "state"
+    ? `${styles.districtLabel} ${styles.districtLabelState}`
+    : styles.districtLabel;
+}
+
+function createDistrictLabelElement(
+  text: string,
+  className: string,
+  backgroundColor?: string,
+): HTMLDivElement {
+  const label = document.createElement("div");
+  label.className = className;
+  label.textContent = text;
+  if (backgroundColor) {
+    label.style.backgroundColor = backgroundColor;
+    label.style.color = "#ffffff";
+  }
+  return label;
+}
 
 type Props = {
-  /**
-   * Optional Google Cloud map ID. When set, district pins use {@link google.maps.marker.AdvancedMarkerElement}.
-   * When omitted, pins use legacy {@link google.maps.Marker} (no extra console setup).
-   */
-  mapId?: string;
+  searchZip?: string;
   districtGeoJson: DistrictMapFeatureCollection | null;
   mapFallback: MapFallback;
+  level?: GovLevel;
+  houseReps?: Rep[];
 };
 
 export default function DistrictMap({
-  mapId = "",
   districtGeoJson,
   mapFallback,
+  level = "federal",
+  houseReps = [],
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
@@ -40,36 +90,36 @@ export default function DistrictMap({
     ? JSON.stringify(districtGeoJson)
     : "";
   const fallbackKey = JSON.stringify(mapFallback);
+  const houseRepsKey = houseReps
+    .map((rep) => `${rep.district}:${rep.party}`)
+    .join("|");
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !apiKey) return;
 
     let cancelled = false;
-    const advancedMarkers: google.maps.marker.AdvancedMarkerElement[] =
-      [];
-    const legacyMarkers: google.maps.Marker[] = [];
-
-    setOptions({ key: apiKey, v: "weekly" });
+    const mapListeners: google.maps.MapsEventListener[] = [];
+    const labels: DistrictMapLabel[] = [];
 
     (async () => {
-      await importLibrary("maps");
+      await loadGoogleMaps(apiKey);
       if (cancelled || !containerRef.current) return;
 
-      const trimmedMapId = mapId.trim();
-      const mapOptions: google.maps.MapOptions = {
+      const map = new google.maps.Map(containerRef.current, {
         mapTypeControl: false,
         streetViewControl: false,
-        fullscreenControl: true,
+        fullscreenControl: false,
         disableDefaultUI: false,
-      };
-      if (trimmedMapId) {
-        mapOptions.mapId = trimmedMapId;
-      }
+        tilt: 0,
+        heading: 0,
+        rotateControl: false,
+      });
 
-      const map = new google.maps.Map(
-        containerRef.current,
-        mapOptions,
+      mapListeners.push(
+        map.addListener("tilt_changed", () => {
+          if (map.getTilt() !== 0) map.setTilt(0);
+        }),
       );
 
       const hasFeatures =
@@ -77,145 +127,116 @@ export default function DistrictMap({
         Array.isArray(districtGeoJson.features) &&
         districtGeoJson.features.length > 0;
 
+      const searchAreaBounds = resolveSearchAreaBounds(mapFallback);
+      const mapContainer = containerRef.current;
+      const searchAreaStyle = searchAreaPolygonStyle();
+
+      const applySearchAreaOverlay = () => {
+        if (!searchAreaBounds) return;
+        map.data.addGeoJson(buildSearchAreaOverlay(searchAreaBounds));
+      };
+
       if (hasFeatures) {
+        const stateDistrictColors = readStateDistrictColors(mapContainer);
+        const federalColorByMapKey =
+          level === "federal"
+            ? buildFederalPartyColorByMapKey(
+                districtGeoJson.features,
+                houseReps,
+                readPartyPalettes(mapContainer),
+              )
+            : null;
+        const stateColorByMapKey =
+          level === "state"
+            ? buildStateDistrictColorByMapKey(
+                districtGeoJson.features,
+                stateDistrictColors,
+              )
+            : null;
+
         map.data.addGeoJson(districtGeoJson);
-        const styleRank = districtStyleIndexByName(
-          districtGeoJson.features,
-        );
+        applySearchAreaOverlay();
 
         let keyIdx = 0;
+        let labelRank = 0;
+        const bounds = new google.maps.LatLngBounds();
+        const placedLabels = new Set<string>();
+
         map.data.forEach((feature) => {
-          const mapKey = districtFeatureName(
-            feature.getProperty("name"),
+          if (isSearchAreaFeature(feature)) return;
+
+          const mapKey = resolveDistrictFeatureMapKey(
+            {
+              name: feature.getProperty("name"),
+              mapKey: feature.getProperty("mapKey"),
+            },
             keyIdx,
+            level,
           );
           feature.setProperty("_mapKey", mapKey);
           keyIdx++;
-        });
 
-        map.data.setStyle((feature) => {
-          const mapKey = String(feature.getProperty("_mapKey") ?? "");
-          const rank = styleRank.has(mapKey)
-            ? styleRank.get(mapKey)!
-            : 0;
-          const { stroke, fill } = paletteForDistrictRank(rank);
-          return {
-            strokeColor: stroke,
-            strokeWeight: 2,
-            fillColor: fill,
-            fillOpacity: 0.22,
-          };
-        });
+          const featureName = feature.getProperty("name");
+          let polygonColor: string | undefined;
 
-        const bounds = new google.maps.LatLngBounds();
-        map.data.forEach((feature) => {
+          if (level === "federal" && federalColorByMapKey) {
+            polygonColor = federalColorByMapKey.get(mapKey);
+            if (polygonColor) {
+              feature.setProperty("_polygonColor", polygonColor);
+            }
+          } else if (stateColorByMapKey) {
+            polygonColor = stateColorByMapKey.get(mapKey);
+            if (polygonColor) {
+              feature.setProperty("_polygonColor", polygonColor);
+            }
+          }
+
           feature.getGeometry()?.forEachLatLng((latlng) => {
             bounds.extend(latlng);
           });
+
+          if (!mapKey || placedLabels.has(mapKey)) return;
+
+          const center = boundsCenterFromFeature(feature);
+          if (!center) return;
+
+          const rank = labelRank++;
+          const text = districtLabelText(level, mapKey, featureName, rank);
+
+          placedLabels.add(mapKey);
+          labels.push(
+            attachDistrictLabel(map, {
+              position: center,
+              content: createDistrictLabelElement(
+                text,
+                districtLabelClassName(level),
+                level === "federal" ? polygonColor : undefined,
+              ),
+              zIndex: 900 + rank,
+            }),
+          );
         });
 
-        if (trimmedMapId) {
-          const { AdvancedMarkerElement, PinElement } =
-            (await importLibrary(
-              "marker",
-            )) as google.maps.MarkerLibrary;
+        map.data.setStyle((feature) => {
+          if (isSearchAreaFeature(feature)) return searchAreaStyle;
 
-          const markerPlaced = new Set<string>();
-          map.data.forEach((feature) => {
-            const mapKey = String(
-              feature.getProperty("_mapKey") ?? "",
-            );
-            if (!mapKey || markerPlaced.has(mapKey)) return;
-            markerPlaced.add(mapKey);
+          const polygonColor = feature.getProperty("_polygonColor");
+          if (polygonColor) {
+            return districtPolygonStyle(String(polygonColor));
+          }
 
-            const fb = new google.maps.LatLngBounds();
-            feature.getGeometry()?.forEachLatLng((latlng) => {
-              fb.extend(latlng);
-            });
-            if (fb.isEmpty()) return;
-
-            const rank = styleRank.has(mapKey)
-              ? styleRank.get(mapKey)!
-              : 0;
-            const { stroke, fill } = paletteForDistrictRank(rank);
-            const labelNum = districtNumberForMarker(
-              feature.getProperty("name"),
-              rank,
-            );
-
-            const pin = new PinElement({
-              background: fill,
-              borderColor: stroke,
-              glyph: labelNum,
-              glyphColor: "#ffffff",
-              scale: 1.05,
-            });
-
-            const marker = new AdvancedMarkerElement({
-              map,
-              position: fb.getCenter(),
-              content: pin.element,
-              zIndex: 900 + rank,
-            });
-            advancedMarkers.push(marker);
-          });
-        } else {
-          const markerPlaced = new Set<string>();
-          map.data.forEach((feature) => {
-            const mapKey = String(
-              feature.getProperty("_mapKey") ?? "",
-            );
-            if (!mapKey || markerPlaced.has(mapKey)) return;
-            markerPlaced.add(mapKey);
-
-            const fb = new google.maps.LatLngBounds();
-            feature.getGeometry()?.forEachLatLng((latlng) => {
-              fb.extend(latlng);
-            });
-            if (fb.isEmpty()) return;
-
-            const rank = styleRank.has(mapKey)
-              ? styleRank.get(mapKey)!
-              : 0;
-            const { stroke, fill } = paletteForDistrictRank(rank);
-            const labelNum = districtNumberForMarker(
-              feature.getProperty("name"),
-              rank,
-            );
-
-            legacyMarkers.push(
-              new google.maps.Marker({
-                map,
-                position: fb.getCenter(),
-                zIndex: 900 + rank,
-                label: {
-                  text: labelNum,
-                  color: "#ffffff",
-                  fontSize: "11px",
-                  fontWeight: "bold",
-                },
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  scale: 15,
-                  fillColor: fill,
-                  fillOpacity: 1,
-                  strokeColor: stroke,
-                  strokeWeight: 2,
-                },
-              }),
-            );
-          });
-        }
+          return districtPolygonStyle("#888888");
+        });
 
         if (!bounds.isEmpty()) {
-          map.fitBounds(bounds, 28);
+          fitMapToDistrictView(map, bounds, searchAreaBounds);
         }
-      } else if (mapFallback.bounds) {
-        const b = new google.maps.LatLngBounds(
-          mapFallback.bounds.southwest,
-          mapFallback.bounds.northeast,
+      } else if (searchAreaBounds) {
+        applySearchAreaOverlay();
+        map.data.setStyle((feature) =>
+          isSearchAreaFeature(feature) ? searchAreaStyle : {},
         );
-        map.fitBounds(b, 28);
+        fitMapToSearchArea(map, searchAreaBounds);
       } else if (mapFallback.location) {
         map.setCenter(mapFallback.location);
         map.setZoom(11);
@@ -226,20 +247,15 @@ export default function DistrictMap({
 
     return () => {
       cancelled = true;
-      advancedMarkers.forEach((m) => {
-        m.map = null;
+      mapListeners.forEach((listener) => {
+        google.maps.event.removeListener(listener);
       });
-      legacyMarkers.forEach((m) => m.setMap(null));
+      labels.forEach((label) => {
+        label.setMap(null);
+      });
       el.replaceChildren();
     };
-  }, [
-    apiKey,
-    mapId,
-    geoKey,
-    fallbackKey,
-    districtGeoJson,
-    mapFallback,
-  ]);
+  }, [apiKey, geoKey, fallbackKey, level, houseRepsKey]);
 
   if (!apiKey) {
     return (

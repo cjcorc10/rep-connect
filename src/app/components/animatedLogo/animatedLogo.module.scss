@@ -1,0 +1,63 @@
+@use "../../styles/typography" as *;
+
+.logoContainer {
+  position: relative;
+  height: 100%;
+  overflow: visible;
+  .logoSVG {
+    height: 100%;
+    width: auto;
+    overflow: hidden;
+    pointer-events: none;
+    circle,
+    path {
+      stroke-width: 5;
+      stroke: var(--red-accent);
+    }
+    .cCircle {
+      stroke-dasharray: 65 35;
+      stroke-dashoffset: 30;
+    }
+    .rCircle {
+      stroke-dasharray: 23 77;
+      stroke-dashoffset: 50;
+    }
+    text {
+      fill: var(--red-accent);
+    }
+  }
+
+  .textContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+  .text {
+    @include header3;
+    font-size: 2rem;
+    line-height: 0;
+    font-weight: 500;
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    color: var(--red-accent);
+    &:first-child {
+      top: 18%;
+      left: 15%;
+    }
+    &:last-child {
+      top: 67%;
+      left: 28%;
+    }
+
+    .letterMask {
+      display: inline-block;
+      overflow: hidden;
+
+      .letter {
+        display: inline-block;
+      }
+    }
+  }
+}

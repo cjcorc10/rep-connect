@@ -1,14 +1,14 @@
-import type { FederalHouseColorsByDistrict } from "./districtMapStyles";
-import type { Rep, StateDistrict, StateLegislator } from "./definitions";
-import { districtsMatch } from "@/app/reps/[zip]/helper";
-import { buildRepImageApiUrl } from "./repImageUrl";
+import type {
+  Rep,
+  StateLegislator,
+} from "./definitions";
+import { buildFederalImageApiUrl } from "./repImageUrl";
 
 export type RepRosterRow = {
   id: string;
   shortName: string;
   fullName: string;
   imageUrl: string;
-  /** Federal: `/api/rep-image?…` for next/image src (proxied image). */
   portraitSrc?: string;
   portraitProxyOcdId?: string;
   phone?: string;
@@ -17,10 +17,11 @@ export type RepRosterRow = {
   district: string;
   termEndDisplay: string;
   termHighlightMidterm?: boolean;
-  districtColorFill?: string;
 };
 
-export function nextMidtermElectionYear(from: Date = new Date()): number {
+export function nextMidtermElectionYear(
+  from: Date = new Date(),
+): number {
   let y = from.getFullYear();
   for (;;) {
     while (y % 4 !== 2) y += 1;
@@ -52,10 +53,7 @@ export function shortNameFromFullName(fullName: string): string {
   return `${first[0]!}.${last}`;
 }
 
-export function repToRosterRow(
-  rep: Rep,
-  federalHouseColors?: FederalHouseColorsByDistrict,
-): RepRosterRow {
+export function repToRosterRow(rep: Rep): RepRosterRow {
   const chamber = rep.type === "sen" ? "Senate" : "House";
   const district = rep.type === "sen" ? rep.state : rep.district;
   const termEndDate = new Date(rep.end);
@@ -64,32 +62,26 @@ export function repToRosterRow(
     month: "numeric",
     day: "numeric",
   });
-  const dc =
-    rep.type === "sen"
-      ? undefined
-      : federalHouseColors?.[String(rep.district)];
 
   return {
     id: rep.bioguide_id,
     shortName: `${rep.first_name[0]}.${rep.last_name}`,
     fullName: rep.full_name,
     imageUrl: rep.image_url?.trim() ?? "",
-    portraitSrc: buildRepImageApiUrl(rep),
     phone: rep.phone?.trim() || undefined,
     chamber,
     district,
     termEndDisplay,
     termHighlightMidterm: termEndsAtNextMidterm(termEndDate),
-    districtColorFill: dc?.fill,
   };
 }
 
-export function buildFederalRosterRows(
-  repsData: { senateReps: Rep[]; houseReps: Rep[] },
-  federalHouseColors?: FederalHouseColorsByDistrict,
-): RepRosterRow[] {
+export function buildFederalRosterRows(repsData: {
+  senateReps: Rep[];
+  houseReps: Rep[];
+}): RepRosterRow[] {
   const reps = repsData.senateReps.concat(repsData.houseReps);
-  return reps.map((r) => repToRosterRow(r, federalHouseColors));
+  return reps.map((r) => repToRosterRow(r));
 }
 
 function chamberSortKey(k: string): number {
@@ -124,8 +116,6 @@ function formatOptionalTermEnd(isoDate?: string): string {
 
 export function stateLegislatorsToRosterRows(
   members: StateLegislator[],
-  alignedDistricts: StateDistrict[],
-  districtColorFillByMapKey: Map<string, string>,
 ): RepRosterRow[] {
   const sorted = [...members].sort((a, b) => {
     const ca = chamberSortKey(a.chamberKey);
@@ -135,15 +125,6 @@ export function stateLegislatorsToRosterRows(
   });
 
   return sorted.map((m) => {
-    const sd = alignedDistricts.find(
-      (d) =>
-        d.chamberKey === m.chamberKey &&
-        districtsMatch(d.district, m.district),
-    );
-    const fill = sd
-      ? districtColorFillByMapKey.get(sd.mapKey)
-      : undefined;
-
     return {
       id: `${m.id}-${m.chamberKey}-${m.district}`,
       shortName: shortNameFromFullName(m.full_name),
@@ -156,7 +137,14 @@ export function stateLegislatorsToRosterRows(
       district: formatStateDistrictDisplay(m.district),
       termEndDisplay: formatOptionalTermEnd(m.term_end),
       termHighlightMidterm: false,
-      districtColorFill: fill,
     };
   });
 }
+
+export const buildPortraitUrlMap = <T extends Rep | StateLegislator>(
+  reps: T[],
+  buildImageApiUrl: (rep: T) => string,
+  getKey: (rep: T) => string,
+): Map<string, string> => {
+  return new Map(reps.map((r) => [getKey(r), buildImageApiUrl(r)]));
+};

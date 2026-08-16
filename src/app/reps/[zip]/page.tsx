@@ -1,24 +1,14 @@
-import { Suspense, ViewTransition } from "react";
-import HeaderWrapper from "@/app/components/headerWrapper";
-import HeaderSkeleton from "../../skeletons/headerSkeleton";
-import RepsPageWrapper from "@/app/components/repsPageWrapper";
-import MapSkeleton from "@/app/skeletons/mapSkeleton";
+import { Suspense } from "react";
+import { AsyncPage } from "./asyncPage";
 
 type PageProps = {
   params: Promise<{ zip: string }>;
 };
 
-export default async function Page({ params }: PageProps) {
+export default function Page({ params }: PageProps) {
   return (
-    <ViewTransition>
-      <main>
-        <Suspense fallback={<HeaderSkeleton />}>
-          <HeaderWrapper params={params} />
-        </Suspense>
-        <Suspense fallback={<MapSkeleton />}>
-          <RepsPageWrapper params={params} />
-        </Suspense>
-      </main>
-    </ViewTransition>
+    <Suspense fallback={null}>
+      <AsyncPage params={params} />
+    </Suspense>
   );
 }

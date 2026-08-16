@@ -1,67 +1,54 @@
 "use client";
 
-import type { Rep, StateDistrict, StateLegislator } from "@/app/lib/definitions";
-import { paletteForDistrictRank } from "@/app/lib/districtMapStyles";
+import type { Legend } from "@/app/lib/definitions";
 import {
-  federalHouseLastName,
+  districtsMatch,
   formatStateDistrictDisplay,
-  stateLegislatorLastName,
 } from "@/app/reps/[zip]/helper";
+import { lookupFederalLegendFill } from "@/app/reps/[zip]/derivation";
 import styles from "./districtMapLegend.module.scss";
 
 type Swatch = { fill: string; stroke: string };
 
+const FALLBACK_SWATCH: Swatch = {
+  fill: "#888888",
+  stroke: "#888888",
+};
+
+function toSwatch(fill: string | undefined): Swatch {
+  if (!fill) return FALLBACK_SWATCH;
+  return { fill, stroke: fill };
+}
+
 function LegendEntry({
   swatch,
   primaryLabel,
-  lastName,
+  fullName,
 }: {
   swatch: Swatch;
   primaryLabel: string;
-  lastName: string | null;
+  fullName: string;
 }) {
   return (
     <li className={styles.legendItem}>
-      <span
-        className={styles.legendSwatch}
-        style={{
-          backgroundColor: swatch.fill,
-          borderColor: swatch.stroke,
-        }}
-        aria-hidden
-      />
-      <span className={styles.legendText}>
-        {primaryLabel}
-        {lastName ? (
-          <>
-            {" "}
-            <span className={styles.legendLastName}>{lastName}</span>
-          </>
-        ) : null}
-      </span>
+      <div className={styles.legendText}>
+        <div
+          className={styles.districtBadge}
+          style={{ background: swatch.fill }}
+        >
+          <span className={styles.districtNumber}>
+            {primaryLabel}
+          </span>
+        </div>{" "}
+        <span className={styles.legendName}>{fullName}</span>
+      </div>
     </li>
   );
 }
 
-export type DistrictMapLegendFederalSlice = {
-  districts: string[];
-  houseReps: Rep[];
-  districtRankByLabel: Map<string, number>;
-};
-
-export type DistrictMapLegendStateSlice = {
-  stateSenateDistricts: StateDistrict[];
-  stateHouseDistricts: StateDistrict[];
-  stateDistrictRankByMapKey: Map<string, number>;
-  stateLegislators: StateLegislator[];
-};
-
-export type DistrictMapLegendProps = {
-  level: "federal" | "state";
-  stateCode: string;
-  federal: DistrictMapLegendFederalSlice;
-  state: DistrictMapLegendStateSlice;
-};
+export type DistrictMapLegendFederalSlice = Legend["federal"];
+export type DistrictMapLegendStateSlice = Legend["state"];
+export type DistrictMapLegendProps = Legend;
 
 export default function DistrictMapLegend({
   level,
@@ -69,109 +56,96 @@ export default function DistrictMapLegend({
   federal,
   state: stateSlice,
 }: DistrictMapLegendProps) {
-  const {
-    districts,
-    houseReps,
-    districtRankByLabel,
-  } = federal;
+  const { districts, houseReps, districtColorFillByLabel } = federal;
   const {
     stateSenateDistricts,
     stateHouseDistricts,
-    stateDistrictRankByMapKey,
     stateLegislators,
+    districtColorFillByMapKey,
   } = stateSlice;
+
   return (
     <aside className={styles.legend} aria-label="District legend">
-      <h2 className={styles.legendTitle}>Districts</h2>
-
       {level === "federal" ? (
-        <>
-          <h3 className={styles.legendSubheader}>Federal</h3>
+        <div className={styles.legendContainer}>
+          <h3 className={styles.legendSubheader}>
+            House of Representatives
+          </h3>
           <ul className={styles.legendList}>
-            {districts.map((district, i) => {
-              const rank =
-                districtRankByLabel.get(String(district)) ?? i;
-              const color = paletteForDistrictRank(rank);
-              const last = federalHouseLastName(
-                houseReps,
-                String(district),
+            {districts.map((district) => {
+              const rep = houseReps.find((houseRep) =>
+                districtsMatch(
+                  String(houseRep.district),
+                  String(district),
+                ),
               );
+              if (!rep) return null;
+
+              const fill = lookupFederalLegendFill(
+                String(rep.district),
+                districtColorFillByLabel,
+              );
+              const fullName = rep.full_name;
               return (
                 <LegendEntry
-                  key={`${stateCode}-${district}-${i}`}
-                  swatch={color}
+                  key={`${stateCode}-${district}-${rep.bioguide_id}`}
+                  swatch={toSwatch(fill)}
                   primaryLabel={String(district)}
-                  lastName={last || null}
+                  fullName={fullName}
                 />
               );
             })}
           </ul>
-        </>
+        </div>
       ) : (
         <>
           {stateSenateDistricts.length > 0 ? (
-            <section
-              className={styles.legendChamber}
-              aria-label="State Senate districts"
-            >
-              <h3 className={styles.legendChamberTitle}>
-                State Senate
-              </h3>
+            <div className={styles.legendContainer}>
+              <h3 className={styles.legendSubheader}>Senate</h3>
               <ul className={styles.legendList}>
                 {stateSenateDistricts.map((d, i) => {
-                  const rank =
-                    stateDistrictRankByMapKey.get(d.mapKey) ?? i;
-                  const color = paletteForDistrictRank(rank);
-                  const last = stateLegislatorLastName(
-                    stateLegislators,
-                    "upper",
-                    d.district,
+                  const fill = districtColorFillByMapKey.get(
+                    d.mapKey,
                   );
+                  const fullName = stateLegislators[i].full_name;
                   return (
                     <LegendEntry
                       key={`${d.mapKey}-sen-${i}`}
-                      swatch={color}
+                      swatch={toSwatch(fill)}
                       primaryLabel={formatStateDistrictDisplay(
                         d.district,
                       )}
-                      lastName={last || null}
+                      fullName={fullName}
                     />
                   );
                 })}
               </ul>
-            </section>
+            </div>
           ) : null}
           {stateHouseDistricts.length > 0 ? (
-            <section
-              className={styles.legendChamber}
-              aria-label="State House districts"
-            >
-              <h3 className={styles.legendChamberTitle}>
-                State House
-              </h3>
+            <div className={styles.legendContainer}>
+              <h3 className={styles.legendSubheader}>House</h3>
               <ul className={styles.legendList}>
                 {stateHouseDistricts.map((d, i) => {
-                  const rank =
-                    stateDistrictRankByMapKey.get(d.mapKey) ?? i;
-                  const color = paletteForDistrictRank(rank);
-                  const last = stateLegislatorLastName(
-                    stateLegislators,
-                    "lower",
-                    d.district,
+                  const senateOffset = stateSenateDistricts.length;
+                  const fill = districtColorFillByMapKey.get(
+                    d.mapKey,
                   );
+                  const fullName =
+                    stateLegislators[senateOffset + i].full_name;
                   return (
                     <LegendEntry
                       key={`${d.mapKey}-house-${i}`}
-                      swatch={color}
+                      swatch={toSwatch(fill)}
                       primaryLabel={formatStateDistrictDisplay(
                         d.district,
                       )}
-                      lastName={last || null}
+                      fullName={fullName}
                     />
                   );
                 })}
               </ul>
-            </section>
+            </div>
           ) : null}
         </>
       )}

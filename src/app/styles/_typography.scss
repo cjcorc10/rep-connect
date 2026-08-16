@@ -1,45 +1,76 @@
-// Typography System Mixins
-// Uses CSS variables from globals.css - works with both .scss and .css
-// Usage: @include display-d1; or @include text-t1;
+// Typography mixins — sizes and weights live in globals.css.
+// Usage: @include header2; @include body1; @include micro3;
 
-@mixin display-d1 {
-  font-family: var(--typo-d1-font);
-  font-weight: var(--typo-d1-weight);
-  font-size: var(--typo-d1-size);
-  line-height: var(--typo-d1-line);
-  letter-spacing: var(--typo-d1-spacing);
+@mixin header1 {
+  font-family: var(--font-heading);
+  font-weight: var(--header1-weight);
+  font-size: var(--header1-size);
+  line-height: var(--header1-line);
+  letter-spacing: var(--header1-spacing);
 }
 
-@mixin display-d2 {
-  font-family: var(--typo-d2-font);
-  font-weight: var(--typo-d2-weight);
-  font-size: var(--typo-d2-size);
-  line-height: var(--typo-d2-line);
-  letter-spacing: var(--typo-d2-spacing);
+@mixin header2 {
+  font-family: var(--font-heading);
+  font-weight: var(--header2-weight);
+  font-size: var(--header2-size);
+  line-height: var(--header2-line);
+  letter-spacing: var(--header2-spacing);
 }
 
-@mixin display-d3 {
-  font-family: var(--typo-d3-font);
-  font-weight: var(--typo-d3-weight);
-  font-size: var(--typo-d3-size);
-  line-height: var(--typo-d3-line);
-  letter-spacing: var(--typo-d3-spacing);
+@mixin header3 {
+  font-family: var(--font-heading);
+  font-weight: var(--header3-weight);
+  font-size: var(--header3-size);
+  line-height: var(--header3-line);
+  letter-spacing: var(--header3-spacing);
 }
 
-@mixin text-t1 {
-  font-family: var(--typo-t1-font);
-  font-weight: var(--typo-t1-weight);
-  font-size: var(--typo-t1-size);
-  line-height: var(--typo-t1-line);
-  letter-spacing: var(--typo-t1-spacing);
+@mixin body1 {
+  font-family: var(--font-body);
+  font-weight: var(--body1-weight);
+  font-size: var(--body1-size);
+  line-height: var(--body1-line);
+  letter-spacing: var(--body1-spacing);
 }
 
-@mixin text-t2 {
-  font-family: var(--typo-t2-font);
-  font-weight: var(--typo-t2-weight);
-  font-size: var(--typo-t2-size);
-  line-height: var(--typo-t2-line);
-  letter-spacing: var(--typo-t2-spacing);
+@mixin body2 {
+  font-family: var(--font-body);
+  font-weight: var(--body2-weight);
+  font-size: var(--body2-size);
+  line-height: var(--body2-line);
+  letter-spacing: var(--body2-spacing);
+}
+
+@mixin body3 {
+  font-family: var(--font-body);
+  font-weight: var(--body3-weight);
+  font-size: var(--body3-size);
+  line-height: var(--body3-line);
+  letter-spacing: var(--body3-spacing);
+}
+
+@mixin micro1 {
+  font-family: var(--font-body);
+  font-weight: var(--micro1-weight);
+  font-size: var(--micro1-size);
+  line-height: var(--micro1-line);
+  letter-spacing: var(--micro1-spacing);
+}
+
+@mixin micro2 {
+  font-family: var(--font-body);
+  font-weight: var(--micro2-weight);
+  font-size: var(--micro2-size);
+  line-height: var(--micro2-line);
+  letter-spacing: var(--micro2-spacing);
+}
+
+@mixin micro3 {
+  font-family: var(--font-body);
+  font-weight: var(--micro3-weight);
+  font-size: var(--micro3-size);
+  line-height: var(--micro3-line);
+  letter-spacing: var(--micro3-spacing);
 }
 
 @mixin accent-indigo {

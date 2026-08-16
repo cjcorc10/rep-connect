@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
     localPatterns: [
       {
         pathname: "/api/rep-image",
-        // Omit `search` so any query params (bioguide_id, fallback, etc.) are allowed.
+        // Omit `search` so any query params (id, fallback, etc.) are allowed.
       },
       {
         pathname: "/api/state-legislator-portrait",

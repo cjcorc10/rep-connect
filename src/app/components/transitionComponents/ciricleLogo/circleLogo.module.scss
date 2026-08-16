@@ -1,0 +1,44 @@
+.main {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  .circle {
+    grid-area: 1 / 1;
+
+    margin: auto;
+    width: 70%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background-image: url("/images/redBg.webp");
+    background-size: cover;
+    z-index: 1000;
+  }
+  .svgContainer {
+    grid-area: 1 / 1;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: visible;
+    font-size: 0.3em;
+    font-weight: 700;
+    font-family: var(--font-heading);
+
+    .group {
+      transform-origin: center;
+      animation: rotate 2s linear infinite;
+    }
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,11 +1,63 @@
+import { GovLevel } from "../components/govLevelTabs/govLevelTabs";
+
 export type Coordinates = {
   northeast: { lat: number; lng: number };
   southwest: { lat: number; lng: number };
+};
+export type MapSection = {
+  districtGeoJson: DistrictGeoJson;
+  mapFallback: MapFallback;
+  level: GovLevel;
+  houseReps?: Rep[];
+};
+
+export type Refine = {
+  multipleDistricts: boolean;
+  onRefineSuccess: (next: RepsLocationPayload) => void;
+  refineByAddress: (address: string) => Promise<RepsByAddressPayload>;
+};
+
+/** Geocoded search area used to frame the district map. */
+export type MapFallback = {
+  bounds?: Coordinates;
+  location?: { lat: number; lng: number };
 };
 
 export type StateDistricts = {
   state: string;
   districts: string[];
+};
+
+/** GeoJSON subset serialized from server to the district map client. */
+export type DistrictMapFeatureCollection = {
+  type: "FeatureCollection";
+  features: DistrictMapFeature[];
+};
+
+export type DistrictMapFeature = {
+  type: "Feature";
+  properties: Record<string, unknown>;
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: unknown;
+  };
+};
+
+/** District geometry for the map (`null` when unavailable). */
+export type DistrictGeoJson = DistrictMapFeatureCollection | null;
+
+export type RepsByAddressPayload = {
+  state: string;
+  districts: string[];
+  houseReps: Rep[];
+  senateReps: Rep[];
+  stateLegislators: StateLegislator[];
+  stateError: string | undefined;
+  stateDistricts: StateDistrict[];
+  stateDistrictGeoJson: DistrictGeoJson;
+  cityStateLabel: string;
+  districtGeoJson: DistrictGeoJson;
+  mapFallback: MapFallback;
 };
 
 export type Rep = {
@@ -72,6 +124,29 @@ export type StateDistrict = {
   mapKey: string;
 };
 
+export type LegendFederalSlice = {
+  districts: string[];
+  houseReps: Rep[];
+  districtRankByLabel: Map<string, number>;
+  districtColorFillByLabel: Map<string, string>;
+};
+
+export type LegendStateSlice = {
+  stateSenateDistricts: StateDistrict[];
+  stateHouseDistricts: StateDistrict[];
+  stateDistrictRankByMapKey: Map<string, number>;
+  stateLegislators: StateLegislator[];
+  districtColorFillByMapKey: Map<string, string>;
+};
+
+/** Props for the district map legend (federal + state slices). */
+export type Legend = {
+  level: GovLevel;
+  stateCode: string;
+  federal: LegendFederalSlice;
+  state: LegendStateSlice;
+};
+
 export type RepsData = {
   state: string;
   districts: string[];
@@ -82,37 +157,15 @@ export type RepsData = {
   /** State legislative district labels for legend rendering. */
   stateDistricts: StateDistrict[];
   /** Combined upper/lower district geometry for state mode map. */
-  stateDistrictGeoJson: DistrictMapFeatureCollection | null;
-};
-
-/** GeoJSON subset serialized from server to the district map client. */
-export type DistrictMapFeatureCollection = {
-  type: "FeatureCollection";
-  features: DistrictMapFeature[];
-};
-
-export type DistrictMapFeature = {
-  type: "Feature";
-  properties: Record<string, unknown>;
-  geometry: {
-    type: "Polygon" | "MultiPolygon";
-    coordinates: unknown;
-  };
+  stateDistrictGeoJson: DistrictGeoJson;
 };
 
 /** Districts and reps from the geocoded area (no display label — that is built separately). */
 export type RepsLocationPayload = {
   data: RepsData;
-  districtGeoJson: DistrictMapFeatureCollection | null;
-  mapFallback: {
-    bounds?: Coordinates;
-    location?: { lat: number; lng: number };
-  };
-};
-
-export type RepsByAddressPayload = RepsLocationPayload & {
-  /** City and state only; ZIP comes from the route param, not this string. */
+  districtGeoJson: DistrictGeoJson;
   cityStateLabel: string;
+  mapFallback: MapFallback;
 };
 
 // two letter state codes for FIPS codes
