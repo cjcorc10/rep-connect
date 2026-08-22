@@ -13,13 +13,15 @@ export const Logo = ({ variant = "hero" }: LogoProps) => {
       className={`${styles.logo} ${variant === "header" ? styles.header : ""}`}
       data-animate="logo"
     >
-      <div className={styles.logoText}>
+      <div className={styles.logoText} data-animate="logo-text-1">
         <MaskedText text={logoText1} name="logo" />
       </div>
-      <div className={styles.logoText}>
+      <div className={styles.circleSlot}>
+        <div className={styles.circle} data-animate="logo-circle" />
+      </div>
+      <div className={styles.logoText} data-animate="logo-text-2">
         <MaskedText text={logoText2} name="logo" />
       </div>
-      <div className={styles.circle} data-animate="logo-circle" />
     </div>
   );
 };

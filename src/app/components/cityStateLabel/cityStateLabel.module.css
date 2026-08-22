@@ -1,9 +1,7 @@
 .container {
-  --city-pad-y: clamp(1.4rem, 1.8vw, 1.75rem);
-  --city-pad-x: clamp(0.5rem, 2.2vw, 1rem);
-  --city-title-size: clamp(1.3rem, 2.2vw + 0.55rem, 1.5rem);
-
-  font-family: var(--font-body);
+  font-family: var(--font-heading);
+  font-weight: var(--header2-weight);
+  text-transform: uppercase;
   width: 100%;
   display: flex;
   justify-content: flex-end;

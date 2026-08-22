@@ -1,3 +1,12 @@
+@use "../../styles/typography" as *;
+
+.rosterTitle {
+  @include header2;
+  font-weight: var(--header2-weight);
+  line-height: 0.5;
+  color: var(--blue-accent);
+  padding-left: 12px;
+}
 .roster {
   width: 100vw;
   position: relative;
@@ -37,6 +46,7 @@
       92%,
     var(--blue-secondary) 100%
   );
+
   .rosterColumnHeader {
     display: flex;
     width: 100%;
@@ -85,7 +95,7 @@
 
 .rosterRow {
   display: flex;
-  padding: 8rem 2rem;
+  padding: 2rem 2rem;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
@@ -206,19 +216,21 @@
       .imageBackground {
         grid-area: 1/1;
         width: clamp(21rem, 16vw, 16rem);
-        border-radius: 2rem;
         aspect-ratio: 1/1;
         background: #252525;
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+        clip-path: inset(0 0 50% 0);
       }
       .profileImage {
-        position: relative;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         grid-area: 1/1;
         width: clamp(20rem, 15vw, 15rem);
         aspect-ratio: 1/1;
-        background: #fff;
-        border-radius: 2rem;
         overflow: hidden;
+        clip-path: inset(0 0 50% 0);
       }
     }
     .personalInfo {

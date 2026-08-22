@@ -103,3 +103,15 @@ const MaskedText = ({
     </div>
   );
 };
+
+const AboutLogo = () => {
+  const text1 = "ab";
+  const text2 = "ut";
+  return (
+    <div className={styles.aboutLogo}>
+      <span className={styles.aboutLogoText1}>{text1}</span>
+      <div className={styles.aboutLogoDot} />
+      <span className={styles.aboutLogoText2}>{text2}</span>
+    </div>
+  );
+};

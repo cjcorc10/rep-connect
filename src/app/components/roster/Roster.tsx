@@ -5,13 +5,10 @@ import { useState } from "react";
 import { Carousel } from "../Carousel/carousel";
 import { AnimatePresence } from "framer-motion";
 import { Accordion } from "radix-ui";
-import { useRepStore } from "@/app/store/useRepStore";
 import { AccordionContent } from "../accordion/accordionContent";
 import { AccordionTrigger } from "../accordion/accordionTrigger";
 import { RosterColumnHeader } from "./rosterColumnHeader";
 import { RosterRow } from "./rosterRow";
-import { prefetchWikipedia } from "@/app/hooks/useWikipedia";
-import { Rep } from "@/app/lib/definitions";
 import { useFollowPointer } from "@/app/hooks/useFollowPointer";
 import { CursorIndicator } from "../Carousel/cursorIndicator";
 import { CursorText } from "../Carousel/cursorText";
@@ -33,6 +30,9 @@ export const Roster = ({ rows, repMap, isFederal }: RosterProps) => {
 
   return (
     <>
+      <div className={styles.rosterTitle}>
+        <h2>Representatives</h2>
+      </div>
       <Accordion.Root
         value={openItem}
         onValueChange={setOpenItem}
@@ -75,15 +75,7 @@ export const Roster = ({ rows, repMap, isFederal }: RosterProps) => {
                   e.preventDefault();
                   window.open(row.externalUrl, "_blank");
                 }}
-                onMouseEnter={() => {
-                  setHoveredIndex(index);
-                  if (isFederal) {
-                    const rep = useRepStore
-                      .getState()
-                      .getRep(row.id) as Rep;
-                    prefetchWikipedia(rep.wikipedia_id);
-                  }
-                }}
+                onMouseEnter={() => setHoveredIndex(index)}
               >
                 <RosterRow row={row} isFederal={isFederal} />
               </AccordionTrigger>

@@ -34,15 +34,15 @@ export default function RepsPageClient({
   return (
     <main>
       <div className={styles.resultsContainer}>
+        <div className={styles.govLevelTabsContainer}>
+          <GovLevelTabs
+            currentLevel={activeLevel}
+            onChange={setActiveLevel}
+          />
+        </div>
         <FadeupContainer delay={1}>
-          <div className={styles.govLevelTabsContainer}>
-            <GovLevelTabs
-              currentLevel={activeLevel}
-              onChange={setActiveLevel}
-            />
-          </div>
           <div className={styles.header}>
-            <h1>Search Results...</h1>
+            <h1>District search results...</h1>
           </div>
         </FadeupContainer>
 
@@ -59,7 +59,6 @@ export default function RepsPageClient({
           />
         </FadeupContainer>
       </div>
-
       <RepsPanel isFederal={activeLevel === "federal"} {...panel} />
     </main>
   );
@@ -78,6 +77,11 @@ const FadeupContainer = ({
     initial: { opacity: 0, y: 10 },
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: 10 },
+  };
+  const slideVariants = {
+    initial: { y: "100%" },
+    animate: { y: 0 },
+    exit: { y: "100%" },
   };
   return (
     <motion.div

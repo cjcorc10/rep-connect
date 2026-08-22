@@ -7,9 +7,10 @@
   width: fit-content;
   color: color-mix(in srgb, var(--background-color) 35%, #000000 75%);
   text-transform: uppercase;
-  @include body1;
+  @include header2;
   line-height: 1;
   font-size: 1rem;
+  font-weight: var(--header2-weight);
   background-color: color-mix(
     in srgb,
     var(--background-color) 86%,

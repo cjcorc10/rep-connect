@@ -1,30 +1,23 @@
 .logo {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  grid-template-columns: min-content 0 min-content;
   column-gap: 0em;
   font-size: inherit;
   overflow: hidden;
   height: fit-content;
   transform-origin: top center;
+  width: 100%;
 
   .logoText {
     display: inline-block;
     text-transform: uppercase;
     font-family: var(--font-heading);
-    font-weight: 700;
+    font-weight: var(--header2-weight);
     white-space: nowrap;
     mix-blend-mode: difference;
     color: white;
-
-    &:nth-child(1) {
-      justify-self: end;
-      align-self: start;
-    }
-    &:nth-child(2) {
-      justify-self: start;
-      align-self: start;
-    }
 
     .logoChar {
       display: inline-block;
@@ -36,39 +29,63 @@
     transform: translateY(150%);
   }
 
+  .circleSlot {
+    flex: none;
+    width: 0;
+    position: relative;
+    overflow: visible;
+  }
+
   .circle {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-image: url("/images/redBg.webp");
-    aspect-ratio: 1/1;
+    top: 0;
+    left: 0;
     height: 100%;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background-image: url("/images/redBg.webp");
     background-position: center;
+    background-size: cover;
     clip-path: circle(0em at 50% 50%);
   }
 }
 
 .header {
   overflow: visible;
-  transition: column-gap 0.3s 0.15s ease-out;
 
   .logoText {
     mix-blend-mode: normal;
     color: var(--primary-color);
+  }
+  .logoText:first-child {
+    transition: transform 0.3s 0.15s
+      cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  .logoText:last-child {
+    transition: transform 0.3s 0.15s
+      cubic-bezier(0.215, 0.61, 0.355, 1);
   }
 
   [data-animate="logo-char-container"] {
     overflow: visible;
     transform: none;
   }
+
   .circle {
-    transition: clip-path 0.3s 0.2s ease-out;
+    transition: clip-path 0.3s 0.2s
+      cubic-bezier(0.215, 0.61, 0.355, 1);
   }
-  &:hover .circle {
-    clip-path: circle(0.4em at 50% 50%);
-  }
+
   &:hover {
-    column-gap: 1em;
+    .logoText:first-child {
+      transform: translateX(-0.75em);
+    }
+    .logoText:last-child {
+      transform: translateX(0.75em);
+    }
+
+    .circle {
+      clip-path: circle(0.4em at 50% 50%);
+    }
   }
 }

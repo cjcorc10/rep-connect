@@ -20,8 +20,8 @@ export const ResultsSection = ({
 }) => {
   return (
     <div className={styles.mapSectionContainer}>
+      <h1 className={styles.title}>Districts</h1>
       <section className={styles.districtSection}>
-        <h1 className={styles.title}>Districts</h1>
         {refine && (
           <p className={styles.districtDescription}>
             Multiple districts returned for you zip code. Find your

@@ -79,16 +79,40 @@ export const RowDetail = ({
         style={isMobile ? undefined : { y }}
         className={styles.ImageContainer}
       >
-        <div className={styles.imageBackground} />
+        <motion.div
+          initial={{ clipPath: "inset(0 0 100% 0)" }}
+          animate={{ clipPath: "inset(0 0 0% 0)" }}
+          transition={{
+            duration: 0.6,
+            delay: 0.25,
+            ease: "easeOut",
+          }}
+          className={styles.imageBackground}
+        />
 
-        <div className={styles.profileImage}>
+        <motion.div
+          initial={{
+            clipPath: "inset(0 0 100% 0)",
+            filter: "blur(10px)",
+          }}
+          animate={{
+            clipPath: "inset(0 0 0% 0)",
+            filter: "blur(0px)",
+          }}
+          transition={{
+            duration: 0.6,
+            delay: 0.26,
+            ease: "easeOut",
+          }}
+          className={styles.profileImage}
+        >
           <Image
             src={imageUrl ?? ""}
             alt={rep.full_name}
             fill
             style={{ objectFit: "cover" }}
           />
-        </div>
+        </motion.div>
       </motion.div>
       <section className={styles.personalInfo}>
         <MaskText delay={0.15} direction="down">
