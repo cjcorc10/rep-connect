@@ -14,7 +14,7 @@
 
   /* Header scale (Archivo) */
   --header1-weight: 700;
-  --header1-size: clamp(5rem, 10vw, 12.5rem);
+  --header1-size: clamp(6rem, 15vw, 12.5rem);
   --header1-line: 0.75;
   --header1-spacing: -0.05em;
 

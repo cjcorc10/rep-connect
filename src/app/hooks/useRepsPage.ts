@@ -166,6 +166,10 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
       ...federalPortraitUrlMap.values(),
       ...statePortraitUrlMap.values(),
     ],
+    prefetchWikipediaIds: view.data.senateReps
+      .concat(view.data.houseReps)
+      .map((rep) => rep.wikipedia_id)
+      .filter((id): id is string => Boolean(id)),
   };
 
   const refine = {

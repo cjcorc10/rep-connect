@@ -1,17 +1,19 @@
 @use "../../styles/typography" as *;
 
 .govLevelTabsContainer {
-  position: absolute;
+  position: fixed;
+  top: 4rem;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 1000;
 }
 .resultsContainer {
-  padding: 5rem 12px 12px 12px;
   display: flex;
   flex-direction: column;
   .sectionWrapper {
-    padding: 12px 0;
-    border-bottom: 1px solid #252525;
+    padding: 24px 0;
+    margin: 0 24px;
+    border-top: 1px solid #252525;
 
     &:last-child {
       flex: 1 1 auto;
@@ -20,12 +22,15 @@
 
   .header {
     @include header2;
-    font-size: clamp(2.5rem, 5vw, 6rem);
+    font-size: clamp(2.5rem, 5vw, 5rem);
     width: 100%;
     color: var(--primary-color);
     height: clamp(6rem, 12vw, 10rem);
     display: flex;
-    align-items: end;
+
+    @media (max-width: 768px) {
+      align-items: end;
+    }
   }
 
   .resultsHeader {
@@ -40,50 +45,54 @@
   }
   .mapSectionContainer {
     position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-rows: min-content 1fr;
+    grid-template-areas: "title map" "district map";
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      grid-template-areas: "title" "map" "district";
+    }
+    .title {
+      grid-area: title;
+      align-self: start;
+      height: fit-content;
+      margin: 0;
+      @include header1;
+      color: var(--red-accent);
+      margin-left: -0.07em;
+    }
     .districtSection {
-      flex: 3;
+      padding-top: 12px;
+      grid-area: district;
+      align-self: start;
       display: flex;
       flex-direction: column;
       justify-content: start;
-      padding-top: 1rem;
-      gap: 1rem;
       color: #35281d;
-      height: clamp(25rem, 25vw, 30rem);
-      .title {
-        position: relative;
-        @include header1;
-        color: var(--red-accent);
+      gap: 12px;
 
-        padding-top: 1rem;
-        @media (max-height: 768px) and (max-width: 768px) {
-          display: none;
-        }
-      }
-      @media (max-width: 768px) {
-        flex: 0;
-      }
       .districtDescription {
         color: #35281d;
-        padding: 12px 12px 0 12px;
+        // padding: 12px 12px 0 12px;
       }
     }
-    @media (max-width: 768px) {
-      flex-direction: column-reverse;
-    }
     .mapSection {
-      flex: 2;
+      grid-area: map;
       display: flex;
-      flex-direction: column;
       justify-content: center;
-      width: 100%;
-      align-items: center;
+      align-items: stretch;
+      min-height: clamp(28rem, 30vh, 32rem);
+
+      @media (max-width: 768px) {
+        padding-top: 1rem;
+        min-height: clamp(20rem, 55vw, 28rem);
+      }
 
       .mapContainer {
         width: 100%;
-        height: clamp(25rem, 25vw, 30rem);
         display: flex;
         flex-direction: column;
         background-color: color-mix(
@@ -113,54 +122,4 @@
       }
     }
   }
-}
-
-.logo {
-  aspect-ratio: 1;
-  @include header3;
-  font-size: 8rem;
-  &:nth-child(2) {
-    position: relative;
-    left: 6px;
-  }
-}
-
-.logoContainer {
-  height: 2rem;
-  aspect-ratio: 1;
-  position: relative;
-
-  .leftLogo,
-  .rightLogo {
-    height: 4rem;
-    aspect-ratio: 1;
-    display: flex;
-  }
-}
-
-.text {
-  @include header3;
-  font-size: 56px;
-  font-weight: 400;
-  line-height: 0.4;
-  position: relative;
-  left: -1;
-}
-
-.letterR {
-  position: relative;
-  display: inline-block;
-  z-index: 100;
-}
-
-.letterC {
-  position: relative;
-}
-
-.letterC,
-.letterR {
-  height: 2rem;
-  transform-origin: center;
-  transform-box: fill-box;
-  // animation: rotate 2s linear infinite;
 }

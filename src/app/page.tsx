@@ -82,9 +82,20 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
           },
         ),
         animate(
-          "[data-animate='logo']",
+          "[data-animate='logo-text-1']",
           {
-            columnGap: ["0em", "2em", "2em"],
+            x: ["0em", "-1em", "-1em"],
+          },
+          {
+            ease: "easeOut",
+            duration: 0.6,
+            delay: 0.4,
+          },
+        ),
+        animate(
+          "[data-animate='logo-text-2']",
+          {
+            x: ["0em", "1em", "1em"],
           },
           {
             ease: "easeOut",
@@ -95,9 +106,28 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
       ]);
       await Promise.all([
         animate(
+          "[data-animate='logo-text-1']",
+          {
+            x: "-0.75em",
+          },
+          {
+            ease: "easeOut",
+            duration: 0.3,
+          },
+        ),
+        animate(
+          "[data-animate='logo-text-2']",
+          {
+            x: "0.75em",
+          },
+          {
+            ease: "easeOut",
+            duration: 0.3,
+          },
+        ),
+        animate(
           "[data-animate='logo']",
           {
-            columnGap: "1.5em",
             scale: 0.4,
           },
           {
