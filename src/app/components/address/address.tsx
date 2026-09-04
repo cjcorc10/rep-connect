@@ -2,23 +2,32 @@
 import styles from "./address.module.css";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
-export default function Address({ address }: { address: string }) {
-  const [value, setValue] = useState(address);
-  const [editing, setEditing] = useState(false);
+type AddressProps = {
+  address: string;
+  open?: boolean;
+};
+
+export default function Address({
+  address,
+  open = true,
+}: AddressProps) {
+  const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (editing && inputRef.current) {
+    if (open && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [editing]);
+  }, [open]);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setEditing(false);
-    router.push(`/reps/${value}`);
+    if (!open) return;
+    if (!value.trim()) return;
+    router.push(`/reps/${value.trim()}`);
   };
 
   return (
@@ -29,10 +38,17 @@ export default function Address({ address }: { address: string }) {
             <input
               ref={inputRef}
               className={styles.addressTitle}
-              onClick={() => setEditing(true)}
               value={value}
               onChange={(e) => setValue(e.currentTarget.value)}
+              aria-label="ZIP code"
             />
+            <button
+              type="submit"
+              className={styles.searchButton}
+              aria-label="Search"
+            >
+              <MagnifyingGlassIcon className={styles.searchIcon} />
+            </button>
           </div>
         </form>
       </div>

@@ -1,17 +1,11 @@
 .addressContainer {
-  --addr-pad-y: clamp(0.7rem, 1.8vw, 0.75rem);
-  --addr-pad-x: clamp(0.5rem, 2.2vw, 1rem);
-  --addr-label-size: clamp(0.5rem, 2.2vw + 0.55rem, 1.5rem);
-  --addr-zip-size: clamp(1.25rem, 8vw + 1.25rem, 5rem);
-
-  min-width: 0;
-  width: 100%;
-
-  color: var(--red-accent);
+  position: relative;
+  width: clamp(12rem, 75vw, 25rem);
+  color: var(--dark-accent);
 
   transition: padding 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
-  align-items: start;
+  align-items: end;
 
   @media (max-width: 768px) {
     justify-content: flex-end;
@@ -19,35 +13,72 @@
 }
 
 .addressContent {
+  width: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .form {
-  display: flex;
-  width: fit-content;
-  background: var(--primary-color);
-  border-radius: 999rem;
+  width: 100%;
+  background: white;
+  border: 1px solid hsl(51, 35%, 70%);
+  border-radius: 0 999rem 999rem 0;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
 .inputWrapper {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .addressTitle {
+  flex: 3 1 auto;
+  min-width: 0;
   font-style: italic;
-  text-align: center;
+  text-align: left;
   font-weight: 500;
-  font-size: var(--header2-size);
-  letter-spacing: clamp(0.06em, 0.6vw + 0.02em, 0.3em);
-  width: clamp(16rem, 30vw, 26rem);
   font-family: var(--font-heading);
-
+  margin: 0.5rem 0.25rem 0.5rem 1rem;
   outline: none;
+  /* background: hsl(71, 35%, 90%); */
+  border-bottom: 1px solid var(--dark-accent);
 
   transition:
     font-size 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     letter-spacing 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.searchButton {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
+  cursor: pointer;
+  color: #f0f0f0;
+}
+
+.searchIcon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.refineLabel {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(0.75rem, 1.8vw, 1rem);
+  color: var(--dark-accent);
+  text-transform: uppercase;
+  padding: 0 1rem;
+}
+
+.refineError {
+  margin: 0.35rem 0 0 2rem;
+  font-size: 0.85rem;
+  color: #b42318;
+  max-width: 14rem;
 }

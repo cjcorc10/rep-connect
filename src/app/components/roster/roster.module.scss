@@ -1,63 +1,71 @@
 @use "../../styles/typography" as *;
 
-.rosterTitle {
-  @include header2;
-  font-weight: var(--header2-weight);
-  line-height: 0.5;
-  color: var(--blue-accent);
-  padding-left: 12px;
+.rosterHeader {
+  padding: 48px 24px;
+  color: var(--dark-accent);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 2rem;
+
+  .rosterTitle {
+    @include header1;
+    color: var(--blue-accent);
+    grid-column: 1;
+    grid-row: 1;
+    @media (max-width: 768px) {
+      @include header2;
+    }
+  }
+  .rosterDescription {
+    @include body1;
+    grid-column: 2;
+    grid-row: span 2;
+    padding: 2rem 0;
+    @media (max-width: 768px) {
+      grid-column: span 2;
+      grid-row: 2;
+    }
+  }
+  .arrowDownIcon {
+    grid-column: span 2;
+    grid-row: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: bounce 1s infinite alternate;
+  }
+  .rosterTitleLine {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 48px);
+    height: 1px;
+    background: var(--dark-accent);
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
 }
 .roster {
   width: 100vw;
   position: relative;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--blue-accent) 72%, white 18%) 0%,
-    var(--blue-accent) 16%,
-    color-mix(
-        in srgb,
-        var(--blue-secondary) 12%,
-        var(--blue-accent) 88%
-      )
-      32%,
-    color-mix(
-        in srgb,
-        var(--blue-secondary) 35%,
-        var(--blue-accent) 65%
-      )
-      48%,
-    color-mix(
-        in srgb,
-        var(--blue-secondary) 58%,
-        var(--blue-accent) 42%
-      )
-      64%,
-    color-mix(
-        in srgb,
-        var(--blue-secondary) 78%,
-        var(--blue-accent) 22%
-      )
-      80%,
-    color-mix(
-        in srgb,
-        var(--blue-secondary) 92%,
-        var(--blue-accent) 8%
-      )
-      92%,
-    var(--blue-secondary) 100%
-  );
+  background: var(--blue-accent);
 
   .rosterColumnHeader {
     display: flex;
-    width: 100%;
+    @include header3;
     padding: 1rem 2rem;
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    color: rgba(255, 255, 255);
-    background-color: var(--blue-accent);
-    justify-content: space-between;
-    font-family: var(--font-heading);
-    font-weight: 700;
+    color: #000;
+    background-color: var(--background-color);
     text-transform: uppercase;
 
     .mobileColumnGroup {
@@ -94,12 +102,22 @@
 }
 
 .rosterRow {
-  display: flex;
-  padding: 2rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  position: relative;
+  padding: 2rem;
   align-items: center;
-  justify-content: space-between;
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  .underLine {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 48px);
+    height: 1px;
+    background: var(--dark-accent);
+  }
 
   @media (min-width: 768px) {
     &:hover > .repName {
@@ -113,20 +131,20 @@
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    justify-content: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     gap: 1rem;
     padding: 1rem 1rem;
   }
 
   .repName {
-    color: var(--background-color);
     width: 100%;
+    color: var(--dark-accent);
     font-family: var(--font-heading);
     font-style: italic;
+    @include header2;
     font-weight: 1000;
     letter-spacing: -0.07em;
-    font-size: clamp(3.7rem, 7vw, 6.4rem);
     line-height: 1;
     text-transform: uppercase;
     white-space: nowrap;
@@ -139,26 +157,22 @@
       opacity 0.3s ease;
   }
   .keyGroup {
-    display: flex;
-    gap: 0.2rem;
-    color: white;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    color: var(--dark-accent);
     width: clamp(20rem, 35vw, 35rem);
     transition:
       transform 0.3s ease,
       opacity 0.3s ease;
+    .termEnding {
+      color: var(--red-accent);
+      background: var(--primary-color);
+    }
     .rosterColumnValue {
-      font-size: clamp(1.4rem, 2vw, 2.4rem);
+      font-size: clamp(1.4rem, 2vw, 2rem);
       font-weight: 700;
-      font-family: var(--font-heading);
       text-align: center;
       width: 100%;
-      border: 1px rgba(255, 255, 255, 0.5) solid;
-      border-radius: 9999rem;
-      padding: 0.1rem 0;
-
-      &:nth-child(even) {
-        border-radius: 0;
-      }
     }
     @media (max-width: 768px) {
       display: none;
@@ -171,11 +185,11 @@
     gap: 0.5rem;
     .mobileColumnValue {
       font-size: clamp(1.4rem, 4vw, 3rem);
-      color: white;
+      color: var(--background-color);
       border-radius: 9999rem;
       font-weight: 700;
       font-family: var(--font-heading);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: var(--primary-color);
       padding: 1rem;
       width: 100%;
 

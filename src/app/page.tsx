@@ -5,11 +5,10 @@ import SearchForm from "./components/searchForm/searchForm";
 import { useAnimate } from "framer-motion";
 import { usePageEntrance } from "./hooks/usePageEntrance";
 import { useEffect } from "react";
-import { Logo } from "./components/logo/logo";
-import { MaskText } from "./components/maskText/maskText";
 import { Wipe } from "./components/transitionComponents/wipe/wipe";
 import Header from "./components/header/header";
 import { type Phase } from "./store/usePageTransition";
+import { Logo2 } from "./components/logo/logo2";
 
 export default function Home() {
   const { phase, transitionId } = usePageEntrance();
@@ -25,6 +24,20 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
   const middleIndex = Math.floor(charsCount / 2);
 
   const [scope, animate] = useAnimate();
+  const pullBackTransition = {
+    type: "spring",
+    stiffness: 75,
+    damping: 15,
+  };
+  const pullBackTransition2 = {
+    ease: "easeOut",
+    duration: 1.2,
+  };
+  const releaseTransition = {
+    type: "spring",
+    stiffness: 500,
+    damping: 20,
+  };
 
   useEffect(() => {
     if (phase !== "idle") return;
@@ -33,18 +46,28 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
     (async () => {
       await Promise.all([
         animate(
-          "[data-animate='about-char']",
+          "[data-animate='logo-char-container']",
           {
-            x: "-100%",
+            y: "150%",
           },
           {
             duration: 0,
           },
         ),
         animate(
-          "[data-animate='logo-char-container']",
+          "[data-animate='hero-container']",
           {
-            y: "150%",
+            y: "100%",
+            flex: "0 0 0",
+          },
+          {
+            duration: 0,
+          },
+        ),
+        animate(
+          "[data-animate='background']",
+          {
+            flex: "1 1 100%",
           },
           {
             duration: 0,
@@ -67,52 +90,23 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
 
       await Promise.all([
         animate(
-          "[data-animate='logo-circle']",
+          "[data-animate='logo-background'] ",
           {
-            clipPath: [
-              "circle(0 at 50% 50%)",
-              "circle(0.5em at 50% 50%)",
-              "circle(0.5em at 50% 50%)",
-            ],
+            clipPath: ["inset(50% 50% 50% 50%)", "inset(46% 43%)"],
           },
           {
-            ease: "easeOut",
-            duration: 0.6,
-            delay: 0.5,
+            delay: 0.55,
+            ...pullBackTransition,
           },
         ),
-        animate(
-          "[data-animate='logo-text-1']",
-          {
-            x: ["0em", "-1em", "-1em"],
-          },
-          {
-            ease: "easeOut",
-            duration: 0.6,
-            delay: 0.4,
-          },
-        ),
-        animate(
-          "[data-animate='logo-text-2']",
-          {
-            x: ["0em", "1em", "1em"],
-          },
-          {
-            ease: "easeOut",
-            duration: 0.6,
-            delay: 0.4,
-          },
-        ),
-      ]);
-      await Promise.all([
         animate(
           "[data-animate='logo-text-1']",
           {
             x: "-0.75em",
           },
           {
-            ease: "easeOut",
-            duration: 0.3,
+            delay: 0.4,
+            ...pullBackTransition,
           },
         ),
         animate(
@@ -121,14 +115,86 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
             x: "0.75em",
           },
           {
-            ease: "easeOut",
-            duration: 0.3,
+            delay: 0.4,
+            ...pullBackTransition,
+          },
+        ),
+      ]);
+      await Promise.all([
+        animate(
+          "[data-animate='logo-text-1']",
+          {
+            x: "-0.4em",
+          },
+          {
+            ...pullBackTransition2,
           },
         ),
         animate(
+          "[data-animate='logo-text-2']",
+          {
+            x: "0.4em",
+          },
+          {
+            ...pullBackTransition2,
+          },
+        ),
+        animate(
+          "[data-animate='logo-background']",
+          {
+            clipPath: "inset(43% 43%)",
+          },
+          {
+            delay: 0.1,
+            ...pullBackTransition2,
+          },
+        ),
+      ]);
+      await Promise.all([
+        animate(
+          "[data-animate='logo-text-1']",
+          {
+            x: "0em",
+          },
+          {
+            ...releaseTransition,
+          },
+        ),
+        animate(
+          "[data-animate='logo-text-2']",
+          {
+            x: "0em",
+          },
+          {
+            ...releaseTransition,
+          },
+        ),
+        animate(
+          "[data-animate='logo-background']",
+          {
+            clipPath: "inset(0% 0%)",
+          },
+          {
+            ...releaseTransition,
+          },
+        ),
+        animate(
+          "[data-animate='logo-text-container']",
+          {
+            scale: 0.75,
+          },
+          {
+            ...releaseTransition,
+          },
+        ),
+      ]);
+
+      await Promise.all([
+        animate(
           "[data-animate='logo']",
           {
-            scale: 0.4,
+            scale: 0.5,
+            // x: "25%",
           },
           {
             ease: "easeOut",
@@ -174,38 +240,67 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
 
       await Promise.all([
         animate(
-          "[data-animate='header-line']",
+          "[data-animate='header-container']",
           {
-            clipPath: ["inset(0% 100% 0% 0%)", "inset(0% 0% 0% 0%)"],
-          },
-          {
-            ease: "easeInOut",
-            duration: 1.7,
-          },
-        ),
-        animate(
-          "[data-animate='about-char']",
-          {
-            x: ["-100%", "0%"],
+            transform: ["translateX(100%)", "translateX(0%)"],
           },
           {
             ease: "easeOut",
-            duration: 0.5,
-            delay: (i) => i * 0.05 + 1.2,
+            duration: 1.2,
           },
         ),
         animate(
-          "[data-animate='search-form']",
+          "[data-animate='background-image']",
           {
-            clipPath: [
-              "inset(0% 100% 0% 0% round 8px)",
-              "inset(0% 0% 0% 0% round 8px)",
-            ],
+            scale: 1,
+            filter: "blur(2px)",
           },
           {
             ease: "easeOut",
-            delay: 1,
-            duration: 0.7,
+            duration: 1.2,
+          },
+        ),
+        animate(
+          "[data-animate='background']",
+          {
+            y: "-25%",
+          },
+          {
+            ease: "easeOut",
+            duration: 1.2,
+          },
+        ),
+        animate(
+          "[data-animate='hero-container']",
+          {
+            flex: "0 0 50%",
+            y: "0%",
+          },
+          {
+            ease: "easeOut",
+            duration: 1.2,
+          },
+        ),
+        animate(
+          "[data-animate='logo-container']",
+          {
+            left: "-50%",
+          },
+          {
+            ease: "easeOut",
+            duration: 0.8,
+            delay: 0.4,
+          },
+        ),
+        animate(
+          "[data-animate='logo']",
+          {
+            x: "25%",
+          },
+          {
+            ease: "easeOut",
+            duration: 0.8,
+            delay: 0.4,
           },
         ),
       ]);
@@ -216,16 +311,12 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
   }, [animate, scope, middleIndex, phase]);
 
   return (
-    <main ref={scope} className="flex flex-col relative h-screen">
+    <main ref={scope} className="flex flex-col relative min-h-screen">
       <div
         data-animate="logo-container"
         className={styles.logoContainer}
       >
-        <Logo />
-        <div
-          data-animate="header-line"
-          className={styles.headerLine}
-        />
+        <Logo2 variant="hero" />
       </div>
       <div
         className={styles.headerContainer}
@@ -237,48 +328,49 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
       <div className={styles.background} data-animate="background">
         <div className={styles.backgroundOverlay} />
         <Image
-          src="/images/protest.jpg"
+          data-animate="background-image"
+          src="/images/unseen-histories.jpg"
           alt="kamran-abdullayev"
           fill
-          style={{ objectFit: "cover" }}
+          style={{
+            objectFit: "cover",
+            transform: "scale(2)",
+            transformOrigin: "top left",
+            filter: "blur(10px)",
+          }}
         />
       </div>
-
-      <div
-        className={styles.heroContainer}
-        data-animate="background-content"
-      >
+      <div className={styles.pageContent}>
+        <div className={styles.spacer} />
         <div
-          data-animate="hero-child"
-          className={styles.heroTextContainer}
+          className={styles.heroContainer}
+          data-animate="hero-container"
         >
-          <MaskText direction="up" delay={3.4} wordStagger={0.05}>
-            <h1 className={styles.heroTitle}>
-              Your voice matters beyond the ballot box.
-            </h1>
-          </MaskText>
-        </div>
-
-        <div
-          data-animate="hero-child"
-          className={styles.heroSubtitleContainer}
-        >
-          <MaskText direction="up" delay={3.7}>
-            <p className={styles.heroSubtitle}>
-              Elections choose who represents you, but donors and
-              lobbyists don&apos;t stop working once the votes are
-              counted. Hold your representatives accountable to the
-              people they serve. Find and contact your reps by
-              entering your ZIP code below.
-            </p>{" "}
-          </MaskText>
-        </div>
-
-        <div
-          className={styles.searchFormContainer}
-          data-animate="search-form"
-        >
-          <SearchForm />
+          <div className={styles.heroContent}>
+            <div
+              data-animate="hero-child"
+              className={styles.heroTextContainer}
+            >
+              <h1 className={styles.heroTitle}>
+                Your voice matters beyond the ballot box.
+              </h1>
+            </div>
+            <div
+              className={styles.searchFormContainer}
+              data-animate="search-form"
+            >
+              <SearchForm />
+            </div>
+            <div
+              data-animate="hero-child"
+              className={styles.heroSubtitleContainer}
+            >
+              <p className={styles.heroSubtitle}>
+                Find and contact your elected officials by entering
+                your ZIP code.
+              </p>{" "}
+            </div>
+          </div>
         </div>
       </div>
     </main>

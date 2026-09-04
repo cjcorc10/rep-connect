@@ -11,32 +11,27 @@
 .inputContainer {
   width: 100%;
   position: relative;
+  background: white;
+  border: 1px solid rgb(201, 201, 201);
+  border-radius: 999rem;
   display: flex;
-  border-radius: 8px;
-  align-items: center;
-  background: #f0f0f0;
-  pointer-events: none;
-  padding: 0 0.25rem 0 1.5rem;
 }
 
 .srOnly {
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
   overflow: hidden;
   white-space: nowrap;
-  border-width: 0;
 }
 
 .input {
+  padding-left: 1rem;
   width: 100%;
-  height: 3rem;
   font-size: 1rem;
   line-height: 2rem;
   color: #111827;
-  border: none;
   outline: none;
   pointer-events: auto;
   font-size: 1.2rem;

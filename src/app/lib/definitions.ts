@@ -127,6 +127,7 @@ export type StateDistrict = {
 export type LegendFederalSlice = {
   districts: string[];
   houseReps: Rep[];
+  senateReps: Rep[];
   districtRankByLabel: Map<string, number>;
   districtColorFillByLabel: Map<string, string>;
 };

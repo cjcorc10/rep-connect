@@ -1,3 +1,21 @@
+.logo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--background-color);
+  // background-color: black;
+  transform: translate(-100%);
+  z-index: 10;
+}
+.logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--background-color);
+  // background-color: black;
+  transform: translate(100%);
+  z-index: 10;
+}
 .logo {
   position: relative;
   display: grid;
@@ -5,20 +23,25 @@
   grid-template-columns: min-content 0 min-content;
   column-gap: 0em;
   font-size: inherit;
-  overflow: hidden;
-  height: fit-content;
   transform-origin: top center;
-  width: 100%;
+  // overflow: hidden;
+  height: min-content;
+  width: min-content;
+  line-height: 1;
+  padding-right: 0.15em;
+  isolation: isolate;
 
   .logoText {
+    position: relative;
     display: inline-block;
     text-transform: uppercase;
     font-family: var(--font-heading);
-    font-weight: var(--header2-weight);
+    // font-weight: 500;
     white-space: nowrap;
+    letter-spacing: -0.1em;
+    color: #ffffff;
     mix-blend-mode: difference;
-    color: white;
-
+    z-index: 1000;
     .logoChar {
       display: inline-block;
     }
@@ -29,24 +52,26 @@
     transform: translateY(150%);
   }
 
-  .circleSlot {
-    flex: none;
-    width: 0;
+  .backgroundSlot {
     position: relative;
+    left: 0.07em;
+    width: 0;
+    height: 100%;
     overflow: visible;
   }
 
-  .circle {
+  .background {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
+
+    mix-blend-mode: normal;
+    transform: translate(-50%);
+    width: 1em;
     height: 100%;
-    aspect-ratio: 1;
-    transform: translateX(-50%);
-    background-image: url("/images/redBg.webp");
-    background-position: center;
-    background-size: cover;
-    clip-path: circle(0em at 50% 50%);
+    // height: clamp(2rem, 15vw, 6rem);
+    background-color: #252525;
+    clip-path: inset(0% 0% 0% 100%);
+    z-index: 1;
   }
 }
 

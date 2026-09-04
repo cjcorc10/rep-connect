@@ -1,5 +1,12 @@
 @use "../../styles/typography" as *;
 
+.addressTab {
+  position: fixed;
+  left: 0;
+  top: 20%;
+  z-index: 1000;
+}
+
 .govLevelTabsContainer {
   position: fixed;
   top: 4rem;
@@ -11,42 +18,105 @@
   display: flex;
   flex-direction: column;
   .sectionWrapper {
-    padding: 24px 0;
-    margin: 0 24px;
-    border-top: 1px solid #252525;
-
+    position: relative;
+    padding: 48px 24px;
+    .line {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 1px;
+      width: calc(100% - 48px);
+      background: black;
+    }
+    &:first-child {
+      padding: 48px 24px 0 24px;
+    }
     &:last-child {
-      flex: 1 1 auto;
+      background-color: color-mix(
+        in srgb,
+        var(--background-color) 86%,
+        #000000 14%
+      );
     }
   }
 
   .header {
-    @include header2;
-    font-size: clamp(2.5rem, 5vw, 5rem);
-    width: 100%;
-    color: var(--primary-color);
-    height: clamp(6rem, 12vw, 10rem);
-    display: flex;
-
-    @media (max-width: 768px) {
-      align-items: end;
+    .headerText {
+      grid-row: 1;
+      grid-column: 1;
+      @include header2;
+      margin-left: -0.07em;
+      color: var(--primary-color);
+      height: clamp(6rem, 12vw, 10rem);
     }
   }
 
   .resultsHeader {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto 1fr;
+    gap: 1rem;
     width: 100%;
-    height: clamp(7rem, 12vw, 14rem);
+    // min-height: clamp(7rem, 12vw, 14rem);
+
+    .cityState {
+      grid-column: 2;
+      grid-row: 1;
+      text-transform: uppercase;
+      text-align: right;
+      .cityStateLabel {
+        @include body3;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .cityStateText {
+        @include header3;
+        color: var(--red-accent);
+      }
+    }
+    .zip {
+      .zipLabel {
+        @include body3;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .zipText {
+        grid-column: 1;
+        grid-row: 1;
+        @include header2;
+        margin-left: -0.05em;
+        color: var(--red-accent);
+      }
+    }
+
+    .refineText {
+      grid-column: span 2;
+      grid-row: 2;
+      flex: 1 1 auto;
+      @include body1;
+      height: 100%;
+      display: flex;
+      align-items: start;
+      justify-content: center;
+      padding: 2rem 0;
+
+      @media (min-width: 768px) {
+        grid-column: 1;
+        grid-row: 2;
+      }
+    }
 
     @media (max-width: 768px) {
-      flex-direction: column-reverse;
+      // flex-direction: column-reverse;
       justify-content: space-between;
+      gap: 1rem;
     }
   }
   .mapSectionContainer {
     position: relative;
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: min-content 1fr;
     grid-template-areas: "title map" "district map";
 
@@ -65,19 +135,12 @@
       margin-left: -0.07em;
     }
     .districtSection {
-      padding-top: 12px;
       grid-area: district;
-      align-self: start;
       display: flex;
       flex-direction: column;
-      justify-content: start;
-      color: #35281d;
-      gap: 12px;
-
-      .districtDescription {
-        color: #35281d;
-        // padding: 12px 12px 0 12px;
-      }
+      justify-content: end;
+      color: #000;
+      padding-top: 1rem;
     }
     .mapSection {
       grid-area: map;
@@ -95,11 +158,13 @@
         width: 100%;
         display: flex;
         flex-direction: column;
-        background-color: color-mix(
-          in srgb,
-          var(--background-color) 86%,
-          #000000 14%
-        );
+        background: #252525;
+        // border-radius: 12px;
+        // background-color: color-mix(
+        //   in srgb,
+        //   var(--background-color) 86%,
+        //   #000000 14%
+        // );
         overflow: hidden;
 
         .mapWithLegend {

@@ -53,7 +53,7 @@ export default function SubmitButton() {
         <path
           data-animate="shaft"
           d="M 5, 10 h 9"
-          stroke="white"
+          stroke="black"
           fill="none"
           strokeWidth="1"
           strokeLinecap="round"
@@ -61,7 +61,7 @@ export default function SubmitButton() {
         <path
           data-animate="point"
           d="M 11, 6 l 3, 4 l -3, 4"
-          stroke="white"
+          stroke="black"
           fill="none"
           strokeWidth="1"
           strokeLinecap="round"

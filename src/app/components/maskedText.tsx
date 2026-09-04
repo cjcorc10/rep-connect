@@ -7,7 +7,10 @@ export const MaskedText = ({
 }) => {
   return (
     <div
-      style={{ overflow: "visible", display: "inline-flex" }}
+      style={{
+        overflow: "visible",
+        display: "inline-flex",
+      }}
       data-animate={`${name}-container`}
     >
       {text.split("").map((char: string, index: number) => (

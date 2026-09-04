@@ -22,12 +22,6 @@ export const ResultsSection = ({
     <div className={styles.mapSectionContainer}>
       <h1 className={styles.title}>Districts</h1>
       <section className={styles.districtSection}>
-        {refine && (
-          <p className={styles.districtDescription}>
-            Multiple districts returned for you zip code. Find your
-            district on the map.
-          </p>
-        )}
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.div
             key={`legend-${activeLevel}`}
@@ -53,7 +47,6 @@ export const ResultsSection = ({
             <DistrictMapLegend {...legend} />
           </motion.div>
         </AnimatePresence>
-        {/* <Refine {...refine} /> */}
       </section>
       <section className={styles.mapSection}>
         <div className={styles.mapContainer}>

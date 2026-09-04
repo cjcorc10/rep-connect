@@ -16,11 +16,6 @@ export const RosterColumnHeader = ({
           )}
         </div>
       </div>
-      <div className={styles.mobileColumnGroup}>
-        <span className={styles.mobileColumnKey}>
-          Representatives
-        </span>
-      </div>
     </div>
   );
 };

@@ -1,4 +1,8 @@
-import { Archivo, Public_Sans } from "next/font/google";
+import {
+  Archivo,
+  Public_Sans,
+  IBM_Plex_Mono,
+} from "next/font/google";
 
 export const archivo = Archivo({
   subsets: ["latin"],

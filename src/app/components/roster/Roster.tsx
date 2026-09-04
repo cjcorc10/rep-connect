@@ -14,6 +14,7 @@ import { CursorIndicator } from "../Carousel/cursorIndicator";
 import { CursorText } from "../Carousel/cursorText";
 import { RowDetail } from "./rowDetail";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { ArrowDownIcon } from "@radix-ui/react-icons";
 
 type RosterProps = {
   rows: RepRosterRow[];
@@ -30,8 +31,17 @@ export const Roster = ({ rows, repMap, isFederal }: RosterProps) => {
 
   return (
     <>
-      <div className={styles.rosterTitle}>
-        <h2>Representatives</h2>
+      <div className={styles.rosterHeader}>
+        <div className={styles.rosterTitleLine} />
+        <h2 className={styles.rosterTitle}>Representatives</h2>
+        <p className={styles.rosterDescription}>
+          Select a representative from the roster to learn more.
+          Officials with terms that end in the upcoming election cycle
+          are highlighted in red.
+        </p>
+        <div className={styles.arrowDownIcon}>
+          <ArrowDownIcon width={52} height={52} />
+        </div>
       </div>
       <Accordion.Root
         value={openItem}
@@ -77,7 +87,11 @@ export const Roster = ({ rows, repMap, isFederal }: RosterProps) => {
                 }}
                 onMouseEnter={() => setHoveredIndex(index)}
               >
-                <RosterRow row={row} isFederal={isFederal} />
+                <RosterRow
+                  row={row}
+                  index={index}
+                  isFederal={isFederal}
+                />
               </AccordionTrigger>
             </Accordion.Header>
             {isFederal && (

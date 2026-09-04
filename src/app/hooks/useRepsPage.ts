@@ -142,6 +142,7 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
     federal: {
       districts: view.data.districts,
       houseReps: view.data.houseReps,
+      senateReps: view.data.senateReps,
       districtRankByLabel,
       districtColorFillByLabel: federalLegendColorFillByLabel,
     },
@@ -173,7 +174,7 @@ export function useRepsPage({ payload }: UseRepsPageArgs) {
   };
 
   const refine = {
-    multipleDistricts: payload.data.houseReps.length > 1,
+    multipleDistricts: view.data.districts.length > 1,
     onRefineSuccess,
     refineByAddress,
   };

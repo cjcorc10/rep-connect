@@ -3,45 +3,44 @@
 
 :root {
   --background-color: #f3f0e0;
-  --primary-color: #1d3557;
+  --primary-color: #094d92;
   --red-accent: #e63946;
   --blue-secondary: #1e90ff;
   --blue-accent: #3185fc;
-  --dark-accent: #343434;
+  --dark-accent: #252525;
 
   --font-heading: var(--font-archivo), sans-serif;
   --font-body: var(--font-public-sans), sans-serif;
 
   /* Header scale (Archivo) */
   --header1-weight: 700;
-  --header1-size: clamp(6rem, 15vw, 12.5rem);
-  --header1-line: 0.75;
+  --header1-size: clamp(3rem, 6vw, 7rem);
+  --header1-line: 0.8;
   --header1-spacing: -0.05em;
 
   --header2-weight: 700;
-  --header2-size: clamp(3rem, 5vw, 6rem);
+  --header2-size: clamp(2.5rem, 5vw, 5rem);
   --header2-line: 0.8;
   --header2-spacing: -0.05em;
 
-  --header3-weight: 500;
-  --header3-size: clamp(2rem, 4vw, 2.5rem);
-
-  --header3-line: 1;
+  --header3-weight: 700;
+  --header3-size: clamp(1rem, 3vw, 1.25rem);
+  --header3-line: 1.5;
   --header3-spacing: normal;
 
   /* Body scale (Public Sans) */
-  --body1-weight: 400;
-  --body1-size: 1.3rem;
-  --body1-line: 1.5;
-  --body1-spacing: normal;
+  --body1-weight: 500;
+  --body1-size: 2.5rem;
+  --body1-line: 1;
+  --body1-spacing: -0.02em;
 
   --body2-weight: 400;
-  --body2-size: 0.875rem;
+  --body2-size: 1.25rem;
   --body2-line: 1.45;
   --body2-spacing: normal;
 
   --body3-weight: 300;
-  --body3-size: 0.75rem;
+  --body3-size: 0.9rem;
   --body3-line: 1.4;
   --body3-spacing: normal;
 

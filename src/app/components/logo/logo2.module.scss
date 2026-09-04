@@ -1,0 +1,63 @@
+.main {
+  height: 100%;
+}
+.logo {
+  position: relative;
+  width: fit-content;
+  height: fit-content;
+  transform-origin: top center;
+  background: var(--background-color);
+  color: #ffffff;
+  .textContainer {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, min-content);
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    z-index: 2;
+    mix-blend-mode: difference;
+
+    transform: scale(0.8);
+    // line-height: 1;
+    .logoText {
+      color: #fff;
+    }
+
+    .logoText:first-child {
+      grid-column: 1;
+    }
+    .logoText:last-child {
+      grid-column: 3;
+      padding-right: 0.1em;
+    }
+    .separator {
+      grid-column: 2;
+    }
+  }
+  .backgroundContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .backgroundSlot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120%;
+    height: 100%;
+    // clip-path: inset(0 0 0 100%);
+    .background {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      aspect-ratio: 1/1;
+      background: #000;
+      clip-path: inset(0 0 0 100%);
+    }
+  }
+}
