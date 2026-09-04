@@ -16,6 +16,21 @@ export default function Home() {
   return <HomeEntrance key={transitionId} phase={phase} />;
 }
 
+const pullBackTransition = {
+  type: "spring",
+  stiffness: 75,
+  damping: 15,
+} as const;
+const pullBackTransition2 = {
+  ease: "easeOut",
+  duration: 1.2,
+} as const;
+const releaseTransition = {
+  type: "spring",
+  stiffness: 500,
+  damping: 20,
+} as const;
+
 const HomeEntrance = ({ phase }: { phase: Phase }) => {
   const title1 = "repc";
   const title2 = "nnect";
@@ -24,20 +39,6 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
   const middleIndex = Math.floor(charsCount / 2);
 
   const [scope, animate] = useAnimate();
-  const pullBackTransition = {
-    type: "spring",
-    stiffness: 75,
-    damping: 15,
-  };
-  const pullBackTransition2 = {
-    ease: "easeOut",
-    duration: 1.2,
-  };
-  const releaseTransition = {
-    type: "spring",
-    stiffness: 500,
-    damping: 20,
-  };
 
   useEffect(() => {
     if (phase !== "idle") return;
@@ -90,7 +91,7 @@ const HomeEntrance = ({ phase }: { phase: Phase }) => {
 
       await Promise.all([
         animate(
-          "[data-animate='logo-background'] ",
+          "[data-animate='logo-background']",
           {
             clipPath: ["inset(50% 50% 50% 50%)", "inset(46% 43%)"],
           },
