@@ -1,10 +1,5 @@
 import styles from "./roster.module.scss";
-import {
-  motion,
-  useMotionValue,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRepStore } from "@/app/store/useRepStore";
 import { Rep } from "@/app/lib/definitions";
 import { useWikipedia } from "@/app/hooks/useWikipedia";
@@ -13,6 +8,7 @@ import { useRef } from "react";
 import { useEffect } from "react";
 import { MaskText } from "../maskText/maskText";
 import { useIsMobile } from "@/app/hooks/useIsMobile";
+import { termEndsAtNextMidterm } from "@/app/lib/repRoster";
 
 function twitterProfileUrl(rep: Rep): string | null {
   const handle = rep.twitter?.trim().replace(/^@/, "");
@@ -61,7 +57,6 @@ export const RowDetail = ({
 }) => {
   const rep = useRepStore().getRep(bioguideId) as Rep;
   const { wiki } = useWikipedia(rep.wikipedia_id);
-  const twitterUrl = twitterProfileUrl(rep);
   const links = getRepExternalLinks(rep);
   const imageUrl = repMap.get(bioguideId);
   const expiration = new Date(rep.end);
@@ -71,124 +66,89 @@ export const RowDetail = ({
     target,
     offset: ["25% end", "75% start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["-25%", "25%"]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0", "100%"]);
+
+  const isTermEnding = termEndsAtNextMidterm(expiration);
 
   return (
     <div ref={target} className={styles.detailContainer}>
-      <motion.div
-        style={isMobile ? undefined : { y }}
-        className={styles.ImageContainer}
-      >
-        <motion.div
-          initial={{ clipPath: "inset(0 0 100% 0)" }}
-          animate={{ clipPath: "inset(0 0 0% 0)" }}
-          transition={{
-            duration: 0.6,
-            delay: 0.25,
-            ease: "easeOut",
-          }}
-          className={styles.imageBackground}
-        />
-
-        <motion.div
-          initial={{
-            clipPath: "inset(0 0 100% 0)",
-            filter: "blur(10px)",
-          }}
-          animate={{
-            clipPath: "inset(0 0 0% 0)",
-            filter: "blur(0px)",
-          }}
-          transition={{
-            duration: 0.6,
-            delay: 0.26,
-            ease: "easeOut",
-          }}
-          className={styles.profileImage}
-        >
-          <Image
-            src={imageUrl ?? ""}
-            alt={rep.full_name}
-            fill
-            style={{ objectFit: "cover" }}
-          />
-        </motion.div>
-      </motion.div>
-      <section className={styles.personalInfo}>
-        <MaskText delay={0.15} direction="down">
+      <div className={styles.line} />
+      <div className={styles.imageSection}>
+        <div className={styles.sectionContent}>
+          <div className={styles.ImageContainer}>
+            <motion.div
+              initial={{
+                clipPath: "inset(0 0 100% 0)",
+                filter: "blur(10px)",
+              }}
+              animate={{
+                clipPath: "inset(0 0 0% 0)",
+                filter: "blur(0px)",
+              }}
+              transition={{
+                duration: 0.6,
+                delay: 0.26,
+                ease: "easeOut",
+              }}
+              className={styles.profileImage}
+            >
+              <Image
+                src={imageUrl ?? ""}
+                alt={rep.full_name}
+                fill
+                style={{ objectFit: "cover" }}
+              />
+            </motion.div>
+          </div>
           <div className={styles.textContainer}>
-            <p className={styles.textBlock}>{rep.full_name}</p>
+            <h3 className={styles.textBlock}>{rep.full_name}</h3>
             <p className={styles.textBlock}>
               {rep.party}{" "}
               {isSenator ? "Senator" : "Representative"}{" "}
             </p>
             <p className={styles.textBlock}>
-              Term Expires: {expiration.toLocaleDateString()}
+              Term Expires:{" "}
+              <span
+                className={
+                  isTermEnding ? styles.termEnding : undefined
+                }
+              >
+                {expiration.toLocaleDateString()}
+              </span>
             </p>
           </div>
-        </MaskText>
-      </section>
-      <section className={styles.detailBody}>
-        <MaskText delay={0.25} direction="down">
-          <div className={styles.bioSection}>
-            {wiki && (
-              <>
-                <h3 className={styles.sectionTitle}>Overview</h3>
-                <p className={styles.detailBodyText}>
-                  {wiki.description}
-                </p>
-                <p className={styles.detailBodyText}>
-                  {wiki.extract}
-                </p>
-              </>
-            )}
-          </div>
-        </MaskText>
-        <MaskText delay={0.25} direction="down">
-          <div className={styles.linksSection}>
-            <h3 className={styles.sectionTitle}>
-              Find out more about {rep.full_name}
-            </h3>
-            <ul className={styles.linksList}>
-              {links.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href}>{link.text}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </MaskText>
-        <MaskText delay={0.25} direction="down">
-          <div className={styles.contactSection}>
-            <h3 className={styles.sectionTitle}>Contact</h3>
-            {twitterUrl && (
-              <a
-                href={twitterUrl}
-                className={styles.detailFooterText}
-              >
-                Twitter
-              </a>
-            )}
-            <a
-              href={`tel:${rep.phone.replace(/\D/g, "")}`}
-              className={styles.detailFooterText}
-            >
-              {rep.phone}
-            </a>
-            {rep.contact_form && (
-              <a
-                href={rep.contact_form}
-                className={styles.detailFooterText}
-              >
-                Contact Form
-              </a>
-            )}
-            <p className={styles.detailFooterText}>
-              Mailing Address: {rep.address}
+        </div>
+      </div>
+
+      <div className={styles.bioSection}>
+        {wiki && (
+          <>
+            <h3 className={styles.sectionTitle}>Bio</h3>
+            <p className={styles.detailBodyText}>
+              {wiki.description}
             </p>
-          </div>
-        </MaskText>
-      </section>
+            <p className={styles.detailBodyText}>{wiki.extract}</p>
+          </>
+        )}
+      </div>
+      <div className={styles.linksSection}>
+        <h3 className={styles.sectionTitle}>External Links</h3>
+        <ul className={styles.linksList}>
+          {links.map((link) => (
+            <li key={link.href}>
+              <a href={link.href}>{link.text}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <motion.div
+        className={styles.callSection}
+        style={isMobile ? { display: "block" } : { y }}
+      >
+        <h3 className={styles.text}>
+          <a href={`tel:${rep.phone?.replace(/\D/g, "")}`}>Call</a>
+        </h3>
+      </motion.div>
     </div>
   );
 };

@@ -11,12 +11,14 @@ export const ResultsSection = ({
   zip,
   legend,
   refine,
+  onSelectRep,
 }: {
   mapSection: MapSection;
   activeLevel: string;
   zip: string;
   legend: Legend;
   refine: Refine;
+  onSelectRep: (id: string) => void;
 }) => {
   return (
     <div className={styles.mapSectionContainer}>
@@ -44,7 +46,7 @@ export const ResultsSection = ({
             }}
             className={styles.legendContainer}
           >
-            <DistrictMapLegend {...legend} />
+            <DistrictMapLegend {...legend} onSelectRep={onSelectRep} />
           </motion.div>
         </AnimatePresence>
       </section>

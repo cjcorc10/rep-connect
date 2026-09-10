@@ -11,6 +11,8 @@ import { ResultsSection } from "./resultsSection";
 import Address from "@/app/components/address/address";
 import RefineTab from "@/app/components/refineReps/refineTab";
 import { SideTab } from "@/app/components/sideTab/sideTab";
+import { useState } from "react";
+import { useLenis } from "lenis/react";
 
 type Props = {
   payload: RepsLocationPayload;
@@ -33,6 +35,22 @@ export default function RepsPageClient({
   } = useRepsPage({
     payload,
   });
+  const [openItem, setOpenItem] = useState("");
+  const lenis = useLenis();
+
+  const selectRep = (id: string) => {
+    if (openItem === id) {
+      const el = document.getElementById(`roster-row-${id}`);
+      if (!el) return;
+      if (lenis) {
+        lenis.scrollTo(el, { offset: 0, force: true });
+      } else {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+    setOpenItem(id);
+  };
 
   return (
     <main>
@@ -75,10 +93,16 @@ export default function RepsPageClient({
             activeLevel={activeLevel}
             legend={legend}
             refine={refine}
+            onSelectRep={selectRep}
           />
         </FadeupContainer>
       </div>
-      <RepsPanel isFederal={activeLevel === "federal"} {...panel} />
+      <RepsPanel
+        isFederal={activeLevel === "federal"}
+        {...panel}
+        openItem={openItem}
+        onOpenItemChange={setOpenItem}
+      />
     </main>
   );
 }

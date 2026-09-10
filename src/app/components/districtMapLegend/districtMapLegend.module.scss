@@ -42,6 +42,7 @@
     var(--background-color) 86%,
     #000000 14%
   );
+  cursor: pointer;
 }
 
 .legendName,
@@ -60,6 +61,12 @@
   mix-blend-mode: normal;
   background: #000;
   clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.7s ease-in-out;
+}
+
+.legendItem:hover .rowFill {
+  clip-path: inset(0 0 0 0);
+  transition-duration: 0.5s;
 }
 
 .underLine {

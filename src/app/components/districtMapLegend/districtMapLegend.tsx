@@ -11,12 +11,29 @@ import styles from "./districtMapLegend.module.scss";
 function LegendEntry({
   primaryLabel,
   fullName,
+  onClick,
 }: {
   primaryLabel: string;
   fullName: string;
+  onClick?: () => void;
 }) {
   return (
-    <li className={styles.legendItem}>
+    <li
+      className={styles.legendItem}
+      onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+    >
       <span className={styles.legendName}>{fullName}</span>
       <span className={styles.districtNumber}>{primaryLabel}</span>
       <div className={styles.underLine} />
@@ -27,13 +44,16 @@ function LegendEntry({
 
 export type DistrictMapLegendFederalSlice = Legend["federal"];
 export type DistrictMapLegendStateSlice = Legend["state"];
-export type DistrictMapLegendProps = Legend;
+export type DistrictMapLegendProps = Legend & {
+  onSelectRep?: (id: string) => void;
+};
 
 export default function DistrictMapLegend({
   level,
   stateCode,
   federal,
   state: stateSlice,
+  onSelectRep,
 }: DistrictMapLegendProps) {
   const {
     districts,
@@ -76,6 +96,11 @@ export default function DistrictMapLegend({
                     key={`${stateCode}-${district}-${rep.bioguide_id}`}
                     primaryLabel={String(district)}
                     fullName={fullName}
+                    onClick={
+                      onSelectRep
+                        ? () => onSelectRep(rep.bioguide_id)
+                        : undefined
+                    }
                   />
                 );
               })}
@@ -90,6 +115,11 @@ export default function DistrictMapLegend({
                     key={`${stateCode}-sen-${rep.bioguide_id}`}
                     primaryLabel={rep.state}
                     fullName={rep.full_name}
+                    onClick={
+                      onSelectRep
+                        ? () => onSelectRep(rep.bioguide_id)
+                        : undefined
+                    }
                   />
                 ))}
               </ul>

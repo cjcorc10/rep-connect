@@ -11,12 +11,16 @@ export default function RepsPanel({
   portraitUrlMap,
   prefetchPortraitUrls,
   prefetchWikipediaIds,
+  openItem,
+  onOpenItemChange,
 }: {
   isFederal: boolean;
   rosterRows: RepRosterRow[];
   portraitUrlMap: Map<string, string>;
   prefetchPortraitUrls: string[];
   prefetchWikipediaIds: string[];
+  openItem: string;
+  onOpenItemChange: (id: string) => void;
 }) {
   return (
     <>
@@ -26,6 +30,8 @@ export default function RepsPanel({
         rows={rosterRows}
         repMap={portraitUrlMap}
         isFederal={isFederal}
+        openItem={openItem}
+        onOpenItemChange={onOpenItemChange}
       />
     </>
   );
