@@ -31,7 +31,7 @@ jobs:
 
       # 3. Install dependencies
       - name: install dependencies
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
         # 4. Install playwright browsers
       - run: pnpm exec playwright install --with-deps
