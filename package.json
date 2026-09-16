@@ -9,6 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "ci": "pnpm install",
     "test:e2e": "playwright test",
     "test": "vitest",
     "transform:legislators": "ts-node src/app/lib/scripts/transformLegislators.ts",
