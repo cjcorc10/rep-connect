@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: "24"
           cache: "pnpm"
 
       # 3. Install dependencies
@@ -36,6 +36,7 @@ jobs:
         # 4. Install playwright browsers
       - run: pnpm exec playwright install --with-deps
 
+      - run: pnpm build
         # 5. Run Playwright tests
       - run: pnpm run test:e2e
 
