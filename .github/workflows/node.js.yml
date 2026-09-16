@@ -33,12 +33,6 @@ jobs:
       - name: install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build the project
-        run: pnpm build
-
-      - name: Start the server
-        run: pnpm start
-
         # 4. Install playwright browsers
       - run: pnpm exec playwright install --with-deps
 
