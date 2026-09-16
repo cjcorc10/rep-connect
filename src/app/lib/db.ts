@@ -1,36 +1,35 @@
-import { supabase } from './supabase/supabaseClient';
+import { getSupabaseclient } from "./supabase/supabaseClient";
 
 export const getSenators = async (state: string) => {
-  const { data, error } = await supabase
-    .from('legislators-current')
-    .select('*')
-    .eq('state', state)
-    .eq('type', 'sen');
+  const { data, error } = await getSupabaseclient()
+    .from("legislators-current")
+    .select("*")
+    .eq("state", state)
+    .eq("type", "sen");
 
   if (error) {
-    throw new Error('Failed to retrieve senators');
+    throw new Error("Failed to retrieve senators");
   }
   return data;
 };
 
 export const getHouseReps = async (
   districts: string[],
-  state: string
+  state: string,
 ) => {
-  const { data, error } = await supabase
-    .from('legislators-current')
-    .select('*')
-    .in('district', districts)
-    .eq('state', state);
+  const { data, error } = await getSupabaseclient()
+    .from("legislators-current")
+    .select("*")
+    .in("district", districts)
+    .eq("state", state);
 
   if (data && data.length === 0) {
     console.error(
-      'No representatives found for the given district and state'
+      "No representatives found for the given district and state",
     );
     return null;
   } else if (error) {
-    throw new Error('Failed to retrieve representatives');
+    throw new Error("Failed to retrieve representatives");
   }
   return data;
 };
-

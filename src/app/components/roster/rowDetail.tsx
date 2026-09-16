@@ -1,5 +1,10 @@
 import styles from "./roster.module.scss";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  MotionValue,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { useRepStore } from "@/app/store/useRepStore";
 import { Rep } from "@/app/lib/definitions";
 import { useWikipedia } from "@/app/hooks/useWikipedia";
@@ -64,8 +69,9 @@ export const RowDetail = ({
   const target = useRef(null);
   const { scrollYProgress } = useScroll({
     target,
-    offset: ["25% end", "75% start"],
+    offset: ["start 50%", "end 15%"],
   });
+
   const y = useTransform(scrollYProgress, [0, 1], ["0", "100%"]);
 
   const isTermEnding = termEndsAtNextMidterm(expiration);
@@ -141,14 +147,11 @@ export const RowDetail = ({
           ))}
         </ul>
       </div>
-      <motion.div
-        className={styles.callSection}
-        style={isMobile ? { display: "block" } : { y }}
-      >
-        <h3 className={styles.text}>
+      <div className={styles.callSection}>
+        <motion.h3 style={{ y }} className={styles.text}>
           <a href={`tel:${rep.phone?.replace(/\D/g, "")}`}>Call</a>
-        </h3>
-      </motion.div>
+        </motion.h3>
+      </div>
     </div>
   );
 };

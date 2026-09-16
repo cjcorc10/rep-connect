@@ -12,9 +12,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID:
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID ?? "",
   },
-  experimental: {
-    viewTransition: true,
-  },
+
   images: {
     /**
      * Same-origin `/api/rep-image?…` is not covered by `remotePatterns` (those
